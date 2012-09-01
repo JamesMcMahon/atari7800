@@ -26,3 +26,7 @@ These games were rescued from Atari ST format diskettes that were thrown out beh
 important treasures and recovered them from the diskettes.    Many of the compiling
 and coding tools as well as the Atari 7800 development tools are Atari ST programs,
 which can be run via emulation to be able to natively compile and test code.
+
+I put this code on Github to preserve what I consider to be an interesting
+historical artifact. Also this is quite possible the only repo on Github based
+on code found on floppy disks in a dumpster.
