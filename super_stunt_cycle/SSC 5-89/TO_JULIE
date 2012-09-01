@@ -1,0 +1,82 @@
+                               5/26/89
+
+Memo:  Julie Wade, Atari Corporation
+
+
+Hello Julie,
+
+   Enclosed in "ARC" are two representative place-holder files which I will
+refer to this weekend with the next files we submit.  One file is a view of
+today's current state of the timing bug.  The other is a version of a utility
+I am working on for the ST to do the cell animation for Super Stunt Cycle.  
+
+
+___ Regarding my animator program on the ST ___________________________________
+
+   A real animation utility for the 7800 has been needed since the beginning.
+
+   Early in the project I suggested that to Dave Staugas who explained to me
+that a graphic utility WAS being written for the 7800 which would utilize the
+7800's own video output.  This was to supercede the method provided at the
+outset of the project which uses NeoChrome and "NEO2S".  NeoChrome is
+excellent, but the "NEO2S" method was admittedly an incomplete system.
+
+   The awaited utility was never provided and I assume never finished.  The
+need for an advanced animation tool for the 7800 has always been clear.  At
+that time Dave said the utility was overdue, and something about its author
+going back to school and taking a long time to finish.
+
+   On several occasions I requested the communications protocol with the
+developer's emulator board, but was refused.  I had hoped a simple disclosure
+would have sufficed.  Having that would have allowed me to interface other
+graphic work stations.  As you know there are many good ones that don't have
+the fragmentation of NEO2S.
+
+   To fill the need, I learned to program the ST and wrote a utility of my own.
+I will take some time this weekend to generate a reference card for it and
+some animation data to demonstrate its use.
+   
+   The animator accounts for much of the time that I was shy about reporting
+because it was different from the standard Atari 7800 development method, and I
+didn't want to argue its merits.  Atari's unwillingness to allow me to interface
+my favorite workstation convinced me not to make an issue of my ST animator.
+
+   I see that I should have explained sooner, even if it were criticized.
+
+
+____ Regarding the bug on Top Rider ___________________________________________
+
+   Two types of animation are being merged, algorithmic and classic cell types.
+Both are time-critical, and are influenced by the code reading from the Top
+Rider.  I am certain I can sort it out soon and will have it in order by this
+weekend.  Something closer to your requested milestone is possible by Tuesday
+as you suggested to John Boeschen.  I'll keep everyone more informed.
+   
+
+____ Expected completion of the project _______________________________________
+
+   I know I can have SSC running by the date we originally agreed, June 15th.
+Is that acceptable?  I tried to please everyone by doing it faster, but the
+extra month of work on the Top Rider was more than I anticipated.  Does anyone
+doubt that I can do it?  It would be TRULY fair if I were given time beyond the
+original deadline to adjust for time spent on the Top Rider engineering.
+
+   Joining the Top Rider with the program has to be done in degrees, and that's
+how I'll be doing it.  I'll explain more details when time permits.
+
+   I have no modem for the ST, so I must do some RS232 file transfers to
+another machine.  It results in minutes of delay, so please bear with me.
+
+   Again I apologize for the misunderstandings I've caused.  I could not avoid
+the delays.  I'm also sorry to have caused John Boeschen problems by agreeing
+to do the Top Rider without his prior permission.  I wanted to accept the
+challenging offer from Larry Siegel in the friendly spirit he offered it.  I
+did after all succeed in the task!  John is more practical than I am and would
+have scheduled that extra work more realistically.
+
+   I hope to soon be forgiven and vindicated, and to have many more years to
+give to Atari as I have for Atari in the past.
+
+
+                                       Jim St. Louis
+   

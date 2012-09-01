@@ -1,0 +1,161 @@
+
+;  playfield data bit1 evnn .nlist
+
+.fake0:
+
+	.org (.fake0 + $ff) & $ff00
+
+
+MTNPLAY0:
+	.dc.b	$7F
+	.DC.B	$7E
+	.DC.B	$3E
+	.DC.B	$3C
+	.DC.B	$3C
+	.DC.B	$1C
+	.DC.B	$18
+	.DC.B	$18
+	.DC.B	$10
+	.DC.B	$8
+
+
+MTNPLAY1:
+	.dc.b	$7F
+	.DC.B	$7E
+	.DC.B	$3E
+	.DC.B	$3C
+	.DC.B	$3C
+	.DC.B	$1C
+	.DC.B	$18
+	.DC.B	$18
+	.DC.B	$10
+	.DC.B	$8
+
+
+
+MTNPLAY2:
+	.dc.b	$7F
+	.DC.B	$7E
+	.DC.B	$3E
+	.DC.B	$3C
+	.DC.B	$3C
+	.DC.B	$1C
+	.DC.B	$18
+	.DC.B	$18
+	.DC.B	$10
+	.DC.B	$8
+
+
+MTNPLAY3:
+	.dc.b	$7F
+	.DC.B	$7E
+	.DC.B	$3E
+	.DC.B	$3C
+	.DC.B	$3C
+	.DC.B	$1C
+	.DC.B	$18
+	.DC.B	$18
+	.DC.B	$10
+	.DC.B	$8
+
+
+MTNPLAY4:
+	.dc.b	$7F
+	.DC.B	$7E
+	.DC.B	$3E
+	.DC.B	$3C
+	.DC.B	$3C
+	.DC.B	$1C
+	.DC.B	$18
+	.DC.B	$18
+	.DC.B	$10
+	.DC.B	$8
+
+
+MTNPLAY5:
+
+	.dc.b	$7F
+	.DC.B	$7E
+	.DC.B	$3E
+	.DC.B	$3C
+	.DC.B	$3C
+	.DC.B	$1C
+	.DC.B	$18
+	.DC.B	$18
+	.DC.B	$10
+	.DC.B	$8
+
+
+
+MTNPLAYB0:
+	.dc.b	$7F
+	.DC.B	$7E
+	.DC.B	$3E
+	.DC.B	$3C
+	.DC.B	$3C
+	.DC.B	$1C
+	.DC.B	$18
+	.DC.B	$18
+	.DC.B	$10
+	.DC.B	$8
+
+MTNPLAYB1:
+	.dc.b	$7F
+	.DC.B	$7E
+	.DC.B	$3E
+	.DC.B	$3C
+	.DC.B	$3C
+	.DC.B	$1C
+	.DC.B	$18
+	.DC.B	$18
+	.DC.B	$10
+	.DC.B	$8
+
+
+MTNPLAYB2:
+	.dc.b	$7F
+	.DC.B	$7E
+	.DC.B	$3E
+	.DC.B	$3C
+	.DC.B	$3C
+	.DC.B	$1C
+	.DC.B	$18
+	.DC.B	$18
+	.DC.B	$10
+	.DC.B	$8
+
+MTNPLAYB3:
+	.dc.b	$7F
+	.DC.B	$7E
+	.DC.B	$3E
+	.DC.B	$3C
+	.DC.B	$3C
+	.DC.B	$1C
+	.DC.B	$18
+	.DC.B	$18
+	.DC.B	$10
+	.DC.B	$8
+MTNPLAYB4:
+	.dc.b	$7F
+	.DC.B	$7E
+	.DC.B	$3E
+	.DC.B	$3C
+	.DC.B	$3C
+	.DC.B	$1C
+	.DC.B	$18
+	.DC.B	$18
+	.DC.B	$10
+	.DC.B	$8
+
+MTNPLAYB5:
+
+	.dc.b	$7F
+	.DC.B	$7E
+	.DC.B	$3E
+	.DC.B	$3C
+	.DC.B	$3C
+	.DC.B	$1C
+	.DC.B	$18
+	.DC.B	$18
+	.DC.B	$10
+	.DC.B	$8

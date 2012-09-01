@@ -1,0 +1,1449 @@
+******************************************************
+******************************************************
+*
+*
+*    ROBOTRON     6-JULY-83              3:00
+*                21-JULY-83              8:00
+*                29-JULY-83              1:30
+*                22-AUGUST-83            5:00
+*
+*         RKERNEL.S
+*
+******************************************************
+
+
+*******************
+*
+*         ROBOTRON KERNEL GOES HERE
+*
+*******************
+*         HERE STORE THE STATUS OF EVERYTHING BECAUSE WE ARRIVED BY INTERUPT
+
+KERNEL
+          PHA                            ;SAVE REGISTERS
+          TXA
+          PHA
+          TYA
+          PHA
+
+TOPWAIT   STA     WSYNC                  ;ONLY CHECK FOR TOP WHEN OFF EDGE
+          BIT     MSTAT                  ;WAIT FOR EXACT BOTTOM OF SCREEN
+M2        BPL     TOPWAIT
+
+TOPWAIT1  BIT     MSTAT
+          BMI     TOPWAIT1               ;CHANGE TO BMI FOR SI MARIA
+
+
+*         STORING TO DPL CAUSES DMA TO START
+*         Y IS ALWAYS THE OFFSET
+*         X IS ALWAYS THE LOW DL POINTER
+;ZONE 0
+;LINE 0
+          LDY     #0
+          LDA     #H(DLZONE0)
+          STA     DPH
+          LDX     #L(DLZONE0)
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+*         WE'VE SEEN ENOUGH OF THIS
+          PRINT   OFF
+
+;LINE 1
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 2
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 3
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 4
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 5
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 6
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 7
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 8
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 9
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 10
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 11
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 12
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 13
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 14
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+          LDA     #H(DLZONE1)           ;START TO SET UP FOR THE NEXT ZONE
+;LINE 15
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          LDY     #0                     ;SET THE OFFSET TO ZERO FOR NEW ZONE
+          STA     DPH                    ;SET UP THE DISPLAY HIGH POINTER
+;ZONE 1
+;LINE 0
+          LDX     #L(DLZONE1)
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 1
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 2
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 3
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 4
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 5
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 6
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 7
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 8
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 9
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 10
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 11
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 12
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 13
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 14
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+          LDA     #H(DLZONE2)           ;START TO SET UP FOR THE NEXT ZONE
+;LINE 15
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          LDY     #0                     ;SET THE OFFSET TO ZERO FOR NEW ZONE
+          STA     DPH                    ;SET UP THE DISPLAY HIGH POINTER
+;ZONE 2
+;LINE 0
+          LDX     #L(DLZONE2)
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 1
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 2
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 3
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 4
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 5
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 6
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 7
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 8
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 9
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 10
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 11
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 12
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 13
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 14
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+          LDA     #H(DLZONE3)           ;START TO SET UP FOR THE NEXT ZONE
+;LINE 15
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          LDY     #0                     ;SET THE OFFSET TO ZERO FOR NEW ZONE
+          STA     DPH                    ;SET UP THE DISPLAY HIGH POINTER
+;ZONE3
+;LINE 0
+          LDX     #L(DLZONE3)
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 1
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 2
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 3
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 4
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 5
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 6
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 7
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 8
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 9
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 10
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 11
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 12
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 13
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 14
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+          LDA     #H(DLZONE4)           ;START TO SET UP FOR THE NEXT ZONE
+;LINE 15
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          LDY     #0                     ;SET THE OFFSET TO ZERO FOR NEW ZONE
+          STA     DPH                    ;SET UP THE DISPLAY HIGH POINTER
+;ZONE 4
+;LINE 0
+          LDX     #L(DLZONE4)
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 1
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 2
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 3
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 4
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 5
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 6
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 7
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 8
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 9
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 10
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 11
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 12
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 13
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 14
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+          LDA     #H(DLZONE5)           ;START TO SET UP FOR THE NEXT ZONE
+;LINE 15
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          LDY     #0                     ;SET THE OFFSET TO ZERO FOR NEW ZONE
+          STA     DPH                    ;SET UP THE DISPLAY HIGH POINTER
+;ZONE 5
+;LINE 0
+          LDX     #L(DLZONE5)
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 1
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 2
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 3
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 4
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 5
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 6
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 7
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 8
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 9
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 10
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 11
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 12
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 13
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 14
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+          LDA     #H(DLZONE6)           ;START TO SET UP FOR THE NEXT ZONE
+;LINE 15
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          LDY     #0                     ;SET THE OFFSET TO ZERO FOR NEW ZONE
+          STA     DPH                    ;SET UP THE DISPLAY HIGH POINTER
+;ZONE 6
+;LINE 0
+          LDX     #L(DLZONE6)
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 1
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 2
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 3
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 4
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 5
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 6
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 7
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 8
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 9
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 10
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 11
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 12
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 13
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 14
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+          LDA     #H(DLZONE7)           ;START TO SET UP FOR THE NEXT ZONE
+;LINE 15
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          LDY     #0                     ;SET THE OFFSET TO ZERO FOR NEW ZONE
+          STA     DPH                    ;SET UP THE DISPLAY HIGH POINTER
+;ZONE 7
+;LINE 0
+          LDX     #L(DLZONE7)
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 1
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 2
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 3
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 4
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 5
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 6
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 7
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 8
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 9
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 10
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 11
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 12
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 13
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 14
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+          LDA     #H(DLZONE8)           ;START TO SET UP FOR THE NEXT ZONE
+;LINE 15
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          LDY     #0                     ;SET THE OFFSET TO ZERO FOR NEW ZONE
+          STA     DPH                    ;SET UP THE DISPLAY HIGH POINTER
+;ZONE 8
+;LINE 0
+          LDX     #L(DLZONE8)
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 1
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 2
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 3
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 4
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 5
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 6
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 7
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 8
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 9
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 10
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 11
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 12
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 13
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 14
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+          LDA     #H(DLZONE9)           ;START TO SET UP FOR THE NEXT ZONE
+;LINE 15
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          LDY     #0                     ;SET THE OFFSET TO ZERO FOR NEW ZONE
+          STA     DPH                    ;SET UP THE DISPLAY HIGH POINTER
+;ZONE 9
+;LINE 0
+          LDX     #L(DLZONE9)
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 1
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 2
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 3
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 4
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 5
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 6
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 7
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 8
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 9
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 10
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 11
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 12
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 13
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 14
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+          LDA     #H(DLZONE10)           ;START TO SET UP FOR THE NEXT ZONE
+;LINE 15
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          LDY     #0                     ;SET THE OFFSET TO ZERO FOR NEW ZONE
+          STA     DPH                    ;SET UP THE DISPLAY HIGH POINTER
+;ZONE 10
+;LINE 0
+          LDX     #L(DLZONE10)
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 1
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 2
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 3
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 4
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 5
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 6
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 7
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 8
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 9
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 10
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 11
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 12
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 13
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 14
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+          LDA     #H(DLZONE11)           ;START TO SET UP FOR THE NEXT ZONE
+;LINE 15
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          LDY     #0                     ;SET THE OFFSET TO ZERO FOR NEW ZONE
+          STA     DPH                    ;SET UP THE DISPLAY HIGH POINTER
+;ZONE 11
+;LINE 0
+          LDX     #L(DLZONE11)
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 1
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 2
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 3
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 4
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 5
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 6
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 7
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 8
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 9
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 10
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 11
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 12
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 13
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+;LINE 14
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+          INY
+
+*         OK, TURN ON LISTING AGAIN
+          PRINT   ON
+
+;LINE 15
+          STA     WSYNC                  ;WAIT FOR START OF SCAN LINE
+          DB      $84,$38,$EA,$EA
+          STX     DPL
+;DMA TIME
+
+
+*         INCREMENT FRAME COUNT
+          INC     FRMCNT
+
+*         THEN SET UP THE TIMER FOR THE NEXT FRAME
+          LDA     #$7C                   ;THIS SHOULD GIVE THE CORRECT WAIT
+          STA     TIM64TI                ;BEFORE THE NEXT INTERUPT
+*
+
+*******************
+*
+*         CALL THE SOUND DRIVER ROUTINE
+*
+          JSR     TUNER                  ;ROUTINE IN RSOUNDS.S
+*
+
+
+*
+*         END OF KERNEL
+*
+
+*         RESTORE THE REGISTERS THAT WERE SAVED AT THE BEGINING
+*         AND DO AN RTI
+          PLA
+          TAY
+          PLA
+          TAX
+          PLA
+          RTI
+
+******************************************
+
+*         END OF RKERNEL.S
+          EJE

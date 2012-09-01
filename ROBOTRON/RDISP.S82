@@ -1,0 +1,210 @@
+******************************************
+*
+*         RDISP.S
+*
+******************************************
+*
+*  ROBOTRON DISPLAY DRIVERS              18-JUL-83     CARLOS
+*                                        20-JUL-83
+*                17-AUGUST-83            9:00
+*
+******************************************
+
+
+
+
+******************************************
+*
+*  DISPINIT  --  INITIALIZE DISPLAY LIST AND ZONE OBJECT TABLES
+*
+******************************************
+*
+DISPINIT
+          LDA     #H(DL)                 ;SET DLIST ADDRESS
+          STA     TADDRH
+          LDA     #L(DL)
+          STA     TADDRL
+DISPINT0  LDA     #$00
+          TAY
+DISPINT1  STA     (TADDRL),Y
+          INY
+          CPY     #$7F                   ;TEST FOR END OF A ZONE LIST
+          BCC     DISPINT1
+          LDA     #$1F
+          STA     (TADDRL),Y             ;SET LAST BYTE OF FREE LIST
+          LDA     TADDRL
+          CLC
+          ADC     #$80                   ;ADVANCE
+          STA     TADDRL
+          LDA     TADDRH
+          ADC     #$00
+          STA     TADDRH
+          CMP     #$20                   ;TEST IF END OF DISPLAY LISTS
+          BCC     DISPINT0               ;NOT DONE
+*
+          LDA     #H(ZONOBJL)            ;SET ADDRESS OF ZONE OBJECT LISTS
+          STA     TADDRH
+          LDA     #L(ZONOBJL)
+          STA     TADDRL
+DISPINT2  LDA     #$00
+          TAY
+DISPINT3  STA     (TADDRL),Y
+          INY
+          CPY     #$A8                   ;TEST TO ADVANCE BASE ADDRESS
+          BCC     DISPINT3
+          LDA     TADDRL
+          CLC
+          ADC     #$A8                   ;ADVANCE BASE ADDRESS
+          STA     TADDRL
+          LDA     TADDRH
+          ADC     #$00
+          STA     TADDRH
+          CMP     #H(DL)                 ;TEST IF DONE
+          BNE     DISPINT2
+*
+          LDX     #$0B                   ;INIT OBJECT COUNT TABLES
+          LDA     #$00
+DISPIN4   STA     ZONOBJC,X
+          DEX
+          BPL     DISPIN4
+
+          RTS
+*
+******************************************
+*
+*  DISPLOAD  --  LOAD DISPLAY LIST WITH INITIAL OBJECT DATA
+*
+******************************************
+*
+DISPLOAD
+
+          LDX     #$4F
+DISPL1    LDA     STTBL,X                ;SKIP OBJECTS WITH ZERO STATUS
+          BEQ     DISPL20
+          LDA     YTBL,X                 ;GET ZONE FROM Y POSITION
+          STA     TEMP18
+          LSR     A
+          LSR     A
+          LSR     A
+          LSR     A
+          STA     TEMP14                 ;ZONE
+          LDA     XTBL,X
+          STA     TEMP17                 ;HPOS
+
+          JSR     GETSTAMP               ;GET STAMP ADDRESS
+          JSR     ZONELOAD               ;LOAD ZONE DISPLAY ENTRY
+
+          LDA     TADDRL                 ;SAVE OBJECTS DISPLAY LIST ADDR
+          STA     DLPLTBL,X
+          LDA     TADDRH
+          STA     DLPHTBL,X
+          LDA     YEXTBL,X               ;GET LOWER ZONE
+          LSR     A
+          LSR     A
+          LSR     A
+          LSR     A
+          CMP     TEMP14                 ;COMPARE WITH TOP ZONE
+          BEQ     DISPL20                ;SAME, GET NEXT OBJECT
+          STA     TEMP14                 ;SECOND ZONE
+          LDA     #$00
+          JSR     GETSTAMP
+          JSR     ZONELOAD
+          SEC                            ;COMPUTE OFFSET TO SECOND ENTRY
+          LDA     TADDRL
+          SBC     DLPLTBL,X
+          STA     DL2PTBL,X
+*
+DISPL20   DEX
+          BPL     DISPL1                 ;DONE?
+          RTS
+*
+******************************************
+*
+*  ZONELOAD  --  LOAD A ZONE DISPLAY LIST ENTRY WITH OBJECT DATA
+*
+******************************************
+*
+ZONELOAD  STX     TEMP13                 ;SAVE X
+          LDX     TEMP14                 ;GET ZONE
+          INC     ZONOBJC,X              ;INC ZONE OBJECT COUNT
+          LDA     ZONDLAL,X              ;ZONE DISPLAY LIST ADDRESS
+          STA     TADDRL
+          LDA     ZONDLAH,X
+          STA     TADDRH
+          LDA     ZONLINE,X              ;ZONE START LINE NUMBER
+          STA     TEMP12
+          LDA     ZONOBJLL,X             ;ZONE OBJECT LIST ADDRESS
+          STA     TADDR1L
+          LDA     ZONOBJLH,X
+          STA     TADDR1H
+*
+          LDY     #$7C                   ;FIND A FREE ENTRY
+ZONLD0    LDX     #$00
+          LDA     (TADDRL),Y
+          CMP     #$FF                   ;TEST IF SECTION FULL
+          BNE     ZONLD1                 ;HAS ROOM
+          INY
+          CPY     #$80                   ;TEST IF AT END
+          BCC     ZONLD0
+          JMP     ZONLD90                ;NO ROOM IN ZONE
+*
+ZONLD1    ASL     A                      ;SHIFT UNTIL EMPTY SPOT FOUND
+          BCC     ZONLD2
+          INX                            ;COUNT BITS
+          BNE     ZONLD1
+*
+ZONLD2    LDA     FREEMSK,X              ;UNFREE ENTRY
+          ORA     (TADDRL),Y
+          STA     (TADDRL),Y
+          TYA                            ;COMPUTE OFFSET OF FREE ENTRY
+          SEC
+          SBC     #$7C
+          ASL     A
+          ASL     A
+          ASL     A                      ;8 X FREE LIST WORD NO.
+          STA     TEMP11
+          TXA
+          CLC
+          ADC     TEMP11
+          STA     TEMP10                 ;FREE ENTRY NUMBER
+          ASL     A
+          ASL     A                      ;X4 BYTES PER ENTRY
+          ADC     TADDRL                 ;ADDRESS OF FREE ENTRY
+          STA     TADDRL
+*
+          LDY     #$00
+          LDA     TEMP19                 ;STAMP LOW ADDRESS
+          STA     (TADDRL),Y
+          LDA     TEMP15                 ;WIDTH AND PALETTE
+          INY
+          STA     (TADDRL),Y
+          INY
+          LDA     TEMP12                 ;COMPUTE OFFSET OF HIGH STAMP ADDR
+          SEC
+          SBC     TEMP18                 ;YPOS
+          CLC
+          ADC     TEMP20                 ;STAMP HIGH
+          STA     (TADDRL),Y             ;STAMP HIGH
+          INY
+          LDA     TEMP17                 ;HPOS
+          STA     (TADDRL),Y
+*
+          LDY     TEMP10
+          LDA     TEMP13                 ;OBJECT NUMBER
+          STA     (TADDR1L),Y            ;INTO ZONE OBJECT LIST
+          JMP     ZONLDX                 ;DONE
+*
+ZONLD90   LDA     #$00                   ;NO ROOM IN ZONE
+          STA     TADDRL
+          STA     TADDRH
+*
+ZONLDX    LDX     TEMP13
+          RTS
+*
+*
+******************************************
+*
+*  END OF RDISP.S
+*
+*
+          EJE

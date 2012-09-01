@@ -1,0 +1,492 @@
+	NEWPAGE	FJGHSKRU
+BKGNDCOLOR:
+SCOLBK4:
+	.dc.b	$F
+	.DC.B	$C8
+SCOLBK3:	
+	.dc.b	$F
+	.DC.B	$C8
+
+SCOLBK2:
+	.dc.b	$F
+	.DC.B	$C8
+SCOLBK1:	
+	.dc.b	$F
+	.DC.B	$C8
+
+	.dc.b	$F
+	.DC.B	$C8
+
+	.dc.b	$F
+	.DC.B	$C8
+
+	.dc.b	$F
+	.DC.B	$C6
+	.dc.b	$F
+
+	.DC.B	$C6
+	.dc.b	$F
+
+	.DC.B	$C6	;20
+	.dc.b	$F
+
+	.DC.B	$C6
+	.dc.b	$F
+
+	.DC.B	$C6
+	.dc.b	$F
+
+	.DC.B	$C8
+	.dc.b	$F
+
+	.DC.B	$C8	
+	.dc.b	$F
+
+	.DC.B	$C8	;15
+	.dc.b	$F
+
+	.DC.B	$C8
+	.dc.b	$F
+
+	.DC.B	$C6
+	.dc.b	$F
+
+	.DC.B	$C6
+	.dc.b	$F
+
+	.DC.B	$C6
+	.dc.b	$F
+
+	.DC.B	$C8	;10
+	.dc.b	$F
+
+	.DC.B	$C8
+	.dc.b	$F
+
+	.DC.B	$C6
+	.dc.b	$F
+
+	.DC.B	$C6
+	.dc.b	$F
+
+	.DC.B	$C8
+	.dc.b	$F
+
+	.DC.B	$C6	;5
+	.dc.b	$F
+
+	.DC.B	$C8
+;	.DC.B	$FF  ;C8
+	.dc.b	$F
+
+	.DC.B	$C8
+;	.DC.B	$8F	;C8
+	.dc.b	$F
+
+;	.DC.B	$1F	;C8
+;	.DC.B	$C8
+	.DC.B	$C6
+	.dc.b	$F
+
+;	.dc.b	$F ;C8
+;	.dc.b	$C6
+	.dc.b	$C6
+	.DC.B	$F
+
+COLOR:
+SCOLPF4:
+	.DC.B	$02
+	.dc.b	$F
+SCOLPF3:	
+	.DC.B	$02
+	.dc.b	$F
+
+SCOLPF2:
+	.DC.B	$02
+	.dc.b	$F
+SCOLPF1:	
+	.DC.B	$02
+	.dc.b	$F
+
+	.DC.B	$02
+	.dc.b	$F
+
+	.DC.B	$02
+	.dc.b	$F
+
+	.DC.B	$04
+	.dc.b	$F
+
+	.DC.B	$04
+	.dc.b	$F
+
+	.DC.B	$04	;20
+	.dc.b	$F
+
+	.DC.B	$04
+	.dc.b	$F
+
+	.DC.B	$04
+	.dc.b	$F
+
+	.DC.B	$02
+	.dc.b	$F
+
+	.DC.B	$02	
+	.dc.b	$F
+
+	.DC.B	$02	;15
+	.dc.b	$F
+
+	.DC.B	$02
+	.dc.b	$F
+
+	.DC.B	$04
+	.dc.b	$F
+
+	.DC.B	$04
+	.dc.b	$F
+
+	.DC.B	$04
+	.dc.b	$F
+
+	.DC.B	$02	;10
+	.dc.b	$F
+
+	.DC.B	$02
+	.dc.b	$F
+
+	.DC.B	$04
+	.dc.b	$F
+
+	.DC.B	$04
+	.dc.b	$F
+
+	.DC.B	$02
+	.dc.b	$F
+
+	.DC.B	$04	;5
+	.dc.b	$F
+
+	.DC.B	$02
+	.dc.b	$F
+
+;	.DC.B	$04
+	.DC.B	$C6
+	.dc.b	$F
+
+	.DC.B	$C6
+;	.DC.B	$02
+	.dc.b	$F
+
+	.DC.B	$C6
+;	.DC.B	$04
+	.dc.b	$F
+
+
+	NEWPAGE HJDUU
+
+
+
+BKGNDCOLOR5:
+SCOLBK5:
+	.DC.B	$F
+	.DC.B	$C8
+	.DC.B	$F
+	.DC.B	$C6
+	.DC.B	$F
+	.DC.B	$C6
+	.DC.B	$F
+	.DC.B	$C6
+	.DC.B	$F
+	.DC.B	$C6
+	.DC.B	$F
+	.DC.B	$C6
+	.DC.B	$F
+	.DC.B	$C6
+	.DC.B	$F
+	.DC.B	$C8
+	.DC.B	$F
+	.DC.B	$C8
+	.DC.B	$F
+	.DC.B	$C8
+	.DC.B	$F
+	.DC.B	$C8
+	.DC.B	$F
+	.DC.B	$C6
+	.DC.B	$F
+	.DC.B	$C6
+	.DC.B	$F
+	.DC.B	$C6
+	.DC.B	$F
+	.DC.B	$C8
+	.DC.B	$F
+	.DC.B	$C8
+	.DC.B	$F
+	.DC.B	$C6
+	.DC.B	$F
+	.DC.B	$C6
+	.DC.B	$F
+	.DC.B	$C8
+	.DC.B	$F
+	.DC.B	$C8
+	.DC.B	$F
+	.DC.B	$C6
+	.DC.B	$F
+	.DC.B	$C6
+	.DC.B	$F
+	.DC.B	$C8
+	.DC.B	$F
+	.DC.B	$C6
+	.DC.B	$F
+;	.DC.B	$9F  ;C8
+	.DC.B	$C6
+
+COLOR5:
+SCOLPF5:
+	.DC.B	$02
+	.DC.B	$F
+	.DC.B	$04
+	.DC.B	$F
+	.DC.B	$04
+	.DC.B	$F
+	.DC.B	$04
+	.DC.B	$F
+	.DC.B	$04
+	.DC.B	$F
+	.DC.B	$04
+	.DC.B	$F
+	.DC.B	$04
+	.DC.B	$F
+	.DC.B	$02
+	.DC.B	$F
+	.DC.B	$02
+	.DC.B	$F
+	.DC.B	$02
+	.DC.B	$F
+	.DC.B	$02
+	.DC.B	$F
+	.DC.B	$04
+	.DC.B	$F
+	.DC.B	$04
+	.DC.B	$F
+	.DC.B	$04
+	.DC.B	$F
+	.DC.B	$02
+	.DC.B	$F
+	.DC.B	$02
+	.DC.B	$F
+	.DC.B	$04
+	.DC.B	$F
+	.DC.B	$04
+	.DC.B	$F
+	.DC.B	$02
+	.DC.B	$F
+	.DC.B	$02
+	.DC.B	$F
+	.DC.B	$04
+	.DC.B	$F
+	.DC.B	$04
+	.DC.B	$F
+	.DC.B	$C2
+;	.DC.B	$02
+	.DC.B	$F
+;	.DC.B	$04
+	.DC.B	$C6
+	.DC.B	$F
+	.DC.B	$C2
+;	.DC.B	$02
+	.DC.B	$F
+
+BKGNDCOLOR6:
+SCOLBK6:
+	.DC.B	$F
+	.DC.B	$C6
+	.DC.B	$F
+	.DC.B	$C6
+	.DC.B	$F
+	.DC.B	$C6
+	.DC.B	$F
+	.DC.B	$C6
+	.DC.B	$F
+	.DC.B	$C6
+	.DC.B	$F
+	.DC.B	$C8 ;20
+	.DC.B	$F
+	.DC.B	$C8
+	.DC.B	$F
+	.DC.B	$C8
+	.DC.B	$F
+	.DC.B	$C8
+	.DC.B	$F
+	.DC.B	$C6
+	.DC.B	$F
+	.DC.B	$C6
+	.DC.B	$F
+	.DC.B	$C6
+	.DC.B	$F
+	.DC.B	$C8
+	.DC.B	$F
+	.DC.B	$C8
+	.DC.B	$F
+	.DC.B	$C6
+	.DC.B	$F
+	.DC.B	$C6 ;10
+	.DC.B	$F
+	.DC.B	$C8
+	.DC.B	$F
+	.DC.B	$C8
+	.DC.B	$F
+	.DC.B	$C6
+	.DC.B	$F
+	.DC.B	$C6
+	.DC.B	$F
+	.DC.B	$C8
+	.DC.B	$F
+	.DC.B	$C6
+	.DC.B	$F
+	.DC.B	$C8
+	.DC.B	$F
+	.DC.B	$C6
+	.DC.B	$F
+;	.DC.B	$3F
+	.DC.B	$C6
+
+COLOR6:
+SCOLPF6:
+	.DC.B	$04
+	.DC.B	$F
+	.DC.B	$04
+	.DC.B	$F
+	.DC.B	$04
+	.DC.B	$F
+	.DC.B	$04
+	.DC.B	$F
+	.DC.B	$04
+	.DC.B	$F
+	.DC.B	$02 ;20
+	.DC.B	$F
+	.DC.B	$02
+	.DC.B	$F
+	.DC.B	$02
+	.DC.B	$F
+	.DC.B	$02
+	.DC.B	$F
+	.DC.B	$04
+	.DC.B	$F
+	.DC.B	$04
+	.DC.B	$F
+	.DC.B	$04
+	.DC.B	$F
+	.DC.B	$02
+	.DC.B	$F
+	.DC.B	$02
+	.DC.B	$F
+	.DC.B	$04
+	.DC.B	$F
+	.DC.B	$04 ;10
+	.DC.B	$F
+	.DC.B	$02
+	.DC.B	$F
+	.DC.B	$02
+	.DC.B	$F
+	.DC.B	$04
+	.DC.B	$F
+	.DC.B	$04
+	.DC.B	$F
+	.DC.B	$02
+	.DC.B	$F
+	.DC.B	$02
+	.DC.B	$F
+	.DC.B	$04
+;	.DC.B	$04
+	.DC.B	$F
+	.DC.B	$02
+;	.DC.B	$02
+	.DC.B	$F
+	.DC.B	$04
+;	.DC.B	$04
+	.DC.B	$F
+
+CLOUDCOLORBK:
+	.DC.B	$68
+	.DC.B	$68
+	.DC.B	$67
+	.DC.B	$66
+	.DC.B	$65
+	.DC.B	$64
+	.DC.B	$63
+	.DC.B	$62
+	.DC.B	$61
+	.DC.B	$60
+	.DC.B	$60
+	.DC.B	$60
+	.DC.B	$60
+	.DC.B	$60
+
+MTNCOLORPF:
+MTNTOPCOLPF:
+	.DC.B	$C4
+	.DC.B	$C5
+	.DC.B	$C6
+	.DC.B	$C7
+	.DC.B	$C8
+	.DC.B	$C9
+	.DC.B	$CA
+	.DC.B	$CB
+	.DC.B	$CC
+	.DC.B	$CD
+
+MOUTAINCOLORBK:
+;ODD
+	.DC.B	$A4
+	.DC.B	$A5
+	.DC.B	$A6
+	.DC.B	$6C
+	.DC.B	$6E
+	.DC.B	$6D
+	.DC.B	$6C
+	.DC.B	$6B
+	.DC.B	$6A
+	.DC.B	$69
+	.DC.B	$68
+	.DC.B	$68
+	.DC.B	$68
+
+HORIZCOLORBK:
+;F	.DC.B	$C8
+;F	.DC.B	$C8
+;F	.DC.B	$C6
+;F	.DC.B	$C6
+;F	.DC.B	$C8
+;F	.DC.B	$C7
+;F	.DC.B	$C7
+;F	.DC.B	$C5
+;F	.DC.B	$C6
+;F	.DC.B	$C4
+
+;	.DC.B	$A0
+;	.DC.B	$A0
+;	.DC.B	$A0
+;	.DC.B	$A0
+;	.DC.B	$A0
+;	.DC.B	$A0
+;	.DC.B	$A0
+;	.DC.B	$A0
+;	.DC.B	$A0
+;	.DC.B	$A0
+
+;
+	.DC.B	$C0
+	.DC.B	$C0
+	.DC.B	$C1
+	.DC.B	$C1
+	.DC.B	$C2
+	.DC.B	$C2
+	.DC.B	$C3
+	.DC.B	$C3
+	.DC.B	$C4
+	.DC.B	$C4
+	.DC.B	$C4
+	.DC.B	$F
+;.include	"ocol.inc"

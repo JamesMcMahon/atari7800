@@ -1,0 +1,220 @@
+;  NEWPAGE  muzac
+
+sound_data_start:
+
+SDSDD:	.ORG	(SDSDD +1) & $FFFE
+
+DUR_TABLE:	.DC.B	2	;	64th note	0 	
+		.DC.B	3	; .ed   64th note	1
+		.DC.B	4	;	32nd note	2
+		.DC.B	6	; .ed	32nd note	3
+		.DC.B	8	;	16th note	4
+		.DC.B	12	; .ed	16th note	5
+		.DC.B	16	;	8th note	6
+		.DC.B	24	; .ed	8th		7
+		.DC.B	32	;	quarter note	8
+		.DC.B	48	; .ed	quarter		9
+		.DC.B	64	;	half		10
+		.DC.B	96	; .ed	half		11
+		.DC.B	128	;	whole		12
+		.DC.B	192	; .ed	whole		13
+
+SDSDE:	.ORG	(SDSDE +1) & $FFFE
+
+	; 8 BYTE ENVELOPE RATE TABLE
+
+ENV_RATE8:	.DC.W $02FF	;	64th note 	2
+		.DC.W $024F	; .ed	64th		3
+		.DC.W $012F	;	32nd		4
+		.DC.W $011F	; .ed	32nd		6
+		.DC.W $007F	;	16th		8
+		.DC.W $004F	; .ed	16th		12
+		.DC.W $003F	;	eighth		16
+		.DC.W $0037	; .ed	eighth		24
+		.DC.W $002F	;	quarter		32
+		.DC.W $0027	; .ed	quarter		48
+		.DC.W $001F	;	half		64
+		.DC.W $0013	; .ed 	half		96
+		.DC.W $000F	;	whole		128
+		.DC.W $0009	; .ed	whole		192
+
+	SDSDF:	.ORG	(SDSDF +1) & $FFFE
+
+
+	; TABLE OF ADDRESSES OF ENVELOPE VALUE TABLES
+	
+ENV_TBL:	.DC.B (ENVELOPE1 & $FF)
+		.DC.B (ENVELOPE1 & $FF00)/256
+
+		.DC.B (ENVELOPE2 & $FF)    
+		.DC.B (ENVELOPE2 & $FF00)/256    
+
+		.DC.B (ENVELOPE3 & $FF)
+		.DC.B (ENVELOPE3 & $FF00)/256
+
+		.DS.W 12	;SPACE FOR MORE ENVELOPE TABLE ADDRESSES
+
+	SDSDH:	.ORG	(SDSDH +1) & $FFFE
+
+	; TABLE OF ADDRESSES OF ENVELOPE INDEX RATE TABLES
+	;ONLY GOT 3 8 BYTE ENVELOPES SO FAR	
+
+ENV_RTBL:	.DC.B (ENV_RATE8 & $FF)	
+		.DC.B (ENV_RATE8 & $FF00)/256	
+
+		.DC.B (ENV_RATE8 & $FF)	
+		.DC.B (ENV_RATE8 & $FF00)/256	
+
+		.DC.B (ENV_RATE8 & $FF)	
+		.DC.B (ENV_RATE8 & $FF00)/256	
+
+		.DS.W 12	;SPACE FOR MORE ENVELOPE RATE TABLE ADDRESSES
+
+
+	SDSDM:	.ORG	(SDSDM +1) & $FFFE
+.include "pete.tab"
+
+sound_data_end:
+
+sound_data_length set sound_data_end - sound_data_start
+
+note_tab_start:
+
+;.INCLUDE "NOTE_TAB.TXT"
+NOTE_TABLE:		
+		.DC.B 31,4	;0 -- pure tone divide by 2
+		.DC.B 30,4	;
+		.DC.B 29,4	;
+		.DC.B 28,4	;
+		.DC.B 27,4	;
+		.DC.B 26,4	;
+		.DC.B 25,4	;
+		.DC.B 24,4	;
+		.DC.B 23,4	;
+		.DC.B 22,4	;
+		.DC.B 21,4	;
+		.DC.B 20,4	;
+		.DC.B 19,4	;
+		.DC.B 18,4	;
+		.DC.B 17,4	;
+		.DC.B 16,4	;
+		.DC.B 15,4	;
+		.DC.B 14,4	;
+		.DC.B 13,4	;
+		.DC.B 12,4	;
+		.DC.B 11,4	;
+		.DC.B 10,4	;
+		.DC.B 09,4	;
+		.DC.B 08,4	;
+		.DC.B 07,4	;
+		.DC.B 06,4	;
+		.DC.B 05,4	;
+		.DC.B 04,4	;
+		.DC.B 03,4	;
+		.DC.B 02,4	;
+		.DC.B 01,4	;
+		.DC.B 01,4	;31
+
+		.DC.B 31,$C	;32 -- divide by 6
+		.DC.B 30,$C	;
+		.DC.B 29,$C	;
+		.DC.B 28,$C	;
+		.DC.B 27,$C	;
+		.DC.B 26,$C	;
+		.DC.B 25,$C	;
+		.DC.B 24,$C	;
+		.DC.B 23,$C	;
+		.DC.B 22,$C	;
+		.DC.B 21,$C	;
+		.DC.B 20,$C	;
+		.DC.B 19,$C	;
+		.DC.B 18,$C	;
+		.DC.B 17,$C	;
+		.DC.B 16,$C	;
+		.DC.B 15,$C	;
+		.DC.B 14,$C	;
+		.DC.B 13,$C	;
+		.DC.B 12,$C	;
+		.DC.B 11,$C	;
+		.DC.B 10,$C	;
+		.DC.B 09,$C	;
+		.DC.B 08,$C	;
+		.DC.B 07,$C	;
+		.DC.B 06,$C	;
+		.DC.B 05,$C	;
+		.DC.B 04,$C	;
+		.DC.B 03,$C	;
+		.DC.B 02,$C	;
+		.DC.B 01,$C	;
+		.DC.B 00,$C	;63
+	
+		.DC.B 31,6	;64 -- divide by 31
+		.DC.B 30,6	;
+		.DC.B 29,6	;
+		.DC.B 28,6	;
+		.DC.B 27,6	;
+		.DC.B 26,6	;
+		.DC.B 25,6	;
+		.DC.B 24,6	;
+		.DC.B 23,6	;
+		.DC.B 22,6	;
+		.DC.B 21,6	;
+		.DC.B 20,6	;
+		.DC.B 19,6	;
+		.DC.B 18,6	;
+		.DC.B 17,6	;
+		.DC.B 16,6	;
+		.DC.B 15,6	;
+		.DC.B 14,6	;
+		.DC.B 13,6	;
+		.DC.B 12,6	;
+		.DC.B 11,6	;
+		.DC.B 10,6	;
+		.DC.B 09,6	;
+		.DC.B 08,6	;
+		.DC.B 07,6	;
+		.DC.B 06,6	;
+		.DC.B 05,6	;
+		.DC.B 04,6	;
+		.DC.B 03,6	;
+		.DC.B 02,6	;
+		.DC.B 01,6	;
+		.DC.B 00,6	;95
+		
+		.DC.B 31,$E	;96 -- divide by 93
+		.DC.B 30,$E	;
+		.DC.B 29,$E	;
+		.DC.B 28,$E	;
+		.DC.B 27,$E	;
+		.DC.B 26,$E	;
+		.DC.B 25,$E	;
+		.DC.B 24,$E	;
+		.DC.B 23,$E	;
+		.DC.B 22,$E	;
+		.DC.B 21,$E	;
+		.DC.B 20,$E	;
+		.DC.B 19,$E	;
+		.DC.B 18,$E	;
+		.DC.B 17,$E	;
+		.DC.B 16,$E	;
+		.DC.B 15,$E	;
+		.DC.B 14,$E	;
+		.DC.B 13,$E	;
+		.DC.B 12,$E	;	
+		.DC.B 11,$E	;
+		.DC.B 10,$E	;
+		.DC.B 09,$E	;
+		.DC.B 08,$E	;
+		.DC.B 07,$E	;
+		.DC.B 06,$E	;
+		.DC.B 05,$E	;
+		.DC.B 04,$E	;
+		.DC.B 03,$E	;
+		.DC.B 02,$E	;
+		.DC.B 01,$E	;
+		.DC.B 00,$E	;127
+
+
+note_tab_end:
+
+note_tab_length set note_tab_end - note_tab_start

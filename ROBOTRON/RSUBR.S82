@@ -1,0 +1,1328 @@
+******************************************************
+******************************************************
+*
+*
+*    ROBOTRON     6-JULY-83
+*                 5-AUGUST-83            2:40
+*                24-AUGUST-83            9:15
+*
+*
+*         RSUBR.S    - ROBOTRON SUBROUTINES
+*
+******************************************************
+
+
+
+******************************************
+******************************************
+*                                        *
+*     SPECIFIC OBJECT MOVE ROUTINES      *
+*                                        *
+*                                        *
+*  ALL MUST END WITH A     JMP OBJCONT   *
+*                                        *
+******************************************
+
+*******************
+*
+*         USAGE OF OBJECT DATA TABLES
+*                 - STANDARD ENTRIES FOR ALL OBJECTS
+*                 ( FOR THE OTHER ENTRIES, SEE INDIVIDUAL MOVE ROUTINES )
+*
+*         XTBL    - X POSITION
+*         YTBL    - Y POSITION
+*         XEXTBL  - X EXTENT (ABSOLUTE)
+*         YEXTBL  - Y EXTENT (ABSOLUTE)
+*         MTTBL   - NUMBER OF FRAMES UNTIL NEXT MOVE
+*         DLPHTBL - DISPLAY LIST HIGH BYTE POINTER
+*         DLPLTBL - DISPLAY LIST LOW BYTE POINTER
+*         DL2PTBL - OFFSET BETWEEN 2 DISPLAY LIST ENTRIES, 0 IF IN 1 ZONE
+*         STTBL   - USED BY UNLOADER, LOWER 2 BITS ARE COMMAND TO UNLOADER:
+*           LOWER 2 BITS OF STTBL       MEANING
+*             00     -   CREATURE IS DEAD AND GONE - UNLOAD IT PERMANENTLY
+*                         ( CREATURE CURRENTLY IS IN DL - REMOVE IT FOREVER )
+*             01     -   CREATURE IS ALIVE AND MOVING - DO NORMAL LOAD/UNLOAD
+*                         WITH COMPLETE ZONE-CROSSING CHECKING
+*             10     -   CREATURE IS NEW - IT DOES NOT EXIST IN DL AND
+*                         MUST BE ADDED (IN 1 OR 2 ZONES)
+*             11     -   CREATURE IS IN THE PROCESS OF DYING - IT DOES NOT MOVE
+*                         SO IT IS SAFE TO ASSUME THAT IT DOES NOT CROSS ZONES.
+*                         THIS COMMAND MEANS TO LOOK UP NEW STAMP, PALETTE AND
+*                         WIDTH DATA, BUT NOT TO CHECK FOR ZONE CROSSINGS.
+*                         THE INTEND VARIABLES ARE NOT SET, SO TAKE ALL DATA
+*                         NECESSARY FROM THE OBJECT DATA TABLES.  THIS WILL
+*                         PROBABLY BE A SIMPLE CALL TO GETSTAMP...
+*
+*******************
+
+******************************************
+*
+*         GMOV    -- MOVE GRUNTS
+*
+******************************************
+*
+*         USE OF OBJECT DATA TABLE ENTRIES:
+*
+*         DXTBL   - 0
+*         DYTBL   - UNUSED
+*         DTTBL   - UNUSED
+*         SATBL   - STEP - 0,1,2,3 OR 4 - 9 FOR DYING
+*         MISCTBL - UNUSED
+*         CRTBL   - 1
+*
+***********
+*
+GMOV
+          LDA     STTBL,X                ;LOAD THIS GRUNT'S CURRENT STATUS
+          AND     #$03
+          BNE     GMOV01                 ;WILL BE 0 IF GRUNT IS DEAD AND GONE
+          LDA     #NULLCODE              ;STTBL IS 0, SO NULL OUT CRTBL
+          STA     CRTBL,X
+          JMP     OBJCONT                ;NEVER WORRY ABOUT THIS GRUNT ANYMORE
+
+GMOV01    AND     #00000010B             ;GET ONLY BIT 1 - 'DYING' FLAG
+          BNE     GDYING                 ;GRUNT IS DYING - DON'T MOVE
+*         GRUNT IS ALIVE AND WELL
+          LDA     XTBL,X                 ;LOAD GRUNT X POSITION
+          CMP     MCXPOS
+          BCS     GMOV1                  ;BRANCH IF GREATER THAN
+          ADC     #GSTEPX                ;MOVE GRUNT RIGHT
+          STA     XINTEND                ;THIS IS WHERE THE GRUNT WANTS TO BE
+          LDA     XEXTBL,X               ;GET X EXTENT
+          CLC
+          ADC     #GSTEPX                ;MOVE THE OTHER EDGE OF IT
+          STA     XXINTEND               ;STORE FOR LOADER
+          JMP     GMOV2
+GMOV1     SBC     #GSTEPX                ;MOVE GRUNT LEFT  (CARRY SET FROM BCS)
+          STA     XINTEND                ;WHERE THE GRUNT WANTS TO BE
+          LDA     XEXTBL,X               ;GET X EXTENT
+          SEC                            ;JUST IN CASE
+          SBC     #GSTEPX                ;MOVE THE OTHER EDGE OF IT
+          STA     XXINTEND               ;STORE FOR LOADER
+GMOV2     LDA     YTBL,X                 ;LOAD GRUNT Y POSITION
+          CMP     MCYPOS
+          BCS     GMOV3                  ;BRANCH ON GREATER THAN
+          ADC     #GSTEPY                ;MOVE GRUNT DOWN
+          STA     YINTEND                ;THIS IS WHERE THE GRUNT WANTS TO BE
+          LDA     YEXTBL,X               ;GET Y EXTENT
+          CLC
+          ADC     #GSTEPY                ;MOVE THE OTHER EDGE OF IT
+          STA     YXINTEND               ;STORE FOR LOADER
+          JMP     GMOV4
+GMOV3     SBC     #GSTEPY                ;MOVE GRUNT UP
+          STA     YINTEND                ;WHERE THE GRUNT WANTS TO BE
+          LDA     YEXTBL,X               ;GET Y EXTENT
+          SEC                            ;JUST IN CASE
+          SBC     #GSTEPY                ;MOVE THE OTHER EDGE OF IT
+          STA     YXINTEND
+GMOV4     JSR     CHKINTBD               ;CHECK IF OFFSCREEN
+          LDA     GSPEED
+          STA     MTTBL,X                ;RESET # OF FRAMES UNTIL NEXT MOVE
+
+*         MAYBE CHECK TABLE OF ELECTRODES FOR COLLISION                *********
+
+*         CHANGE ANIMATION STEP
+          DEC     SATBL,X                ;GET CURRENT STEP IN ANIMATION
+          BPL     GMOV5                  ;OK IF NONEGATIVE
+          LDA     #$03                   ;HIGHEST GRUNT ANIMATION STEP
+          STA     SATBL,X                ;NEW ANIMATION STEP
+          JMP     GMOV5                  ;OK, NOW TRY TO LOAD THIS GRUNT
+
+GDYING            ;GRUNT IS DYING - DON'T MOVE IT, USE DIFFERENT ANIMATION
+          LDA     SATBL,X                ;GET CURRENT ANIM STEP
+          CMP     #$04                   ;WILL BE >=4 IF GRUNT HAS BEEN DYING
+          BPL     GDYING1
+*         THIS GRUNT JUST DIED SINCE ITS LAST MOVE
+*         START GRUNT DEATH SOUND
+          LDA     #SCREDIE
+          JSR     DOTUNE
+
+          LDA     #$00
+          STA     DXTBL,X                ;DYING DIR MUST BE 0
+          LDA     #$03                   ;ONE BEFORE LOWEST DEATH ANIMATION
+          STA     SATBL,X
+          JMP     GDYING2                ;CONTINUE: ADVANCE STEP AND LOAD
+
+GDYING1           ;THIS GRUNT DIED AT LEAST A FRAME AGO
+          CMP     #$09                   ;HIGHEST DEATH ANIMATION
+          BEQ     GDIE                   ;REALLY KILL THIS GRUNT
+
+GDYING2   INC     SATBL,X                ;ADVANCE DEATH ANIMATION
+          LDA     #$01                   ;GSPEED FOR A DYING GRUNT
+          STA     MTTBL,X
+          JMP     GMOVD0                 ;CONTINUE: TRY TO LOAD THIS GRUNT
+
+GDIE              ;REMOVE GRUNT PERMANENTLY
+          LDA     #$00
+          STA     STTBL,X                ;COMMAND TO UNLOADER TO REMOVE OBJECT
+          DEC     CRELEFT                ;MC HAS 1 LESS CREATURE TO KICK AROUND
+                  ;NOW GO AHEAD AND LOAD
+GMOVD0            ;GRUNT DATA HAS BEEN CHANGED BUT GRUNT IS DYING
+*         DO A SPECIAL LOAD HERE WHICH DOES NOT NEED THE INTEND
+*                 VARIABLES TO BE SET... CORRECT DATA IS IN TABLES
+*         ON TO NEXT OBJECT
+          JMP     OBJCONT
+
+GMOV5
+*         NOW JSR TO A ROUTINE WHICH MOVES THE GRUNT IN THE DL AND ZONOBJC.  ***
+*                 INTENDED POSITION IS IN X,YINTEND.                   *********
+*                 INTENDED EXTENTS ARE IN X,YXINTEND                   *********
+*         THIS OBJECT'S INDEX IS IN X.                                 *********
+*         THE ROUTINE SHOULD RETURN WITH THE ACTUAL NEW X AND Y POSITIONS*******
+*                 IN X,YINTEND                                         *********
+*
+*         NOW UPDATE THIS OBJECT'S X AND Y POSITIONS IN THE OBJECT DATA TABLES
+;         JSR     GETEXTEN               ;THIS WILL SET TEMP11 AND TEMP12
+;IT ISN'T CLEAR THAT THE DRIVER WILL PRESERVE THE EXTENTS.  PERHAPS IT WILL BE
+;NECESSARY TO VERIFY WITH THE ANIMATOR OCCAISIONALLY                    ********
+
+          LDA     XINTEND
+          STA     XTBL,X
+          LDA     XXINTEND
+          STA     XEXTBL,X
+
+          LDA     YINTEND
+          STA     YTBL,X
+          LDA     YXINTEND
+          STA     YEXTBL,X
+
+          JMP     OBJCONT                ;GO ON TO NEXT OBJECT
+*
+
+******************************************
+*
+*         FMOV    -- MOVE FAMILY
+*
+******************************************
+*
+*         USE OF OBJECT DATA TABLE ENTRIES:
+*
+*         DXTBL   - DIRECTION OF MOTION (0-7) OR 8 IF SKULL OR POINTS
+*         DYTBL   - NOT USED
+*         DTTBL   - #FRAMES FOR DIRECTION CHANGE
+*         SATBL   - ANIMATION (0-4) OR (0-5) FOR SKULL AND POINTS
+*         MISCTBL - UNUSED
+*         CRTBL   - 2,3 0R 4 FRO MOMMY DADDY AND MIKEY
+*
+***********
+*
+
+FMOV
+          LDA     STTBL,X                ;LOAD CURRENT STATUS
+          AND     #00000010B             ;GET ONLY BIT 1 - 'DYING' FLAG
+          BEQ     FOK                    ;THIS FAMILY MEMBER IS NOT DYING
+          JMP     FDYING                 ;HUMAN IS DYING - DON'T MOVE
+*         FAMILY IS ALIVE AND WELL  SO MAKE THEM MOVE
+
+FOK       DEC     DTTBL,X                ;COUNT FOR DIRECTION CHANGE
+          BPL     FMOV1                  ;JUMP PAST IF GO STRAIGHT
+          JSR     RANDOM                 ;IF TIME TO TURN:  GET A #
+          AND     #MASK5
+          ADC     #10                    ;MINIMUM FAMILY DIR TIMER
+          STA     DTTBL,X                ;USE IT AS THE NEW TIMER FOR DIRECTION
+          JSR     RANDOM                 ;PICK A NUMBER FOR DIRECTION
+          AND     #$07                   ;CHANGE IT INTO A NUMBER 0 TO 7
+          STA     DXTBL,X                ;SAVE THE NEW DIRECTION
+FMOV1     LDA     XTBL,X                 ;LOAD HUMAN POSITION
+          LDY     DXTBL,X                ;GET THE DIRECTION
+          CLC
+          ADC     XDIRTBL,Y              ;ADD X STEP FOR THE DIRECTION
+          STA     XINTEND                ;STORE NEW POSITION
+          LDA     XEXTBL,X
+          CLC
+          ADC     XDIRTBL,Y              ;ADD X STEP FOR THE DIRECTION
+          STA     XXINTEND               ;STORE NEW EXTENT
+          LDA     YTBL,X
+          CLC
+          ADC     YDIRTBL,Y              ;ADD Y STEP.  X REG WAS THE SAME
+          STA     YINTEND                ;STORE NEW Y POS
+          LDA     YEXTBL,X
+          CLC
+          ADC     YDIRTBL,Y              ;ADD Y STEP.  X REG WAS THE SAME
+          STA     YXINTEND               ;STORE NEW Y EXTENT
+
+*         CHECK FOR HULK AND ELECTRODE COLLISIONS                      *********
+
+
+*         FAMILY-HULK COLLISIONS
+          LDA     HPTR                   ;GET THE POINTER TO THE BEGINING HULK
+          TAY                            ;MAKE Y THE POINTER
+FHCL      LDA     YTBL,X                 ;GET FAMILY Y
+          CMP     YEXTBL,Y               ;COMPARE IT WITH HULK Y EXT.
+          BCS     FHCN                   ;IT CLEARS ON THIS SIDE
+          LDA     YEXTBL,X               ;GET FAMILY Y
+          CMP     YTBL,Y                 ;CMP WITH HULK Y
+          BCC     FHCN
+
+          LDA     XTBL,X                 ;GET FAMILY X
+          CMP     XEXTBL,Y               ;COMPARE IT WITH HULK X EXT.
+          BCS     FHCN                   ;IT CLEARS ON THIS SIDE
+          LDA     XEXTBL,X               ;GET FAMILY X
+          CMP     XTBL,Y                 ;CMP WITH HULK X
+          BCC     FHCN                   ;ITS A HIT
+
+*         THE FAMILY MEMBER HAS BEEN SEVERELY KILLED
+*         ENTER THE FAMILY DYING SOUND INTO THE SOUND QUEUE
+          LDA     #SSKULL0
+          JSR     DOTUNE
+          LDA     #SSKULL1
+          JSR     DOTUNE
+*         NOW SET FAMILY ANIMATION TO #0 (SKULL) WITH HIGH BIT SET.
+*         SET THE FAMILY CODE TO BE A MOMMY - #MOCODE
+*         ALSO SET THE 'DYING' BIT IN STTBL
+*         ALSO SET THE DIRECTION TO 8
+*         THEN IMMEDIATELY GO TO THE FAMILY JUST-DYING ROUTINE
+          LDA     #$00                   ;SKULL ANIMATION STEP
+          STA     SATBL,X
+          LDA     #MOCODE
+          STA     CRTBL,X
+          LDA     #$02                   ;BIT 1 IS ON
+          ORA     STTBL,X
+          STA     STTBL,X                ;SET BIT 1 IN STATUS ENTRY
+          LDA     #$08
+          STA     DXTBL,X                ;SET DIRECTION TO DYING DIRECTION
+          JMP     FJUSTDIE               ;LOAD IT THIS FRAME
+
+FHCN      INY                            ;GO TO NEXT OBJECT
+          CPY     SPTR                   ;SEE IF THAT WAS THE LAST
+          BNE     FHCL
+
+*         CHANGE ANIMATION STEP
+          DEC     SATBL,X                ;GET CURRENT STEP IN ANIMATION
+          BPL     FMOV5                  ;OK IF NONEGATIVE
+          LDA     #$03                   ;HIGHEST FAMILY ANIMATION STEP
+          STA     SATBL,X                ;NEW ANIMATION STEP
+          JMP     FMOV5                  ;NOW TRY TO LOAD THIS FAMILY
+
+FDYING            ;A FAMILY MEMBER IS DYING
+          LDA     SATBL,X                ;HI BIT WILL BE SET IF PERSON JUST DIED
+          AND     #$80
+          BEQ     FDYING1                ;FAMILY HAS BEEN DYING - NOW REMOVE IT
+*         NOW RESET HIGH BIT OF SATBL (LEAVING CORRECT ANIMATION STEP),
+*         AND SET MTTBL TO A LARGE VALUE, AND LOAD THIS OBJECT
+FJUSTDIE  LDA     SATBL,X                ;GET STEP WITH HI-BIT SET
+          AND     #01111111B             ;RESET HIGH BIT
+          STA     SATBL,X
+          LDA     #FDIEWAIT
+          STA     MTTBL,X
+*         NOW GO AHEAD AND DO A SPECIAL LOAD...
+          JMP     FDYING2                ;GO AHEAD AND LOAD USING TABLE DATA
+
+FDYING1           ;A FAMILY MEMBER HAS BEEN DYING NOW FOR A LITTLE WHILE...
+          LDA     #$00
+          STA     STTBL,X            ;INSTRUCTION TO UNLOADER TO REMOVE OBJECT
+          LDA     #NULLCODE              ;GET A NULL CREATURE TYPE
+          STA     CRTBL,X
+*         NOW GO AHEAD AND CALL THE UNLOADER (FROM SPECIAL ENTRY POINT).
+*         SINCE STTBL,X=0 THE UNLOADER WILL SIMPLY REMOVE THIS OBJECT.
+
+FDYING2
+*         DO A SPECIAL LOAD HERE WHICH DOES NOT NEED THE INTEND
+*                 VARIABLES TO BE SET... CORRECT DATA IS IN TABLES
+*         FROM THIS ENTRY POINT THE UNLOADER SHOULD FETCH NEW STAMP
+*    DATA USING GETSTAMP BUT SHOULD ASSUME THAT NO ZONE CHANGES WILL BE MADE
+*         ON TO NEXT OBJECT
+          JMP     OBJCONT
+
+
+FMOV5             ;NORMAL LOAD AFTER A FAMILY MEMBER MOVES
+*         FIRST CALL GETSTAMP
+*         NOW JSR TO A ROUTINE WHICH MOVES THE PERSON IN THE DL AND ZONOBJC. ***
+*                 INTENDED POSITION IS IN X,YINTEND.                   *********
+*         THIS OBJECT'S INDEX IS IN Y.                                 *********
+*         THE ROUTINE SHOULD RETURN WITH THE ACTUAL NEW X AND Y POSITIONS*******
+*                 IN X,YINTEND                                         *********
+*         CHECK FOR COLLISION WITH AN ELECTRODE
+
+*         NOW UPDATE THIS OBJECT'S X AND Y POSITIONS IN THE OBJECT DATA TABLES
+
+;         JSR     GETEXTEN      ;GET CORRECT HEIGHT AND WID IN TEMP12,11
+;         IT MAY BE NCESSARY TO UPDATE EXTENTS
+
+          LDA     XINTEND
+          STA     XTBL,X
+          LDA     XXINTEND
+          STA     XEXTBL,X
+
+          LDA     YINTEND
+          STA     YTBL,X
+          LDA     YXINTEND
+          STA     YEXTBL,X
+
+          JSR     CHKOBJBD
+          LDA     TEMP4                  ;FLAG, NONZERO IF FAMILY AT EDGE
+          BEQ     FMOV6
+          LDA     #$00
+          STA     DTTBL,X                ;DIR WILL CHANGE NEXT FRAME
+
+FMOV6     LDA     FSPEED                 ;GET TIME FOR NEXT MOVE
+          STA     MTTBL,X                ;SET TIMER
+          JMP     OBJCONT                ;GO ON TO NEXT OBJECT
+*
+
+******************************************
+*
+*         HMOV    -- MOVE HULKS
+*
+******************************************
+*
+*         USE OF OBJECT DATA TABLE ENTRIES:
+*
+*         DXTBL   - DIRECTION (0-3)
+*         DYTBL   - UNUSED
+*         DTTBL   - # OF FRAMES TO DIRECTION CHANGE
+*         SATBL   - ANIMATION (0-3)
+*         MISCTBL - DIRECTION TO JUMP AFTER BEING SHOT
+*         CRTBL   - 5
+*
+***********
+*
+*         THIS IS THE ROUTINE FOR A DUMB HULK THAT WALKS RANDOMLY
+*         IT CAN LATER BE MODIFIED SO THAT THEY ARE OCCAISIONALLY SMART
+*         RIGHT NOW IT ABOUT THE SAME AS THE FAMILY ROUTINE
+
+HMOV
+          LDA     MISCTBL,X              ;LOAD DIRECTION TO JUMP
+          BEQ     HMOV01                 ;IF DIR IS 0, MOVE NORMALLY
+
+*         MAKE HULK JUMP IN 4-BIT DIRECTION OF MISCTBL
+          TAY
+          LDA     XTBL,X                 ;LOAD HULK POSITION
+          CLC
+          ADC     XDIRTBL4,Y
+          CLC
+          ADC     XDIRTBL4,Y              ;HULK STEPS
+          STA     XINTEND                ;STORE NEW POSITION
+
+          LDA     XEXTBL,X               ;GET X EXTENT
+          CLC
+          ADC     XDIRTBL4,Y              ;MOVE THE OTHER EDGE
+          CLC
+          ADC     XDIRTBL4,Y              ;STEP
+          STA     XXINTEND
+
+          LDA     YTBL,X
+          CLC
+          ADC     YDIRTBL4,Y              ;ADD Y STEP.  X REG WAS THE SAME
+          CLC
+          ADC     YDIRTBL4,Y              ;ADD Y STEP.  X REG WAS THE SAME
+          STA     YINTEND                ;STORE NEW Y POS
+
+          LDA     YEXTBL,X               ;GET Y EXTENT
+          CLC
+          ADC     YDIRTBL4,Y              ;MOVE THE OTHER EDGE
+          CLC
+          ADC     YDIRTBL4,Y              ;MOVE THE OTHER EDGE
+          STA     YXINTEND
+          LDA     #$00
+          STA     MISCTBL,X              ;RESET DIR TO JUMP
+          JMP     HMOV2
+
+
+HMOV01    DEC     DTTBL,X                ;COUNT FOR DIRECTION CHANGE
+          BPL     HMOV1                  ;JUMP PAST IF GO STRAIGHT
+          JSR     RANDOM                 ;IF TIME TO TURN:  GET A #
+          AND     #MASK5
+          ADC     #10                    ;MINIMUM DIR TIMER INITIAL VALUE
+          STA     DTTBL,X                ;USE IT AS THE NEW TIMER FOR DIRECTION
+          JSR     RANDOM                 ;PICK A NUMBER FOR DIRECTION
+          AND     #$03                   ;CHANGE IT INTO A NUMBER 0 TO 3   *****
+          STA     DXTBL,X                ;STORE NEW DIRECTION
+          JSR     GETEXTEN               ;GET THE NEW EXTENTS
+          LDA     XTBL,X                 ;GET X POS
+          CLC
+          ADC     TEMP11                 ;ADD X SIZE
+          STA     XEXTBL,X
+          LDA     YTBL,X                 ;GET Y POS
+          CLC
+          ADC     TEMP12                 ;ADD Y SIZE
+          STA     YEXTBL,X               ;RENEW EXTENT
+HMOV1     LDA     XTBL,X                 ;LOAD HULK POSITION
+          LDY     DXTBL,X                ;GET THE DIRECTION
+          CLC
+          ADC     XDIRTBL,Y              ;ADD X STEP FOR THE DIRECTION
+          CLC
+          ADC     XDIRTBL,Y
+          CLC
+          ADC     XDIRTBL,Y              ;HULK STEPS
+          STA     XINTEND                ;STORE NEW POSITION
+
+          LDA     XEXTBL,X               ;GET X EXTENT
+          CLC
+          ADC     XDIRTBL,Y              ;MOVE THE OTHER EDGE
+          CLC
+          ADC     XDIRTBL,Y
+          CLC
+          ADC     XDIRTBL,Y              ;STEP
+          STA     XXINTEND
+
+          LDA     YTBL,X
+          CLC
+          ADC     YDIRTBL,Y              ;ADD Y STEP.  X REG WAS THE SAME
+          STA     YINTEND                ;STORE NEW Y POS
+
+          LDA     YEXTBL,X               ;GET Y EXTENT
+          CLC
+          ADC     YDIRTBL,Y              ;MOVE THE OTHER EDGE
+          STA     YXINTEND
+
+*         CHANGE ANIMATION STEP
+          DEC     SATBL,X                ;DECREMENT THE ANIMATION
+          BPL     HMOV2                  ;OK IF NONEGATIVE
+          LDA     #$03                   ;HIGHEST HULK ANIMATION STEP
+          STA     SATBL,X                ;NEW ANIMATION STEP
+
+HMOV2     JSR     CHKINTBD
+          LDA     TEMP4                  ;FLAG, NONZERO IF AT EDGE
+          BEQ     HMOV5
+          LDA     #$00
+          STA     DTTBL,X                ;FORCE DIR CHANGE NEXT FRAME
+
+HMOV5
+*         FIRST CALL GETSTAMP                                          *********
+*         NOW JSR TO A ROUTINE WHICH MOVES THE HULK IN THE DL AND ZONOBJC. *****
+*                 INTENDED POSITION IS IN X,YINTEND.                   *********
+*         THIS OBJECT'S INDEX IS IN Y.                                 *********
+*         THE ROUTINE SHOULD RETURN WITH THE ACTUAL NEW X AND Y POSITIONS*******
+*                 IN X,YINTEND                                         *********
+*         ALSO REMEMBER TO CHECK ELECTRODE COLLISIONS SOMEWHERE        *********
+
+*         NOW UPDATE THIS OBJECT'S X AND Y POSITIONS IN THE OBJECT DATA TABLES
+
+;         IT MAY BE NECESSARY TO UPDATE EXTENTS                        *********
+
+          LDA     XINTEND
+          STA     XTBL,X
+          LDA     XXINTEND
+          STA     XEXTBL,X
+
+          LDA     YINTEND
+          STA     YTBL,X
+          LDA     YXINTEND
+          STA     YEXTBL,X
+
+
+          LDA     HSPEED                 ;GET THE NUMBER OF FRAMES TILL NEXT MOV
+          STA     MTTBL,X                ;SET TIMER
+
+          JMP     OBJCONT                ;GO ON TO NEXT OBJECT
+*
+
+******************************************
+*
+*         SQMOV    -- MOVE SPHEROIDS AND QUARKS
+*
+******************************************
+*
+*         USE OF OBJECT DATA TABLE ENTRIES:
+*                     --SPHEROIDS--               --QUARKS-*         DXTBL   - 
+*         DXTBL   -      DELTA X             DIRECTION  ( 4 - 7 )
+*         DYTBL   -      DELTA Y              DIRECTION CHANGE TIMER
+*         DTTBL   -             # OF BIRTHS REMAINING
+*         SATBL   -              ANIMATION STEP (0-5)
+*         MISCTBL -             # OF MOVES UNTIL BIRTH
+*         CRTBL   -        6                            7
+*
+***********
+*
+SQMOV     DEC     MISCTBL,X              ;SEE IF IT'S TIME TO GIVE BIRTH
+          BPL     SQMOV1                 ;BRANCH BY IF NOT TIME
+*         HERE CREATE AN ENFORCER OR TANK IN THE SMALL ANIMATION  **************
+SQMOV1    LDA     CRTBL,X                ;GET CREATURE TYPE
+          CMP     #7                     ;SEE IF IT'S A QUARK
+          BCS     QMOV                   ;BRANCH IF QUARK
+          CLC
+          LDA     XTBL,X                 ;GET X POSITION
+          ADC     DXTBL,X                ;ADD dX TO CURRENT POSITION
+          STA     XINTEND
+          LDA     XEXTBL,X               ;GET X EXTENT
+          ADC     DXTBL,X
+          STA     XXINTEND
+          LDA     YTBL,X                 ; GET YPOS
+          ADC     DYTBL,X                ;ADD dY
+          STA     YINTEND
+          LDA     YEXTBL,X               ;GET Y EXTENT
+          ADC     DYTBL,X
+          STA     YXINTEND
+
+*         HERE INC OR DEC DX AND DY RANDOMLY TO CAUSE A CURVE           ********
+
+*         BE SURE THAT NEW X AND Y POSITIONS ARE SENT TO THE TBL'S      ********
+
+          JMP     OBJCONT
+
+
+QMOV      CLC
+          LDY     DXTBL,X                ;GET THE DIRECTION
+          LDA     XTBL,X
+          ADC     XDIRTBL,Y              ;MOVE ACCORDING TO THE DIRECTION
+          STA     XINTEND
+          LDA     XEXTBL,X
+          ADC     XDIRTBL,Y
+          STA     XXINTEND
+
+          LDA     YTBL,X
+          ADC     YDIRTBL,Y              ;MOVE ACC TO DIR
+          STA     YINTEND
+          LDA     YEXTBL,X
+          ADC     YDIRTBL,X
+          STA     YXINTEND
+
+
+*         CHANGE ANIMATION STEP
+          DEC     SATBL,X                ;DECRIMENT THE ANIMATION
+          BPL     QMOV5                  ;OK IF NONEGATIVE
+          LDA     #$04                   ;HIGHEST QUARK ANIMATION STEP
+          STA     SATBL,X                ;STORE NEW ANIMATION
+QMOV5     LDA     #0                     ;PUT A ZERO IN THE DIRECTION
+
+*      HERE CALL THE ANIMATOR AND THE  UNLOADER                   **************
+          DEC     DYTBL,X                ;DECREMENT DIR CHANGE TIMER
+          BPL     QMOV1                  ;BRANCH BY IF NOT DIR CHANGE TIME
+          JSR     RANDOM                 ;GET A RANDOM NUMBER
+          AND     #MASK3                 ;FILTER IT TO A 0-7 DIRECTION
+          STA     DXTBL,X                ;STORE NEW DIRECTION
+QMOV1     NOP
+          JMP     OBJCONT
+
+******************************************
+*
+*         ETMOV   -- MOVE ENFORCERS AND TANKS
+*
+******************************************
+*
+*         USE OF OBJECT DATA TABLE ENTRIES:
+*                      --ENFORCER--                --TANK--
+*         DXTBL   -      DELTA X                DIRECTION (0-7)
+*         DYTBL   -      DELTA Y              DIRECTION CHANGE TIMER
+*         DTTBL   - DIRECTION CHANGE TIMER         NOT USED
+*         SATBL   -        0 ALWAYS             ANIMATION (0-3)
+*         MISCTBL -           # MOVES UNTIL NEXT SHOT
+*         CRTBL   -          8                         9
+*
+***********
+*
+
+ETMOV     JMP     OBJCONT                            ;NOT READY YET
+*         TIMER USED FOR FIRING TIMES
+
+******************************************
+*
+*         BMOV    -- MOVE BRAINS
+*
+******************************************
+*
+*         USE OF OBJECT DATA TABLE ENTRIES:
+*
+*         DXTBL   -  DIRECTION (0-7)
+*         DYTBL   -  TARGET NUMBER (0 IF MC)
+*         DTTBL   -  FAMILY SEEK TIMER
+*         SATBL   -  ANIMATION (0-3)
+*         MISCTBL -  # OF MOVES UNTIL NEXT SHOT
+*         CRTBL   -  A
+*
+***********
+*
+BMOV
+          LDA     STTBL,X                ;LOAD THIS BRAIN'S CURRENT STATUS
+          AND     #$03                   ;SEE IF BOTTOM 2 BITS ARE SET
+          BNE     BMOV01                 ;WILL BE 0 IF BRAIN IS DEAD AND GONE
+          LDA     #NULLCODE              ;STTBL IS 0, SO NULL OUT CRTBL
+          STA     CRTBL,X
+          JMP     OBJCONT                ;NEVER WORRY ABOUT THIS BRAIN ANYMORE
+
+BMOV01    AND     #00000010B             ;GET ONLY BIT 1 - 'DYING' FLAG
+          BEQ     BOK
+          JMP     BDYING                 ;BRAIN IS DYING - DON'T MOVE
+*         BRAIN IS ALIVE AND WELL
+BOK       DEC     MISCTBL,X              ;DECREMENT # OF MOVE TILL SHOOT
+          BPL     BMOV1                  ;BRANCH IF NOT YET TIME FOR A C M
+
+*         HERE CREATE A CRUISE MISSLE AT THE PLACE WHERE THIS BRAIN IS *********
+*         AND RESET MISCTBL TO THE TIME FOR THE NEXT CM                *********
+
+BMOV1     DEC     DTTBL,X                ;COUNT MOVES UNTIL TIME TO LOOK AT FAM
+          BMI     BMOV8                  ;IS IT TIME YET
+          JMP     BMOVST                 ;JUST PLOW ON AHEAD
+BMOV8     LDA     #$03                   ;RESET TIMER
+          STA     DTTBL,X
+
+*         LOOK AT THE HUMAN POINTED  TO IN THE BRAIN'S DYTBL.
+*         IF THE HUMAN IS DEAD POINT TO THE NEXT HUMAN BUT CHASE MC THIS TIME.
+*         THE NET RESULT IS THAT IF THERE IS A FAMILY MEMBER LEFT, THE
+*         BRAIN WILL EVENTUALLY LATCH ON TO IT, OTHERWISE IT WILL CHASE MC.
+
+          LDY     DYTBL,X                ;GET THE POINTER TO THE TARGET
+          LDA     CRTBL,Y
+          BNE     BCHASE                 ;WE ARE ONTO A LIVE FAMILY MEMBER
+          INC     DYTBL,X                ;WE ARE ONLY CHASING MC
+          INY
+          CPY     HPTR                   ;END OF THE HUMANS
+          BMI     BCHASENF               ;RESET THE AIM IF WE GOT TO THE END
+          LDA     FPTR                   ;START AT BEGINING OF FAMILY
+          STA     DYTBL,X
+BCHASENF  LDA     #$0                    ;CHASE MC WHEN FAMILY IS DEAD
+          TAY                            ;WHEN Y IS 0 IT IS POINTING AT MC
+
+BCHASE
+          LDA     #$0                    ;PUT A ZERO INCREMENT IN X AND Y
+          STA     TEMPX
+          STA     TEMPY
+          LDA     XTBL,Y                 ;GET TARGET'S X POSITION
+          CMP     XEXTBL,X               ;COMPARE WITH BRAIN'S RIGHT EDGE
+          BCC     BCHASE1                ;NOT YET THERE
+          INC     TEMPX
+BCHASE1   LDA     XEXTBL,Y               ;GET TARGET'S RIGHT EDGE
+          CMP     XTBL,X                 ;COMPARE WITH BRAIN'S LEFT
+          BCS     BCHASE2                ;NOT ON TOP
+          DEC     TEMPX
+
+BCHASE2   LDA     YTBL,Y                 ;GET TARGET'S Y POSITION
+          CMP     YEXTBL,X               ;COMPARE WITH BRAIN'S FAR EDGE
+          BCC     BCHASE3                ;NOT YET THERE
+          INC     TEMPY
+BCHASE3   LDA     YEXTBL,Y               ;GET TARGET'S FAR EDGE
+          CMP     YTBL,X                 ;COMPARE WITH BRAIN'S NEAR
+          BCS     BCHASE4                ;NOT ON TOP
+          DEC     TEMPY
+
+*         NOW THAT WE HAVE THE DIFERENCE IN TEMP X AND Y
+*         CONVERT IT INTO STICK FORM WITH F SIGNIFYING A HIT
+BCHASE4
+          LDA     #$0F
+          STA     TEMP0
+          LDA     TEMPX                  ;GET THE X DIFFERENCE
+          BPL     BNOTLEFT
+          LDA     #$0B                   ;CLEAR WEST BIT
+          STA     TEMP0
+          BNE     BTRYY
+BNOTLEFT  BEQ     BTRYY   ;A CHECK FOR EAST
+          LDA     #$07                   ;CLEAR EAST BIT
+          STA     TEMP0
+BTRYY     LDA     TEMPY
+          BPL     BNOTUP                 ;IT SHOULD CLEAR THE NORTH BIT
+          LDA     TEMP0
+          AND     #$0E
+          STA     TEMP0
+          BNE     BSTICK        ;THIS ALWAYS BRANCHES
+BNOTUP    BEQ     BSTICK
+          LDA     TEMP0
+          AND     #$0D                   ;CLEAR THE SOUTH BIT
+          STA     TEMP0
+BSTICK    STY     TEMP1
+          LDA     TEMP0                  ;GET THE STICK FORM
+          CMP     #$0F                   ;SEE IF COMPLETE OVERLAP
+          BEQ     BPROG
+          TAY
+          LDA     STICKTBL,Y             ;GET 0-7 FORM
+          LDY     TEMP1                  ;GET BACK POINTER TO HUMAN
+          STA     DXTBL,X                ;STORE THE DIRECTION FOR THE BRAIN
+          JMP     BMOVST
+
+BPROG     LDA     STTBL,Y                ;GET THE HUMAN'S STATUS
+          AND     #$03                   ;CHECK BOTTOM 2 BITS
+          CMP     #$01                   ;WE ONLY WANT HEALTHY HUMANS
+          BNE     BMOVST
+
+*         IT'S PROGGING TIME      THE PROGEE IS POINTED TO BY Y
+*         THE FAMILY MEMBER HAS BEEN SEVERELY KILLED
+*         ENTER THE FAMILY DYING SOUND INTO THE SOUND QUEUE
+          LDA     #SSKULL0
+          JSR     DOTUNE
+          LDA     #SSKULL1
+          JSR     DOTUNE
+*         NOW SET FAMILY ANIMATION TO #0 (SKULL) WITH HIGH BIT SET.
+*         SET THE FAMILY CODE TO BE A MOMMY - #MOCODE
+*         ALSO SET THE 'DYING' BIT IN STTBL
+*         ALSO SET THE DIRECTION TO 8
+*         THE FAMILY WILL START DYING NEXT FRAME
+          LDA     #$00                   ;SKULL ANIMATION STEP
+          STA     SATBL,Y
+          LDA     #MOCODE
+          STA     CRTBL,Y
+          LDA     #$02                   ;BIT 1 IS ON
+          ORA     STTBL,Y
+          STA     STTBL,Y                ;SET BIT 1 IN STATUS ENTRY
+          LDA     #$08
+          STA     DXTBL,Y                ;SET DIRECTION TO DYING DIRECTION
+          LDA     #$0A                   ;WAIT A WHILE SO THAT IT BOES'NT LOOK
+          STA     DTTBL,X                ;AT SKULL FOR DIRECTION
+          JMP     OBJCONT
+
+*         MOVE THE BRAIN A STEP
+BMOVST    LDY     DXTBL,X                ;GET THE CURRENT DIRECTION
+          LDA     XTBL,X                 ;GET X POS
+          CLC
+          ADC     XDIRTBL,Y              ;ADD ONE STEP
+          STA     XINTEND
+          LDA     XEXTBL,X
+          CLC
+          ADC     XDIRTBL,Y
+          STA     XXINTEND
+
+          LDA     YTBL,X                 ;GET Y POS
+          CLC
+          ADC     YDIRTBL,Y              ;MOVE ONE STEP
+          STA     YINTEND
+          LDA     YEXTBL,X
+          CLC
+          ADC     YDIRTBL,Y
+          STA     YXINTEND
+
+*         RESET MOVE TIMER
+          LDA     BSPEED                 ;GET TIME TO MOVE
+          STA     MTTBL,X                ;STORE IT FOR NEXT MOVE
+
+*         CHANGE ANIMATION STEP
+          DEC     SATBL,X                ;DECRIMENT THE ANIMATION
+          BPL     BMOV5                  ;OK IF NONEGATIVE
+          LDA     #$03                   ;HIGHEST BRAIN ANIMATION STEP
+          STA     SATBL,X                ;NEW ANIMATION STEP
+
+          JSR     GETEXTEN               ;@@@@@@@@@@ TEMPORARILY RECHECK EXTENTS
+          LDA     XINTEND
+          CLC
+          ADC     TEMP11
+          STA     XXINTEND
+          LDA     YINTEND
+          ADC     TEMP12
+          STA     YXINTEND
+
+BMOV5     JSR     CHKINTBD               ;KEEP IT ON THE SCREEN
+*         HERE JUMP TO THE UNLOADER                           ******************
+
+*         STORE THE NEW POSITION
+          LDA     XINTEND
+          STA     XTBL,X
+          LDA     XXINTEND
+          STA     XEXTBL,X
+          LDA     YINTEND
+          STA     YTBL,X
+          LDA     YXINTEND
+          STA     YEXTBL,X
+          JMP     OBJCONT                            ;NOT READY YET
+BDYING            ;FOR NOW JUST MAKE IT GO AWAY
+*         START BRAIN DEATH SOUND
+          LDA     #SCREDIE
+          JSR     DOTUNE
+
+          LDA     #$00                   ;DEAD STATUS
+          STA     STTBL,X
+          DEC     CRELEFT                ;ONE LESS CREATURE
+          JMP     OBJCONT
+*
+
+******************************************
+*
+*         PMOV    -- MOVE PROGS
+*
+******************************************
+*
+*         USE OF OBJECT DATA TABLE ENTRIES:
+*
+*         DXTBL   -          NOT
+*         DYTBL   -          YET
+*         DTTBL   -          DEFINED
+*         SATBL   - 
+*         MISCTBL - 
+*         CRTBL   - 
+*
+***********
+*
+
+PMOV      JMP     OBJCONT                            ;NOT READY YET
+*
+
+******************************************
+*
+*         MMOV    -- MOVE OBJECT MISSILES
+*
+******************************************
+*
+*         USE OF OBJECT DATA TABLE ENTRIES:
+*
+*         DXTBL   -         NOT
+*         DYTBL   -         YET
+*         DTTBL   -         DEFINED
+*         SATBL   - 
+*         MISCTBL - 
+*         CRTBL   - 
+*
+***********
+*
+
+MMOV      JMP     OBJCONT                            ;NOT READY YET
+*
+
+******************************************
+*
+*         WAVEEND - DO SOMETHING INTERESTING BETWEEN WAVES
+*
+******************************************
+*
+*@@@@@@   FOR NOW - THIS IS JUST A HACK
+WAVEEND
+*         START WAVE END SOUND
+          LDA     #SRACKA
+          JSR     DOTUNE
+
+          JSR     DISPINIT
+          LDX     #$FF
+WAVEEND1  STX     BACKGRND
+          BRK
+          NOP
+          DEX
+          BNE     WAVEEND1
+          RTS
+*
+
+******************************************
+*
+*         MCDEATH --  JUMP HERE WHEN MC GETS KNOCKED OFF
+*
+******************************************
+*
+
+MCDEATH                                  ;MC HAS KICKED THE BUCKET
+
+*         START MC DEATH SOUND
+          LDA     #SMCDIE
+          JSR     DOTUNE
+
+*@@@@@@   FOR NOW,  @@@@@@@@@@@@
+
+
+          LDX     #$00
+MCD1                                     ;DO SOME FANCY COLOR CYCLING
+          STX     P0C1
+          STX     P0C2
+          STX     P0C3
+          CLI
+          BRK                            ;GOTO KERNEL
+          NOP                            ;WE NEED A NOP HERE
+          INX
+          INX
+          BNE     MCD1
+
+          LDX     #$0F
+MCD2      STX     P0C1
+          STX     P0C2
+          STX     P0C3
+          LDY     #$4
+MCD3      BRK
+          NOP
+          DEY
+          BPL     MCD3
+          DEX
+          BPL     MCD2
+
+
+          JMP     INIT                   ;RESTART
+*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+*************
+*THIS ROUTINE MUST:
+*         FREEZE EVERYTHING
+*         DO SOME FUNNY COLOR CYCLING WITH MC
+*         MAKE HIM DISAPPEAR
+*         DECREMENT LIVES LEFT AND CHECK FOR END OF GAME               *********
+*         REARRANGE OBJECTS                                            *********
+*         GET RID OF MISSILES AND PROGS
+*         REPACK ENFORCERS INTO SPHEROIDS
+*         OPTIMIZE OBJTBL (ELIMINATE NULL OBJECTS)
+*         FINALLY, EITHER GO TO TITLE PAGE, OR
+
+          JMP     WAVESTRT
+*
+
+
+*****************************************
+*
+*         GETSTAMP
+*                       EXTRACT POINTER TO STAMP PLUS OTHER STATISTICS
+*                         FROM THE TABLES GIVEN Y, CREDIR, AND STEP
+*
+******************************************
+*
+
+*         POINTER TO THE ACTUAL STAMP IS RETURNED IN TEMP19 AND 20
+*         ANIMATION STEP IS HANDLED DIRECTLY WITH THE OBJTBL
+*         TEMP15 RETURNS THE WIDTH AND PALLETTE, ENCODED LIKE THE HEADER
+*         TEMP12 IS THE HEIGHT OF THE PARTICULAR ANIMATION
+*         TEMP11 IS WIDTH IN PIXELS
+*         THE CREATURE DIRECTION SHOULD BE IN THE ACCUMALATOR ON CALLING
+
+*         TEMPORARILY CHANGED TO GET THE DIRECTION FROM DXTBL
+*         FOR ALL CREATURES LESS THAN SPHEROIDS OR EQAUL TO BRAIN
+
+
+GETSTAMP  CLC
+          LDA     #0                     ;@@@ TEMPORARILY SET DIRECTION TO ZERO
+          LDY     CRTBL,X               ;GET THE CREATURE TYPE
+          CPY     #$A                    ;@@@ SEE IF BRAIN
+          BEQ     GETSTAM1               ;@@@
+          CPY     #$F                    ;@@@ SEE IF ITS A SHOT
+          BEQ     GETSTAM1               ;@@@ GET DIR FROM DXTBL IF IT IS
+          CPY     #$6                    ;@@@ SEE IF MO,D,MI OR H
+          BPL     GETSTAM2               ;@@@ GO OUT IF NOT
+GETSTAM1  LDA     DXTBL,X                ;@@@ GET DIRECTION
+GETSTAM2  CLC
+          ADC     CRETODST,Y             ;ADD START OF DIRS FOR THAT CREATURE
+          TAY                            ;TO THE DIR WHICH IS IN THE ACC
+          LDA     PALNWID,Y              ;GET PALETTE AND WIDTH
+          STA     TEMP15
+          LDA     STAMPHGH,Y             ;GET STAMP HEIGHT
+          STA     TEMP12
+          LDA     STAMPPWD,Y             ;GET STAMP'S WIDTH IN PIXELS
+          STA     TEMP11
+          LDA     DIRTOSTE,Y             ;GET START OF STEPS FOR THAT CRE + DIR
+          ADC     SATBL,X                ;ADD STEP OF ANIMATION TO GET STAMP #
+          TAY
+          LDA     #H(STAMPS)             ;GET HIGH POINTER TO STAMP
+          STA     TEMP20
+          LDA     STAMPL,Y               ;GET LOW POINTER TO STAMP
+          STA     TEMP19
+          RTS                            ;56 CYCLES
+
+
+*****************************************
+*
+*         GETEXTEN
+*                       EXTRACT STATISTICS
+*                         FROM THE TABLES GIVEN X, CREDIR, AND STEP
+*
+******************************************
+*
+
+*         THIS IS JUST A SUBSET OF GETSTAMP THAT ONLY WORRIES ABOUT EXTENTS
+*         ANIMATION STEP IS HANDLED DIRECTLY WITH THE OBJTBL
+*         TEMP12 IS THE HEIGHT OF THE PARTICULAR ANIMATION
+*         TEMP11 IS WIDTH IN PIXELS
+*         THE CREATURE DIRECTION SHOULD BE IN THE ACCUMALATOR ON CALLING
+*         OBJECT INDEX IN X
+
+
+
+GETEXTEN  STY     TEMP4                  ;SAVE Y
+          CLC
+          LDY     CRTBL,X                ;GET THE CREATURE TYPE
+          ADC     CRETODST,Y             ;ADD START OF DIRS FOR THAT CREATURE
+          TAY                            ;TO THE DIR WHICH IS IN THE ACC
+          LDA     STAMPHGH,Y             ;GET STAMP HEIGHT
+          STA     TEMP12
+          LDA     STAMPPWD,Y             ;GET STAMP'S WIDTH IN PIXELS
+          STA     TEMP11
+          LDY     TEMP4                  ;RESTORE Y
+          RTS                            ;THIS TAKES 31 CYCLES + JSR + RTS
+
+
+******************************************
+******************************************
+*                                        *
+*         MISCELLANEOUS ROUTINES         *
+*                                        *
+******************************************
+
+******************************************
+*
+*         CHKOBJBD -- CHECK OBJECT BOUNDARIES
+*                 GIVEN A CREATURE INDEX IN X, THIS WILL LOOK AT
+*                 X AND Y POSITION AND EXTENTS AND MUNG THE ENTRIES IN
+*                 THE OBJECT DATA TABLES IF THE OBJECT IS OUT OF BOUNDS
+*                 TEMP4 IS A FLAG,  > 0  IF OBJ HAD TO BE PUT BACK ONSCREEN
+*
+******************************************
+*
+CHKOBJBD
+          LDA     #$00
+          STA     TEMP4                  ;FLAG STARTS OUT AS 0
+          LDA     #MINX                  ;GET MIN X
+          SEC
+          SBC     XTBL,X                 ;SUBTRACT X
+          BCC     CHKOBD1                ;JUMP PAST IF OK
+          CLC
+          ADC     XEXTBL,X               ;ADD AMOUNT THAT IT'S OVER TO THE
+          STA     XEXTBL,X               ;CURRENT RIGHT EDGE
+          LDA     #MINX                  ;SET LEFT EDGE OF CREATURE TO
+          STA     XTBL,X                 ;THE MIN X
+          INC     TEMP4                  ;SET FLAG
+          JMP     CHKOBDY                ;GO ON TO DO Y
+CHKOBD1   LDA     #MAXX                  ;GET MAX X
+          SEC
+          SBC     XEXTBL,X               ;SUBTRACT THE FAR EDGE
+          BCS     CHKOBDY                ;JUMP PAST IF OK
+          CLC
+          ADC     XTBL,X                 ;ADD AMOUNT THAT IT'S OVER TO THE
+          STA     XTBL,X                 ;CURRENT LEFT EDGE
+          LDA     #MAXX                  ;SET RIGHT EDGE OF CREATURE TO
+          STA     XEXTBL,X               ;THE MAX X
+          INC     TEMP4                  ;SET FLAG
+CHKOBDY   LDA     #MINY                  ;GET MIN Y
+          SEC
+          SBC     YTBL,X                 ;SUBTRACT Y
+          BCC     CHKOBD2                ;JUMP PAST IF OK
+          CLC
+          ADC     YEXTBL,X               ;ADD AMOUNT THAT IT'S OVER TO THE
+          STA     YEXTBL,X               ;CURRENT TOP EDGE
+          LDA     #MINY                  ;SET LEFT EDGE OF CREATURE TO
+          STA     YTBL,X                 ;THE MIN Y
+          INC     TEMP4                  ;SET FLAG
+          RTS                            ;WE ARE OUT OF HERE
+CHKOBD2   LDA     #MAXY                  ;GET MAX Y
+          SEC
+          SBC     YEXTBL,X               ;SUBTRACT THE FAR EDGE
+          BCS     CHKOBD2-1              ;JUMP OUT IF OK - GO TO AN RTS
+          CLC
+          ADC     YTBL,X                 ;ADD AMOUNT THAT IT'S OVER TO THE
+          STA     YTBL,X                 ;CURRENT FAR EDGE
+          LDA     #MAXY                  ;SET BOTTOM EDGE OF CREATURE TO
+          STA     YEXTBL,X               ;THE MAX Y
+          INC     TEMP4                  ;SET FLAG
+          RTS
+
+******************************************
+*
+*         CHKINTBD -- CHECK INTENDED POSITION AND EXTENTS VERSUS BORDER
+*                 LOOKS AT X,YINTEND AND X,YXINTEND AND MUNGES IF NECESSARY
+*                 TEMP4 IS A FLAG,  > 0  IF OBJ HAD TO BE PUT BACK ONSCREEN
+*                 NEEDS TO HAVE A VALID X INDEX
+*
+******************************************
+*
+CHKINTBD
+          LDA     #0                     ;RESET THE RESET FLAG
+          STA     TEMP4
+          LDA     XINTEND
+          CLC
+          ADC     #$A
+          CMP     #MINX+$A               ;CHECK FOR RIGHT EDGE
+          BCC     CHKINT1                ;RESET POSITION
+          LDA     XXINTEND
+          CMP     #MAXX                  ;CHECK FOR FAR EDGE
+          BCC     CHKINTY                ;GO ON TO Y
+CHKINT1   LDA     XTBL,X                 ;GET ORIG X
+          STA     XINTEND                ;RESTORE TO ITS FORMER POSITION
+          LDA     XEXTBL,X               ;WHICH WAS HOPEFULLY ON SCREEN
+          STA     XXINTEND
+          INC     TEMP4                  ;SET FLAG
+
+CHKINTY   LDA     YINTEND
+          CMP     #MINY                  ;CHECK FOR NEAR EDGE
+          BCC     CHKINT2                ;RESET POSITION
+          LDA     YXINTEND
+          CMP     #MAXY                  ;CHECK FOR FAR EDGE
+          BCS     CHKINT2                ;GO ON TO Y
+          RTS
+CHKINT2   LDA     YTBL,X                 ;GET ORIG Y
+          STA     YINTEND                ;RESTORE TO ITS FORMER POSITION
+          LDA     YEXTBL,X               ;WHICH WAS HOPEFULLY ON SCREEN
+          STA     YXINTEND
+          INC     TEMP4                  ;SET FLAG TO A NON ZERO VALUE
+          RTS
+
+******************************************
+*
+*         CHKXBD,CHKYBD  --  TAKE AN X OR Y POSITION AND IF OFF SCREEN EDGE,
+*                                        WILL PLACE AT SCREEN EDGE
+*                            CALLED WITH X OR Y POS IN A, RETURNS A
+*
+******************************************
+*
+
+CHKXBD    CMP     #MAXX                  ;TAKES XPOS IN ACC AND CHECKS FAR SIDE
+          BCC     XBD1
+          LDA     #MAXX                  ;PUT BACK ON SCREEN IF TOO FAR
+          JMP     XBD2
+XBD1      CMP     #MINX                  ;CHECK NEAR SIDE
+          BCS     XBD2
+          LDA     #MINX                  ;PUT IT BACK ON SCREEN
+XBD2      RTS
+
+CHKYBD    CMP     #MAXY
+          BCC     YBD1                   ;CHECK TOP
+          LDA     #MAXY                  ;PUT IT BACK ON SCREEN
+          JMP     YBD2
+YBD1      CMP     #MINY                  ;CHECK BOTTOM
+          BCS     YBD2
+          LDA     #MINY                  ;PUT IT ON SCREEN
+YBD2      RTS
+*
+
+******************************************
+*
+*         RANDOM  - RETURN WITH A RANDOM NUBER 0 - 255 IN A
+*
+******************************************
+*
+RANDOM    STY     TEMP8                  ;SAVE Y
+          LDA     FRMCNT
+          ADC     RNDM
+          ADC     RNDM+1
+          LDY     RNDM
+          STY     RNDM+1
+          STA     RNDM
+          LDY     TEMP8                  ;RESTORE Y
+          RTS
+
+
+******************************************
+*
+*         RANDXY -- RETURNS RANDOM X AND Y POSITIONS IN VALID SCREEN AREA
+*                 RETURNS VALUES IN RANDOMX AND RANDOMY
+*
+******************************************
+*
+
+RANDXY    JSR     RANDOM                 ;GET A RANDOM NUMBER IN A
+          CMP     #MINY                  ;MAKE SURE THAT IT IS WITHIN X RANGE
+          BCC     RANDXY                 ;GO AGAIN IF OFF SCREEN
+          CMP     #MAXX
+          BCS     RANDXY
+          STA     RANDOMX
+RANDXY1   JSR     RANDOM                 ;GET ANOTHER RANDOM NUMBER FOR Y
+          CMP     #MINY                  ;LIKEWISE Y IN RANGE
+          BCC     RANDXY1                ;IF OUT OF BOUNDS FIND ANOTHER Y
+          CMP     #MAXY
+          BCS     RANDXY1
+          STA     RANDOMY
+RANDXYDN  RTS                            ;COMPLETELY CHECKS OUT
+*
+
+******************************************
+*
+*         RANDXYBX -- RETURNS RANDOM X AND Y POSITIONS NOT TOO CLOSE TO CENTER
+*                 USEFUL FOR PLACING OBJECTS ON SCREEN AT START OF WAVE
+*                 RETURNS VALUES IN RANDOMX AND RANDOMY
+*
+******************************************
+*
+
+RANDXYBX  JSR     RANDOM                 ;GET A RANDOM NUMBER IN A
+          CMP     #MINX                  ;MAKE SURE THAT IT IS WITHIN X RANGE
+          BCC     RANDXYBX               ;GO AGAIN IF OFF SCREEN
+          CMP     #MAXX-HWID     ;SUBTRACT HWID SO A LARGE OBJ DOESN'T HANG OFF
+          BCS     RANDXYBX
+          STA     RANDOMX
+RANDXYB1  JSR     RANDOM                 ;GET ANOTHER RANDOM NUMBER FOR Y
+          CMP     #MINY                  ;LIKEWISE Y IN RANGE
+          BCC     RANDXYB1               ;IF OUT OF BOUNDS FIND ANOTHER Y
+          CMP     #MAXY-HHEIGHT
+          BCS     RANDXYB1
+          STA     RANDOMY
+*         NOW CHECK THAT X,Y IS NOT IN CENTER BOX
+          CMP     #SBOXMINY-HHEIGHT      ;Y-POS ALREADY IN A
+          BCC     RANDXYBD               ;OUTSIDE BOX
+          CMP     #SBOXMAXY
+          BCS     RANDXYBD               ;OUTSIDE BOX
+          LDA     RANDOMX                ;THE X-POS WE GENERATED
+          CMP     #SBOXMINX-HWID
+          BCC     RANDXYBD               ;OUTSIDE BOX
+          CMP     #SBOXMAXX
+          BCC     RANDXYBX               ;TESTS FAIL SO X,Y IS INSIDE BOX
+RANDXYBD  RTS                            ;COMPLETELY CHECKS OUT
+*
+
+******************************************
+*
+*         RANDPM  --  RANDOM PLUS/MINUS
+*                 RETURNS A RANDOM VALUE IN THE RANGE -TEMP4 TO +TEMP4
+*          TEMP4 MUST BE 1,3,7,F,1F,3F, ETC.. BECAUSE IT IS USED AS A MASK
+*
+******************************************
+*
+
+RANDPM    JSR     RANDOM                 ;GET A RANDOM NUMBER 0 - 255
+          ROR     A                      ;SET CARRY TO SOMETHING RANDOM
+          AND     TEMP4
+          BCC     RANDPMDN               ;OK - LEAVE IT POSITIVE
+*         MAKE A INTO -A
+          STA     TEMP5
+          LDA     #$00
+          SBC     TEMP5                  ;GET -A  --  CARRY WAS ALREADY SET
+RANDPMDN  RTS
+*
+
+******************************************
+*
+*         RAND2   --  RANDOMLY RETURNS 0, 1 OR 2 IN THE ACCUMULATOR
+*                         USEFUL FOR CHOOSING RANDOM ANIMATION STEPS
+*
+******************************************
+*
+
+RAND2
+          JSR     RANDOM
+          AND     #MASK2
+          CMP     #$03
+          BNE     RAND20
+          LDA     #$01
+
+RAND20    RTS
+*
+
+******************************************
+*
+*         RESETSC --  RESET SCORES FOR BOTH PLAYERS
+*
+******************************************
+*
+
+RESETSC   LDA     #$00
+          STA     SCORE1L
+          STA     SCORE1M
+          STA     SCORE1H
+          STA     SCORE1V
+          STA     SCORE2L
+          STA     SCORE2M
+          STA     SCORE2H
+          STA     SCORE2V
+          RTS
+*
+*****************************************
+*
+*         FSCORE        PUT THE CORRECT SCORE FOR THE FAMILY
+*                       ONTO THE SCREEN AND CREDIT IT TO THE PLAYER
+*
+*****************************************
+
+FSCORE
+          LDA     FAMLEVEL               ;GET THE CURRENT FAMILY POINT VALUE
+          CLC
+          ADC     #1                     ;INCREMENT FAMILY VALUE
+          CMP     #5                     ;SEE IF OVER 5
+          BMI     ZFSCORE                ;A VERY TRANSIENT SYMBOL
+          LDA     #5                     ;RESET TO 5
+ZFSCORE   STA     FAMLEVEL               ;RMEMBER THE POINT VALUE
+;HERE MUNGE THE ANIMATION TO GET THE NUMBER
+          CLC
+          ASL     A
+          ASL     A
+          ASL     A
+          ASL     A
+;THERE SHOULD BE A ROUTINE TO ADD TO THE PROPER PLAYER
+
+*         START FAMILY PICKUP SOUND
+          LDA     #SFPICK
+          JSR     DOTUNE
+
+*         FINALLY, RETURN WITH CURRENT LEVEL IN A
+          LDA     FAMLEVEL
+          RTS
+
+******************************************
+*         THROWAWAY ROUTINES
+******************************************
+
+*******************
+*
+*         SETSTAT - THROWAWAY ROUTINE TO SET STTBL,X TO 1
+*
+SETSTAT   LDA     #$01
+          STA     STTBL,X
+          RTS
+*
+
+
+
+********* END OF RSUBR.S ***************
+          EJE

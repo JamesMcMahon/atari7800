@@ -1,0 +1,24 @@
+440 GOTO 180                                                                    
+450 REM *** REDRAW SCREEN ***                                                   
+460 CLEARW 2                                                                    
+510 HP=1:VP=1:C=1                                                               
+520 MC=B(C)                                                                     
+530 C=C+1                                                                       
+540 HP=HP+1                                                                     
+550 IF HP=76 THEN HP=1:VP=VP+1                                                  
+560 IF VP=81 THEN RETURN                                                        
+570 IF MC=0 THEN GOTO 520                                                       
+580 VG=VS*VP:HG=HP*HS                                                           
+590 HE=HG+(HS-1)                                                                
+600 MC=B(C)                                                                     
+610 IF MC=1 THEN MC=C1                                                          
+620 IF MC=2 THEN MC=C2                                                          
+630 IF MC=3 THEN MC=C3                                                          
+640 COLOR 1,6,MC,0,0                                                            
+650 GOSUB 810                                                                   
+660 GOTO 520                                                                    
+670 REM *** CLEAR SCREEN ***                                                    
+680 A=0                                                                         
+690 FOR X=1 TO 6400                                                             
+700 B(X)=C0                                                                     
+710 NEXT X                                                                      

@@ -1,0 +1,154 @@
+
+.fake0:
+
+	.org (.fake0 + $ff) & $ff00
+
+
+PLAYER0:
+ 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+box00:
+
+
+	.dc.b	$18 ; x 8 y 24
+	.dc.b	$C ; x 8 y 25
+	.dc.b	$36 ; x 8 y 26
+	.dc.b	$6A ; x 8 y 27
+	.dc.b	$5D ; x 8 y 28
+	.dc.b	$3A ; x 8 y 29
+	.dc.b	$FC ; x 8 y 30
+	.dc.b	$5F ; x 8 y 31
+	.dc.b	$FE ; x 8 y 32
+	.dc.b	$7C ; x 8 y 33
+	.dc.b	$2A ; x 8 y 34
+	.dc.b	$0 ; x 8 y 35
+	.dc.b	$0 ; x 8 y 36
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+box01:
+
+	.dc.b	$4 ; x 8 y 44
+	.dc.b	$1C ; x 8 y 45
+	.dc.b	$F ; x 8 y 46
+	.dc.b	$74 ; x 8 y 47
+	.dc.b	$2B ; x 8 y 48
+	.dc.b	$7C ; x 8 y 49
+	.dc.b	$D8 ; x 8 y 50
+	.dc.b	$14 ; x 8 y 51
+	.dc.b	$7C ; x 8 y 52
+	.dc.b	$A ; x 8 y 53
+	.dc.b	$10 ; x 8 y 54
+	.dc.b	$C ; x 8 y 55
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+box02:
+
+
+
+	.dc.b	$1C ; x 8 y 63
+	.dc.b	$0 ; x 8 y 64
+	.dc.b	$7C ; x 8 y 65
+	.dc.b	$D3 ; x 8 y 66
+	.dc.b	$2E ; x 8 y 67
+	.dc.b	$7C ; x 8 y 68
+	.dc.b	$30 ; x 8 y 69
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+
+
+box03:
+
+	.dc.b	$4 ; x 8 y 77
+	.dc.b	$F ; x 8 y 78
+	.dc.b	$4 ; x 8 y 79
+	.dc.b	$30 ; x 8 y 80
+	.dc.b	$18 ; x 8 y 81
+	.dc.b	$75 ; x 8 y 82
+	.dc.b	$9A ; x 8 y 83
+	.dc.b	$6C ; x 8 y 84
+	.dc.b	$34 ; x 8 y 85
+	.dc.b	$8 ; x 8 y 86
+
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+	.dc.b	0 
+
+
+CLOUDCOLOR:
+
+
+
+
+	.DC.B	$0
+	.DC.B	$0
+	.DC.B	$2
+	.DC.B	$4
+	.DC.B	$2
+	.DC.B	$6
+	.DC.B	$8
+	.DC.B	$A
+	.DC.B	$8
+	.DC.B	$C
+	.DC.B	$E

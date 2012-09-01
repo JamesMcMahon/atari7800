@@ -1,0 +1,1248 @@
+
+;  playfield datan .nlist
+
+.fake0:
+
+	.org (.fake0 + $ff) & $ff00
+
+
+PLAYFIELD0:
+
+	.dc.b	$0  ; x 32 y 0
+	.dc.b	$0  ; x 32 y 1
+	.dc.b	$0  ; x 32 y 2
+	.dc.b	$0  ; x 32 y 3
+	.dc.b	$0  ; x 32 y 4
+	.dc.b	$0  ; x 32 y 5
+	.dc.b	$0  ; x 32 y 6
+	.dc.b	$0  ; x 32 y 7
+	.dc.b	$0  ; x 32 y 8
+	.dc.b	$0  ; x 32 y 9
+	.dc.b	$0  ; x 32 y 10
+	.dc.b	$0  ; x 32 y 11
+	.dc.b	$0  ; x 32 y 12
+	.dc.b	$0  ; x 32 y 13
+	.dc.b	$0  ; x 32 y 14
+	.dc.b	$0  ; x 32 y 15
+	.dc.b	$0  ; x 32 y 16
+	.dc.b	$0  ; x 32 y 17
+	.dc.b	$0  ; x 32 y 18
+	.dc.b	$0  ; x 32 y 19
+	.dc.b	$0  ; x 32 y 20
+	.dc.b	$0  ; x 32 y 21
+	.dc.b	$0  ; x 32 y 22
+	.dc.b	$0  ; x 32 y 23
+	.dc.b	$0  ; x 32 y 24
+	.dc.b	$0  ; x 32 y 25
+	.dc.b	$0  ; x 32 y 26
+	.dc.b	$0  ; x 32 y 27
+	.dc.b	$0  ; x 32 y 28
+	.dc.b	$0  ; x 32 y 29
+	.dc.b	$0  ; x 32 y 30
+	.dc.b	$0  ; x 32 y 31
+	.dc.b	$0  ; x 32 y 32
+	.dc.b	$0  ; x 32 y 33
+	.dc.b	$0  ; x 32 y 34
+	.dc.b	$0  ; x 32 y 35
+	.dc.b	$0  ; x 32 y 36
+	.dc.b	$0  ; x 32 y 37
+	.dc.b	$0  ; x 32 y 38
+	.dc.b	$0  ; x 32 y 39
+	.dc.b	$0  ; x 32 y 40
+	.dc.b	$0  ; x 32 y 41
+	.dc.b	$0  ; x 32 y 42
+	.dc.b	$0  ; x 32 y 43
+	.dc.b	$0  ; x 32 y 44
+	.dc.b	$0  ; x 32 y 45
+	.dc.b	$0  ; x 32 y 46
+	.dc.b	$0  ; x 32 y 47
+	.dc.b	$0  ; x 32 y 48
+	.dc.b	$0  ; x 32 y 49
+	.dc.b	$0  ; x 32 y 50
+	.dc.b	$0  ; x 32 y 51
+	.dc.b	$0  ; x 32 y 52
+	.dc.b	$0  ; x 32 y 53
+	.dc.b	$0  ; x 32 y 54
+	.dc.b	$0  ; x 32 y 55
+	.dc.b	$0  ; x 32 y 56
+	.dc.b	$0  ; x 32 y 57
+	.dc.b	$0  ; x 32 y 58
+	.dc.b	$0  ; x 32 y 59
+	.dc.b	$0  ; x 32 y 60
+	.dc.b	$0  ; x 32 y 61
+	.dc.b	$0  ; x 32 y 62
+	.dc.b	$0  ; x 32 y 63
+	.dc.b	$0  ; x 32 y 64
+	.dc.b	$0  ; x 32 y 65
+	.dc.b	$0  ; x 32 y 66
+	.dc.b	$0  ; x 32 y 67
+	.dc.b	$0  ; x 32 y 68
+	.dc.b	$0  ; x 32 y 69
+	.dc.b	$0  ; x 32 y 70
+	.dc.b	$0  ; x 32 y 71
+	.dc.b	$0  ; x 32 y 72
+	.dc.b	$0  ; x 32 y 73
+	.dc.b	$0  ; x 32 y 74
+	.dc.b	$0  ; x 32 y 75
+	.dc.b	$0  ; x 32 y 76
+	.dc.b	$0  ; x 32 y 77
+	.dc.b	$0  ; x 32 y 78
+	.dc.b	$0  ; x 32 y 79
+	.dc.b	$0  ; x 32 y 80
+	.dc.b	$0  ; x 32 y 81
+	.dc.b	$0  ; x 32 y 82
+	.dc.b	$0  ; x 32 y 83
+	.dc.b	$0  ; x 32 y 84
+	.dc.b	$0  ; x 32 y 85
+	.dc.b	$0  ; x 32 y 86
+	.dc.b	$0  ; x 32 y 87
+	.dc.b	$0  ; x 32 y 88
+	.dc.b	$0  ; x 32 y 89
+	.dc.b	$0  ; x 32 y 90
+	.dc.b	$0  ; x 32 y 91
+	.dc.b	$0  ; x 32 y 92
+	.dc.b	$0  ; x 32 y 93
+	.dc.b	$0  ; x 32 y 94
+	.dc.b	$0  ; x 32 y 95
+	.dc.b	$0  ; x 32 y 96
+	.dc.b	$0  ; x 32 y 97
+	.dc.b	$0  ; x 32 y 98
+	.dc.b	$0  ; x 32 y 99
+	.dc.b	$0  ; x 32 y 100
+	.dc.b	$0  ; x 32 y 101
+	.dc.b	$0  ; x 32 y 102
+	.dc.b	$0  ; x 32 y 103
+	.dc.b	$0  ; x 32 y 104
+	.dc.b	$0  ; x 32 y 105
+	.dc.b	$0  ; x 32 y 106
+	.dc.b	$0  ; x 32 y 107
+	.dc.b	$0  ; x 32 y 108
+	.dc.b	$0  ; x 32 y 109
+	.dc.b	$0  ; x 32 y 110
+	.dc.b	$0  ; x 32 y 111
+	.dc.b	$0  ; x 32 y 112
+	.dc.b	$0  ; x 32 y 113
+	.dc.b	$0  ; x 32 y 114
+	.dc.b	$0  ; x 32 y 115
+	.dc.b	$0  ; x 32 y 116
+	.dc.b	$0  ; x 32 y 117
+	.dc.b	$0  ; x 32 y 118
+	.dc.b	$0  ; x 32 y 119
+	.dc.b	$0  ; x 32 y 120
+	.dc.b	$0  ; x 32 y 121
+	.dc.b	$0  ; x 32 y 122
+	.dc.b	$0  ; x 32 y 123
+	.dc.b	$0  ; x 32 y 124
+	.dc.b	$0  ; x 32 y 125
+	.dc.b	$0  ; x 32 y 126
+	.dc.b	$0  ; x 32 y 127
+	.dc.b	$0  ; x 32 y 128
+	.dc.b	$0  ; x 32 y 129
+	.dc.b	$0  ; x 32 y 130
+	.dc.b	$0  ; x 32 y 131
+	.dc.b	$0  ; x 32 y 132
+	.dc.b	$0  ; x 32 y 133
+	.dc.b	$0  ; x 32 y 134
+	.dc.b	$0  ; x 32 y 135
+	.dc.b	$0  ; x 32 y 136
+	.dc.b	$0  ; x 32 y 137
+	.dc.b	$0  ; x 32 y 138
+	.dc.b	$0  ; x 32 y 139
+	.dc.b	$0  ; x 32 y 140
+	.dc.b	$0  ; x 32 y 141
+	.dc.b	$0  ; x 32 y 142
+	.dc.b	$0  ; x 32 y 143
+	.dc.b	$0  ; x 32 y 144
+	.dc.b	$0  ; x 32 y 145
+	.dc.b	$0  ; x 32 y 146
+	.dc.b	$0  ; x 32 y 147
+	.dc.b	$0  ; x 32 y 148
+	.dc.b	$0  ; x 32 y 149
+	.dc.b	$0  ; x 32 y 150
+	.dc.b	$0  ; x 32 y 151
+	.dc.b	$0  ; x 32 y 152
+	.dc.b	$0  ; x 32 y 153
+	.dc.b	$0  ; x 32 y 154
+	.dc.b	$0  ; x 32 y 155
+	.dc.b	$0  ; x 32 y 156
+	.dc.b	$0  ; x 32 y 157
+	.dc.b	$0  ; x 32 y 158
+	.dc.b	$0  ; x 32 y 159
+	.dc.b	$0  ; x 32 y 160
+	.dc.b	$0  ; x 32 y 161
+	.dc.b	$0  ; x 32 y 162
+	.dc.b	$0  ; x 32 y 163
+	.dc.b	$0  ; x 32 y 164
+	.dc.b	$0  ; x 32 y 165
+	.dc.b	$0  ; x 32 y 166
+	.dc.b	$0  ; x 32 y 167
+	.dc.b	$0  ; x 32 y 168
+	.dc.b	$0  ; x 32 y 169
+	.dc.b	$0  ; x 32 y 170
+	.dc.b	$0  ; x 32 y 171
+	.dc.b	$0  ; x 32 y 172
+	.dc.b	$0  ; x 32 y 173
+	.dc.b	$0  ; x 32 y 174
+	.dc.b	$0  ; x 32 y 175
+	.dc.b	$0  ; x 32 y 176
+	.dc.b	$0  ; x 32 y 177
+	.dc.b	$0  ; x 32 y 178
+	.dc.b	$0  ; x 32 y 179
+	.dc.b	$0  ; x 32 y 180
+	.dc.b	$0  ; x 32 y 181
+	.dc.b	$0  ; x 32 y 182
+	.dc.b	$0  ; x 32 y 183
+	.dc.b	$0  ; x 32 y 184
+	.dc.b	$0  ; x 32 y 185
+	.dc.b	$0  ; x 32 y 186
+	.dc.b	$0  ; x 32 y 187
+	.dc.b	$0  ; x 32 y 188
+	.dc.b	$0  ; x 32 y 189
+	.dc.b	$0  ; x 32 y 190
+	.dc.b	$0  ; x 32 y 191
+	.dc.b	$0  ; x 32 y 192
+	.dc.b	$0  ; x 32 y 193
+	.dc.b	$0  ; x 32 y 194
+	.dc.b	$0  ; x 32 y 195
+	.dc.b	$0  ; x 32 y 196
+	.dc.b	$0  ; x 32 y 197
+	.dc.b	$0  ; x 32 y 198
+	.dc.b	$0  ; x 32 y 199
+.fake1:
+
+	.org (.fake1 + $ff) & $ff00
+
+
+PLAYFIELD1:
+
+	.dc.b	$0  ; x 64 y 0
+	.dc.b	$0  ; x 64 y 1
+	.dc.b	$0  ; x 64 y 2
+	.dc.b	$0  ; x 64 y 3
+	.dc.b	$0  ; x 64 y 4
+	.dc.b	$0  ; x 64 y 5
+	.dc.b	$0  ; x 64 y 6
+	.dc.b	$0  ; x 64 y 7
+	.dc.b	$0  ; x 64 y 8
+	.dc.b	$0  ; x 64 y 9
+	.dc.b	$0  ; x 64 y 10
+	.dc.b	$0  ; x 64 y 11
+	.dc.b	$0  ; x 64 y 12
+	.dc.b	$0  ; x 64 y 13
+	.dc.b	$0  ; x 64 y 14
+	.dc.b	$0  ; x 64 y 15
+	.dc.b	$0  ; x 64 y 16
+	.dc.b	$0  ; x 64 y 17
+	.dc.b	$0  ; x 64 y 18
+	.dc.b	$0  ; x 64 y 19
+	.dc.b	$0  ; x 64 y 20
+	.dc.b	$0  ; x 64 y 21
+	.dc.b	$0  ; x 64 y 22
+	.dc.b	$0  ; x 64 y 23
+	.dc.b	$0  ; x 64 y 24
+	.dc.b	$0  ; x 64 y 25
+	.dc.b	$0  ; x 64 y 26
+	.dc.b	$0  ; x 64 y 27
+	.dc.b	$0  ; x 64 y 28
+	.dc.b	$0  ; x 64 y 29
+	.dc.b	$0  ; x 64 y 30
+	.dc.b	$0  ; x 64 y 31
+	.dc.b	$0  ; x 64 y 32
+	.dc.b	$0  ; x 64 y 33
+	.dc.b	$0  ; x 64 y 34
+	.dc.b	$0  ; x 64 y 35
+	.dc.b	$0  ; x 64 y 36
+	.dc.b	$0  ; x 64 y 37
+	.dc.b	$0  ; x 64 y 38
+	.dc.b	$0  ; x 64 y 39
+	.dc.b	$0  ; x 64 y 40
+	.dc.b	$0  ; x 64 y 41
+	.dc.b	$0  ; x 64 y 42
+	.dc.b	$0  ; x 64 y 43
+	.dc.b	$0  ; x 64 y 44
+	.dc.b	$0  ; x 64 y 45
+	.dc.b	$0  ; x 64 y 46
+	.dc.b	$0  ; x 64 y 47
+	.dc.b	$0  ; x 64 y 48
+	.dc.b	$0  ; x 64 y 49
+	.dc.b	$0  ; x 64 y 50
+	.dc.b	$0  ; x 64 y 51
+	.dc.b	$0  ; x 64 y 52
+	.dc.b	$0  ; x 64 y 53
+	.dc.b	$0  ; x 64 y 54
+	.dc.b	$0  ; x 64 y 55
+	.dc.b	$0  ; x 64 y 56
+	.dc.b	$0  ; x 64 y 57
+	.dc.b	$0  ; x 64 y 58
+	.dc.b	$0  ; x 64 y 59
+	.dc.b	$0  ; x 64 y 60
+	.dc.b	$0  ; x 64 y 61
+	.dc.b	$0  ; x 64 y 62
+	.dc.b	$0  ; x 64 y 63
+	.dc.b	$0  ; x 64 y 64
+	.dc.b	$0  ; x 64 y 65
+	.dc.b	$0  ; x 64 y 66
+	.dc.b	$0  ; x 64 y 67
+	.dc.b	$0  ; x 64 y 68
+	.dc.b	$0  ; x 64 y 69
+	.dc.b	$0  ; x 64 y 70
+	.dc.b	$0  ; x 64 y 71
+	.dc.b	$0  ; x 64 y 72
+	.dc.b	$0  ; x 64 y 73
+	.dc.b	$0  ; x 64 y 74
+	.dc.b	$0  ; x 64 y 75
+	.dc.b	$0  ; x 64 y 76
+	.dc.b	$0  ; x 64 y 77
+	.dc.b	$0  ; x 64 y 78
+	.dc.b	$0  ; x 64 y 79
+	.dc.b	$0  ; x 64 y 80
+	.dc.b	$0  ; x 64 y 81
+	.dc.b	$0  ; x 64 y 82
+	.dc.b	$0  ; x 64 y 83
+	.dc.b	$0  ; x 64 y 84
+	.dc.b	$0  ; x 64 y 85
+	.dc.b	$0  ; x 64 y 86
+	.dc.b	$0  ; x 64 y 87
+	.dc.b	$0  ; x 64 y 88
+	.dc.b	$0  ; x 64 y 89
+	.dc.b	$0  ; x 64 y 90
+	.dc.b	$0  ; x 64 y 91
+	.dc.b	$0  ; x 64 y 92
+	.dc.b	$0  ; x 64 y 93
+	.dc.b	$0  ; x 64 y 94
+	.dc.b	$0  ; x 64 y 95
+	.dc.b	$0  ; x 64 y 96
+	.dc.b	$0  ; x 64 y 97
+	.dc.b	$0  ; x 64 y 98
+	.dc.b	$0  ; x 64 y 99
+	.dc.b	$0  ; x 64 y 100
+	.dc.b	$0  ; x 64 y 101
+	.dc.b	$0  ; x 64 y 102
+	.dc.b	$0  ; x 64 y 103
+	.dc.b	$0  ; x 64 y 104
+	.dc.b	$0  ; x 64 y 105
+	.dc.b	$0  ; x 64 y 106
+	.dc.b	$0  ; x 64 y 107
+	.dc.b	$0  ; x 64 y 108
+	.dc.b	$0  ; x 64 y 109
+	.dc.b	$0  ; x 64 y 110
+	.dc.b	$0  ; x 64 y 111
+	.dc.b	$0  ; x 64 y 112
+	.dc.b	$0  ; x 64 y 113
+	.dc.b	$0  ; x 64 y 114
+	.dc.b	$0  ; x 64 y 115
+	.dc.b	$0  ; x 64 y 116
+	.dc.b	$0  ; x 64 y 117
+	.dc.b	$0  ; x 64 y 118
+	.dc.b	$0  ; x 64 y 119
+	.dc.b	$0  ; x 64 y 120
+	.dc.b	$0  ; x 64 y 121
+	.dc.b	$0  ; x 64 y 122
+	.dc.b	$0  ; x 64 y 123
+	.dc.b	$0  ; x 64 y 124
+	.dc.b	$0  ; x 64 y 125
+	.dc.b	$0  ; x 64 y 126
+	.dc.b	$0  ; x 64 y 127
+	.dc.b	$0  ; x 64 y 128
+	.dc.b	$0  ; x 64 y 129
+	.dc.b	$0  ; x 64 y 130
+	.dc.b	$0  ; x 64 y 131
+	.dc.b	$0  ; x 64 y 132
+	.dc.b	$0  ; x 64 y 133
+	.dc.b	$0  ; x 64 y 134
+	.dc.b	$0  ; x 64 y 135
+	.dc.b	$0  ; x 64 y 136
+	.dc.b	$0  ; x 64 y 137
+	.dc.b	$0  ; x 64 y 138
+	.dc.b	$0  ; x 64 y 139
+	.dc.b	$0  ; x 64 y 140
+	.dc.b	$0  ; x 64 y 141
+	.dc.b	$0  ; x 64 y 142
+	.dc.b	$0  ; x 64 y 143
+	.dc.b	$0  ; x 64 y 144
+	.dc.b	$0  ; x 64 y 145
+	.dc.b	$0  ; x 64 y 146
+	.dc.b	$0  ; x 64 y 147
+	.dc.b	$0  ; x 64 y 148
+	.dc.b	$0  ; x 64 y 149
+	.dc.b	$0  ; x 64 y 150
+	.dc.b	$0  ; x 64 y 151
+	.dc.b	$0  ; x 64 y 152
+	.dc.b	$0  ; x 64 y 153
+	.dc.b	$0  ; x 64 y 154
+	.dc.b	$0  ; x 64 y 155
+	.dc.b	$0  ; x 64 y 156
+	.dc.b	$0  ; x 64 y 157
+	.dc.b	$0  ; x 64 y 158
+	.dc.b	$0  ; x 64 y 159
+	.dc.b	$0  ; x 64 y 160
+	.dc.b	$0  ; x 64 y 161
+	.dc.b	$0  ; x 64 y 162
+	.dc.b	$0  ; x 64 y 163
+	.dc.b	$0  ; x 64 y 164
+	.dc.b	$0  ; x 64 y 165
+	.dc.b	$0  ; x 64 y 166
+	.dc.b	$0  ; x 64 y 167
+	.dc.b	$0  ; x 64 y 168
+	.dc.b	$0  ; x 64 y 169
+	.dc.b	$0  ; x 64 y 170
+	.dc.b	$0  ; x 64 y 171
+	.dc.b	$0  ; x 64 y 172
+	.dc.b	$0  ; x 64 y 173
+	.dc.b	$0  ; x 64 y 174
+	.dc.b	$0  ; x 64 y 175
+	.dc.b	$0  ; x 64 y 176
+	.dc.b	$0  ; x 64 y 177
+	.dc.b	$0  ; x 64 y 178
+	.dc.b	$0  ; x 64 y 179
+	.dc.b	$0  ; x 64 y 180
+	.dc.b	$0  ; x 64 y 181
+	.dc.b	$0  ; x 64 y 182
+	.dc.b	$0  ; x 64 y 183
+	.dc.b	$0  ; x 64 y 184
+	.dc.b	$0  ; x 64 y 185
+	.dc.b	$0  ; x 64 y 186
+	.dc.b	$0  ; x 64 y 187
+	.dc.b	$0  ; x 64 y 188
+	.dc.b	$0  ; x 64 y 189
+	.dc.b	$0  ; x 64 y 190
+	.dc.b	$0  ; x 64 y 191
+	.dc.b	$0  ; x 64 y 192
+	.dc.b	$0  ; x 64 y 193
+	.dc.b	$0  ; x 64 y 194
+	.dc.b	$0  ; x 64 y 195
+	.dc.b	$0  ; x 64 y 196
+	.dc.b	$0  ; x 64 y 197
+	.dc.b	$0  ; x 64 y 198
+	.dc.b	$0  ; x 64 y 199
+.fake2:
+
+	.org (.fake2 + $ff) & $ff00
+
+
+PLAYFIELD2:
+
+	.dc.b	$0  ; x 96 y 0
+	.dc.b	$0  ; x 96 y 1
+	.dc.b	$0  ; x 96 y 2
+	.dc.b	$0  ; x 96 y 3
+	.dc.b	$0  ; x 96 y 4
+	.dc.b	$0  ; x 96 y 5
+	.dc.b	$0  ; x 96 y 6
+	.dc.b	$0  ; x 96 y 7
+	.dc.b	$0  ; x 96 y 8
+	.dc.b	$0  ; x 96 y 9
+	.dc.b	$0  ; x 96 y 10
+	.dc.b	$0  ; x 96 y 11
+	.dc.b	$0  ; x 96 y 12
+	.dc.b	$0  ; x 96 y 13
+	.dc.b	$0  ; x 96 y 14
+	.dc.b	$0  ; x 96 y 15
+	.dc.b	$0  ; x 96 y 16
+	.dc.b	$0  ; x 96 y 17
+	.dc.b	$0  ; x 96 y 18
+	.dc.b	$0  ; x 96 y 19
+	.dc.b	$0  ; x 96 y 20
+	.dc.b	$0  ; x 96 y 21
+	.dc.b	$0  ; x 96 y 22
+	.dc.b	$0  ; x 96 y 23
+	.dc.b	$0  ; x 96 y 24
+	.dc.b	$0  ; x 96 y 25
+	.dc.b	$0  ; x 96 y 26
+	.dc.b	$0  ; x 96 y 27
+	.dc.b	$0  ; x 96 y 28
+	.dc.b	$0  ; x 96 y 29
+	.dc.b	$0  ; x 96 y 30
+	.dc.b	$0  ; x 96 y 31
+	.dc.b	$0  ; x 96 y 32
+	.dc.b	$0  ; x 96 y 33
+	.dc.b	$0  ; x 96 y 34
+	.dc.b	$0  ; x 96 y 35
+	.dc.b	$0  ; x 96 y 36
+	.dc.b	$0  ; x 96 y 37
+	.dc.b	$0  ; x 96 y 38
+	.dc.b	$0  ; x 96 y 39
+	.dc.b	$0  ; x 96 y 40
+	.dc.b	$0  ; x 96 y 41
+	.dc.b	$0  ; x 96 y 42
+	.dc.b	$0  ; x 96 y 43
+	.dc.b	$0  ; x 96 y 44
+	.dc.b	$0  ; x 96 y 45
+	.dc.b	$0  ; x 96 y 46
+	.dc.b	$0  ; x 96 y 47
+	.dc.b	$0  ; x 96 y 48
+	.dc.b	$0  ; x 96 y 49
+	.dc.b	$0  ; x 96 y 50
+	.dc.b	$0  ; x 96 y 51
+	.dc.b	$0  ; x 96 y 52
+	.dc.b	$0  ; x 96 y 53
+	.dc.b	$0  ; x 96 y 54
+	.dc.b	$0  ; x 96 y 55
+	.dc.b	$0  ; x 96 y 56
+	.dc.b	$0  ; x 96 y 57
+	.dc.b	$0  ; x 96 y 58
+	.dc.b	$0  ; x 96 y 59
+	.dc.b	$0  ; x 96 y 60
+	.dc.b	$0  ; x 96 y 61
+	.dc.b	$0  ; x 96 y 62
+	.dc.b	$0  ; x 96 y 63
+	.dc.b	$0  ; x 96 y 64
+	.dc.b	$0  ; x 96 y 65
+	.dc.b	$0  ; x 96 y 66
+	.dc.b	$0  ; x 96 y 67
+	.dc.b	$0  ; x 96 y 68
+	.dc.b	$0  ; x 96 y 69
+	.dc.b	$0  ; x 96 y 70
+	.dc.b	$0  ; x 96 y 71
+	.dc.b	$0  ; x 96 y 72
+	.dc.b	$0  ; x 96 y 73
+	.dc.b	$0  ; x 96 y 74
+	.dc.b	$0  ; x 96 y 75
+	.dc.b	$0  ; x 96 y 76
+	.dc.b	$0  ; x 96 y 77
+	.dc.b	$0  ; x 96 y 78
+	.dc.b	$0  ; x 96 y 79
+	.dc.b	$0  ; x 96 y 80
+	.dc.b	$0  ; x 96 y 81
+	.dc.b	$0  ; x 96 y 82
+	.dc.b	$0  ; x 96 y 83
+	.dc.b	$0  ; x 96 y 84
+	.dc.b	$0  ; x 96 y 85
+	.dc.b	$0  ; x 96 y 86
+	.dc.b	$0  ; x 96 y 87
+	.dc.b	$0  ; x 96 y 88
+	.dc.b	$0  ; x 96 y 89
+	.dc.b	$0  ; x 96 y 90
+	.dc.b	$0  ; x 96 y 91
+	.dc.b	$0  ; x 96 y 92
+	.dc.b	$0  ; x 96 y 93
+	.dc.b	$0  ; x 96 y 94
+	.dc.b	$0  ; x 96 y 95
+	.dc.b	$0  ; x 96 y 96
+	.dc.b	$0  ; x 96 y 97
+	.dc.b	$0  ; x 96 y 98
+	.dc.b	$0  ; x 96 y 99
+	.dc.b	$0  ; x 96 y 100
+	.dc.b	$0  ; x 96 y 101
+	.dc.b	$0  ; x 96 y 102
+	.dc.b	$0  ; x 96 y 103
+	.dc.b	$0  ; x 96 y 104
+	.dc.b	$0  ; x 96 y 105
+	.dc.b	$0  ; x 96 y 106
+	.dc.b	$0  ; x 96 y 107
+	.dc.b	$0  ; x 96 y 108
+	.dc.b	$0  ; x 96 y 109
+	.dc.b	$0  ; x 96 y 110
+	.dc.b	$0  ; x 96 y 111
+	.dc.b	$0  ; x 96 y 112
+	.dc.b	$0  ; x 96 y 113
+	.dc.b	$0  ; x 96 y 114
+	.dc.b	$0  ; x 96 y 115
+	.dc.b	$0  ; x 96 y 116
+	.dc.b	$0  ; x 96 y 117
+	.dc.b	$0  ; x 96 y 118
+	.dc.b	$0  ; x 96 y 119
+	.dc.b	$0  ; x 96 y 120
+	.dc.b	$0  ; x 96 y 121
+	.dc.b	$0  ; x 96 y 122
+	.dc.b	$0  ; x 96 y 123
+	.dc.b	$0  ; x 96 y 124
+	.dc.b	$0  ; x 96 y 125
+	.dc.b	$0  ; x 96 y 126
+	.dc.b	$0  ; x 96 y 127
+	.dc.b	$0  ; x 96 y 128
+	.dc.b	$0  ; x 96 y 129
+	.dc.b	$0  ; x 96 y 130
+	.dc.b	$0  ; x 96 y 131
+	.dc.b	$0  ; x 96 y 132
+	.dc.b	$0  ; x 96 y 133
+	.dc.b	$0  ; x 96 y 134
+	.dc.b	$0  ; x 96 y 135
+	.dc.b	$0  ; x 96 y 136
+	.dc.b	$0  ; x 96 y 137
+	.dc.b	$0  ; x 96 y 138
+	.dc.b	$0  ; x 96 y 139
+	.dc.b	$0  ; x 96 y 140
+	.dc.b	$0  ; x 96 y 141
+	.dc.b	$0  ; x 96 y 142
+	.dc.b	$0  ; x 96 y 143
+	.dc.b	$0  ; x 96 y 144
+	.dc.b	$0  ; x 96 y 145
+	.dc.b	$0  ; x 96 y 146
+	.dc.b	$0  ; x 96 y 147
+	.dc.b	$0  ; x 96 y 148
+	.dc.b	$0  ; x 96 y 149
+	.dc.b	$0  ; x 96 y 150
+	.dc.b	$0  ; x 96 y 151
+	.dc.b	$0  ; x 96 y 152
+	.dc.b	$0  ; x 96 y 153
+	.dc.b	$0  ; x 96 y 154
+	.dc.b	$0  ; x 96 y 155
+	.dc.b	$0  ; x 96 y 156
+	.dc.b	$0  ; x 96 y 157
+	.dc.b	$0  ; x 96 y 158
+	.dc.b	$0  ; x 96 y 159
+	.dc.b	$0  ; x 96 y 160
+	.dc.b	$0  ; x 96 y 161
+	.dc.b	$0  ; x 96 y 162
+	.dc.b	$0  ; x 96 y 163
+	.dc.b	$0  ; x 96 y 164
+	.dc.b	$0  ; x 96 y 165
+	.dc.b	$0  ; x 96 y 166
+	.dc.b	$0  ; x 96 y 167
+	.dc.b	$0  ; x 96 y 168
+	.dc.b	$0  ; x 96 y 169
+	.dc.b	$0  ; x 96 y 170
+	.dc.b	$0  ; x 96 y 171
+	.dc.b	$0  ; x 96 y 172
+	.dc.b	$0  ; x 96 y 173
+	.dc.b	$0  ; x 96 y 174
+	.dc.b	$0  ; x 96 y 175
+	.dc.b	$0  ; x 96 y 176
+	.dc.b	$0  ; x 96 y 177
+	.dc.b	$0  ; x 96 y 178
+	.dc.b	$0  ; x 96 y 179
+	.dc.b	$0  ; x 96 y 180
+	.dc.b	$0  ; x 96 y 181
+	.dc.b	$0  ; x 96 y 182
+	.dc.b	$0  ; x 96 y 183
+	.dc.b	$0  ; x 96 y 184
+	.dc.b	$0  ; x 96 y 185
+	.dc.b	$0  ; x 96 y 186
+	.dc.b	$0  ; x 96 y 187
+	.dc.b	$0  ; x 96 y 188
+	.dc.b	$0  ; x 96 y 189
+	.dc.b	$0  ; x 96 y 190
+	.dc.b	$0  ; x 96 y 191
+	.dc.b	$0  ; x 96 y 192
+	.dc.b	$0  ; x 96 y 193
+	.dc.b	$0  ; x 96 y 194
+	.dc.b	$0  ; x 96 y 195
+	.dc.b	$0  ; x 96 y 196
+	.dc.b	$0  ; x 96 y 197
+	.dc.b	$0  ; x 96 y 198
+	.dc.b	$0  ; x 96 y 199
+.fake3:
+
+	.org (.fake3 + $ff) & $ff00
+
+
+PLAYFIELD3:
+
+	.dc.b	$0  ; x 128 y 0
+	.dc.b	$0  ; x 128 y 1
+	.dc.b	$0  ; x 128 y 2
+	.dc.b	$0  ; x 128 y 3
+	.dc.b	$0  ; x 128 y 4
+	.dc.b	$0  ; x 128 y 5
+	.dc.b	$0  ; x 128 y 6
+	.dc.b	$0  ; x 128 y 7
+	.dc.b	$0  ; x 128 y 8
+	.dc.b	$0  ; x 128 y 9
+	.dc.b	$0  ; x 128 y 10
+	.dc.b	$0  ; x 128 y 11
+	.dc.b	$0  ; x 128 y 12
+	.dc.b	$0  ; x 128 y 13
+	.dc.b	$0  ; x 128 y 14
+	.dc.b	$0  ; x 128 y 15
+	.dc.b	$0  ; x 128 y 16
+	.dc.b	$0  ; x 128 y 17
+	.dc.b	$0  ; x 128 y 18
+	.dc.b	$0  ; x 128 y 19
+	.dc.b	$0  ; x 128 y 20
+	.dc.b	$0  ; x 128 y 21
+	.dc.b	$0  ; x 128 y 22
+	.dc.b	$0  ; x 128 y 23
+	.dc.b	$0  ; x 128 y 24
+	.dc.b	$0  ; x 128 y 25
+	.dc.b	$0  ; x 128 y 26
+	.dc.b	$0  ; x 128 y 27
+	.dc.b	$0  ; x 128 y 28
+	.dc.b	$0  ; x 128 y 29
+	.dc.b	$0  ; x 128 y 30
+	.dc.b	$0  ; x 128 y 31
+	.dc.b	$0  ; x 128 y 32
+	.dc.b	$0  ; x 128 y 33
+	.dc.b	$0  ; x 128 y 34
+	.dc.b	$0  ; x 128 y 35
+	.dc.b	$0  ; x 128 y 36
+	.dc.b	$0  ; x 128 y 37
+	.dc.b	$0  ; x 128 y 38
+	.dc.b	$0  ; x 128 y 39
+	.dc.b	$0  ; x 128 y 40
+	.dc.b	$0  ; x 128 y 41
+	.dc.b	$0  ; x 128 y 42
+	.dc.b	$0  ; x 128 y 43
+	.dc.b	$0  ; x 128 y 44
+	.dc.b	$0  ; x 128 y 45
+	.dc.b	$0  ; x 128 y 46
+	.dc.b	$0  ; x 128 y 47
+	.dc.b	$0  ; x 128 y 48
+	.dc.b	$0  ; x 128 y 49
+	.dc.b	$0  ; x 128 y 50
+	.dc.b	$0  ; x 128 y 51
+	.dc.b	$0  ; x 128 y 52
+	.dc.b	$0  ; x 128 y 53
+	.dc.b	$0  ; x 128 y 54
+	.dc.b	$0  ; x 128 y 55
+	.dc.b	$0  ; x 128 y 56
+	.dc.b	$0  ; x 128 y 57
+	.dc.b	$0  ; x 128 y 58
+	.dc.b	$0  ; x 128 y 59
+	.dc.b	$0  ; x 128 y 60
+	.dc.b	$0  ; x 128 y 61
+	.dc.b	$0  ; x 128 y 62
+	.dc.b	$0  ; x 128 y 63
+	.dc.b	$0  ; x 128 y 64
+	.dc.b	$0  ; x 128 y 65
+	.dc.b	$0  ; x 128 y 66
+	.dc.b	$0  ; x 128 y 67
+	.dc.b	$0  ; x 128 y 68
+	.dc.b	$0  ; x 128 y 69
+	.dc.b	$0  ; x 128 y 70
+	.dc.b	$0  ; x 128 y 71
+	.dc.b	$0  ; x 128 y 72
+	.dc.b	$0  ; x 128 y 73
+	.dc.b	$0  ; x 128 y 74
+	.dc.b	$0  ; x 128 y 75
+	.dc.b	$0  ; x 128 y 76
+	.dc.b	$0  ; x 128 y 77
+	.dc.b	$0  ; x 128 y 78
+	.dc.b	$0  ; x 128 y 79
+	.dc.b	$0  ; x 128 y 80
+	.dc.b	$0  ; x 128 y 81
+	.dc.b	$0  ; x 128 y 82
+	.dc.b	$0  ; x 128 y 83
+	.dc.b	$0  ; x 128 y 84
+	.dc.b	$0  ; x 128 y 85
+	.dc.b	$0  ; x 128 y 86
+	.dc.b	$0  ; x 128 y 87
+	.dc.b	$0  ; x 128 y 88
+	.dc.b	$0  ; x 128 y 89
+	.dc.b	$0  ; x 128 y 90
+	.dc.b	$0  ; x 128 y 91
+	.dc.b	$0  ; x 128 y 92
+	.dc.b	$0  ; x 128 y 93
+	.dc.b	$0  ; x 128 y 94
+	.dc.b	$0  ; x 128 y 95
+	.dc.b	$0  ; x 128 y 96
+	.dc.b	$0  ; x 128 y 97
+	.dc.b	$0  ; x 128 y 98
+	.dc.b	$0  ; x 128 y 99
+	.dc.b	$0  ; x 128 y 100
+	.dc.b	$0  ; x 128 y 101
+	.dc.b	$0  ; x 128 y 102
+	.dc.b	$0  ; x 128 y 103
+	.dc.b	$0  ; x 128 y 104
+	.dc.b	$0  ; x 128 y 105
+	.dc.b	$0  ; x 128 y 106
+	.dc.b	$0  ; x 128 y 107
+	.dc.b	$0  ; x 128 y 108
+	.dc.b	$0  ; x 128 y 109
+	.dc.b	$0  ; x 128 y 110
+	.dc.b	$0  ; x 128 y 111
+	.dc.b	$0  ; x 128 y 112
+	.dc.b	$0  ; x 128 y 113
+	.dc.b	$0  ; x 128 y 114
+	.dc.b	$0  ; x 128 y 115
+	.dc.b	$0  ; x 128 y 116
+	.dc.b	$0  ; x 128 y 117
+	.dc.b	$0  ; x 128 y 118
+	.dc.b	$0  ; x 128 y 119
+	.dc.b	$0  ; x 128 y 120
+	.dc.b	$0  ; x 128 y 121
+	.dc.b	$0  ; x 128 y 122
+	.dc.b	$0  ; x 128 y 123
+	.dc.b	$0  ; x 128 y 124
+	.dc.b	$0  ; x 128 y 125
+	.dc.b	$0  ; x 128 y 126
+	.dc.b	$0  ; x 128 y 127
+	.dc.b	$0  ; x 128 y 128
+	.dc.b	$0  ; x 128 y 129
+	.dc.b	$0  ; x 128 y 130
+	.dc.b	$0  ; x 128 y 131
+	.dc.b	$0  ; x 128 y 132
+	.dc.b	$0  ; x 128 y 133
+	.dc.b	$0  ; x 128 y 134
+	.dc.b	$0  ; x 128 y 135
+	.dc.b	$0  ; x 128 y 136
+	.dc.b	$0  ; x 128 y 137
+	.dc.b	$0  ; x 128 y 138
+	.dc.b	$0  ; x 128 y 139
+	.dc.b	$0  ; x 128 y 140
+	.dc.b	$0  ; x 128 y 141
+	.dc.b	$0  ; x 128 y 142
+	.dc.b	$0  ; x 128 y 143
+	.dc.b	$0  ; x 128 y 144
+	.dc.b	$0  ; x 128 y 145
+	.dc.b	$0  ; x 128 y 146
+	.dc.b	$0  ; x 128 y 147
+	.dc.b	$0  ; x 128 y 148
+	.dc.b	$0  ; x 128 y 149
+	.dc.b	$0  ; x 128 y 150
+	.dc.b	$0  ; x 128 y 151
+	.dc.b	$0  ; x 128 y 152
+	.dc.b	$0  ; x 128 y 153
+	.dc.b	$0  ; x 128 y 154
+	.dc.b	$0  ; x 128 y 155
+	.dc.b	$0  ; x 128 y 156
+	.dc.b	$0  ; x 128 y 157
+	.dc.b	$0  ; x 128 y 158
+	.dc.b	$0  ; x 128 y 159
+	.dc.b	$0  ; x 128 y 160
+	.dc.b	$0  ; x 128 y 161
+	.dc.b	$0  ; x 128 y 162
+	.dc.b	$0  ; x 128 y 163
+	.dc.b	$0  ; x 128 y 164
+	.dc.b	$0  ; x 128 y 165
+	.dc.b	$0  ; x 128 y 166
+	.dc.b	$0  ; x 128 y 167
+	.dc.b	$0  ; x 128 y 168
+	.dc.b	$0  ; x 128 y 169
+	.dc.b	$0  ; x 128 y 170
+	.dc.b	$0  ; x 128 y 171
+	.dc.b	$0  ; x 128 y 172
+	.dc.b	$0  ; x 128 y 173
+	.dc.b	$0  ; x 128 y 174
+	.dc.b	$0  ; x 128 y 175
+	.dc.b	$0  ; x 128 y 176
+	.dc.b	$0  ; x 128 y 177
+	.dc.b	$0  ; x 128 y 178
+	.dc.b	$0  ; x 128 y 179
+	.dc.b	$0  ; x 128 y 180
+	.dc.b	$0  ; x 128 y 181
+	.dc.b	$0  ; x 128 y 182
+	.dc.b	$0  ; x 128 y 183
+	.dc.b	$0  ; x 128 y 184
+	.dc.b	$0  ; x 128 y 185
+	.dc.b	$0  ; x 128 y 186
+	.dc.b	$0  ; x 128 y 187
+	.dc.b	$0  ; x 128 y 188
+	.dc.b	$0  ; x 128 y 189
+	.dc.b	$0  ; x 128 y 190
+	.dc.b	$0  ; x 128 y 191
+	.dc.b	$0  ; x 128 y 192
+	.dc.b	$0  ; x 128 y 193
+	.dc.b	$0  ; x 128 y 194
+	.dc.b	$0  ; x 128 y 195
+	.dc.b	$0  ; x 128 y 196
+	.dc.b	$0  ; x 128 y 197
+	.dc.b	$0  ; x 128 y 198
+	.dc.b	$0  ; x 128 y 199
+.fake4:
+
+	.org (.fake4 + $ff) & $ff00
+
+
+PLAYFIELD4:
+
+	.dc.b	$0  ; x 160 y 0
+	.dc.b	$0  ; x 160 y 1
+	.dc.b	$0  ; x 160 y 2
+	.dc.b	$0  ; x 160 y 3
+	.dc.b	$0  ; x 160 y 4
+	.dc.b	$0  ; x 160 y 5
+	.dc.b	$0  ; x 160 y 6
+	.dc.b	$0  ; x 160 y 7
+	.dc.b	$0  ; x 160 y 8
+	.dc.b	$0  ; x 160 y 9
+	.dc.b	$0  ; x 160 y 10
+	.dc.b	$0  ; x 160 y 11
+	.dc.b	$0  ; x 160 y 12
+	.dc.b	$0  ; x 160 y 13
+	.dc.b	$0  ; x 160 y 14
+	.dc.b	$0  ; x 160 y 15
+	.dc.b	$0  ; x 160 y 16
+	.dc.b	$0  ; x 160 y 17
+	.dc.b	$0  ; x 160 y 18
+	.dc.b	$0  ; x 160 y 19
+	.dc.b	$0  ; x 160 y 20
+	.dc.b	$0  ; x 160 y 21
+	.dc.b	$0  ; x 160 y 22
+	.dc.b	$0  ; x 160 y 23
+	.dc.b	$0  ; x 160 y 24
+	.dc.b	$0  ; x 160 y 25
+	.dc.b	$0  ; x 160 y 26
+	.dc.b	$0  ; x 160 y 27
+	.dc.b	$0  ; x 160 y 28
+	.dc.b	$0  ; x 160 y 29
+	.dc.b	$0  ; x 160 y 30
+	.dc.b	$0  ; x 160 y 31
+	.dc.b	$0  ; x 160 y 32
+	.dc.b	$0  ; x 160 y 33
+	.dc.b	$0  ; x 160 y 34
+	.dc.b	$0  ; x 160 y 35
+	.dc.b	$0  ; x 160 y 36
+	.dc.b	$0  ; x 160 y 37
+	.dc.b	$0  ; x 160 y 38
+	.dc.b	$0  ; x 160 y 39
+	.dc.b	$0  ; x 160 y 40
+	.dc.b	$0  ; x 160 y 41
+	.dc.b	$0  ; x 160 y 42
+	.dc.b	$0  ; x 160 y 43
+	.dc.b	$0  ; x 160 y 44
+	.dc.b	$0  ; x 160 y 45
+	.dc.b	$0  ; x 160 y 46
+	.dc.b	$0  ; x 160 y 47
+	.dc.b	$0  ; x 160 y 48
+	.dc.b	$0  ; x 160 y 49
+	.dc.b	$0  ; x 160 y 50
+	.dc.b	$0  ; x 160 y 51
+	.dc.b	$0  ; x 160 y 52
+	.dc.b	$0  ; x 160 y 53
+	.dc.b	$0  ; x 160 y 54
+	.dc.b	$0  ; x 160 y 55
+	.dc.b	$0  ; x 160 y 56
+	.dc.b	$0  ; x 160 y 57
+	.dc.b	$0  ; x 160 y 58
+	.dc.b	$0  ; x 160 y 59
+	.dc.b	$0  ; x 160 y 60
+	.dc.b	$0  ; x 160 y 61
+	.dc.b	$0  ; x 160 y 62
+	.dc.b	$0  ; x 160 y 63
+	.dc.b	$0  ; x 160 y 64
+	.dc.b	$0  ; x 160 y 65
+	.dc.b	$0  ; x 160 y 66
+	.dc.b	$0  ; x 160 y 67
+	.dc.b	$0  ; x 160 y 68
+	.dc.b	$0  ; x 160 y 69
+	.dc.b	$0  ; x 160 y 70
+	.dc.b	$0  ; x 160 y 71
+	.dc.b	$0  ; x 160 y 72
+	.dc.b	$0  ; x 160 y 73
+	.dc.b	$0  ; x 160 y 74
+	.dc.b	$0  ; x 160 y 75
+	.dc.b	$0  ; x 160 y 76
+	.dc.b	$0  ; x 160 y 77
+	.dc.b	$0  ; x 160 y 78
+	.dc.b	$0  ; x 160 y 79
+	.dc.b	$0  ; x 160 y 80
+	.dc.b	$0  ; x 160 y 81
+	.dc.b	$0  ; x 160 y 82
+	.dc.b	$0  ; x 160 y 83
+	.dc.b	$0  ; x 160 y 84
+	.dc.b	$0  ; x 160 y 85
+	.dc.b	$0  ; x 160 y 86
+	.dc.b	$0  ; x 160 y 87
+	.dc.b	$0  ; x 160 y 88
+	.dc.b	$0  ; x 160 y 89
+	.dc.b	$0  ; x 160 y 90
+	.dc.b	$0  ; x 160 y 91
+	.dc.b	$0  ; x 160 y 92
+	.dc.b	$0  ; x 160 y 93
+	.dc.b	$0  ; x 160 y 94
+	.dc.b	$0  ; x 160 y 95
+	.dc.b	$0  ; x 160 y 96
+	.dc.b	$0  ; x 160 y 97
+	.dc.b	$0  ; x 160 y 98
+	.dc.b	$0  ; x 160 y 99
+	.dc.b	$0  ; x 160 y 100
+	.dc.b	$0  ; x 160 y 101
+	.dc.b	$0  ; x 160 y 102
+	.dc.b	$0  ; x 160 y 103
+	.dc.b	$0  ; x 160 y 104
+	.dc.b	$0  ; x 160 y 105
+	.dc.b	$0  ; x 160 y 106
+	.dc.b	$0  ; x 160 y 107
+	.dc.b	$0  ; x 160 y 108
+	.dc.b	$0  ; x 160 y 109
+	.dc.b	$0  ; x 160 y 110
+	.dc.b	$0  ; x 160 y 111
+	.dc.b	$0  ; x 160 y 112
+	.dc.b	$0  ; x 160 y 113
+	.dc.b	$0  ; x 160 y 114
+	.dc.b	$0  ; x 160 y 115
+	.dc.b	$0  ; x 160 y 116
+	.dc.b	$0  ; x 160 y 117
+	.dc.b	$0  ; x 160 y 118
+	.dc.b	$0  ; x 160 y 119
+	.dc.b	$0  ; x 160 y 120
+	.dc.b	$0  ; x 160 y 121
+	.dc.b	$0  ; x 160 y 122
+	.dc.b	$0  ; x 160 y 123
+	.dc.b	$0  ; x 160 y 124
+	.dc.b	$0  ; x 160 y 125
+	.dc.b	$0  ; x 160 y 126
+	.dc.b	$0  ; x 160 y 127
+	.dc.b	$0  ; x 160 y 128
+	.dc.b	$0  ; x 160 y 129
+	.dc.b	$0  ; x 160 y 130
+	.dc.b	$0  ; x 160 y 131
+	.dc.b	$0  ; x 160 y 132
+	.dc.b	$0  ; x 160 y 133
+	.dc.b	$0  ; x 160 y 134
+	.dc.b	$0  ; x 160 y 135
+	.dc.b	$0  ; x 160 y 136
+	.dc.b	$0  ; x 160 y 137
+	.dc.b	$0  ; x 160 y 138
+	.dc.b	$0  ; x 160 y 139
+	.dc.b	$0  ; x 160 y 140
+	.dc.b	$0  ; x 160 y 141
+	.dc.b	$0  ; x 160 y 142
+	.dc.b	$0  ; x 160 y 143
+	.dc.b	$0  ; x 160 y 144
+	.dc.b	$0  ; x 160 y 145
+	.dc.b	$0  ; x 160 y 146
+	.dc.b	$0  ; x 160 y 147
+	.dc.b	$0  ; x 160 y 148
+	.dc.b	$0  ; x 160 y 149
+	.dc.b	$0  ; x 160 y 150
+	.dc.b	$0  ; x 160 y 151
+	.dc.b	$0  ; x 160 y 152
+	.dc.b	$0  ; x 160 y 153
+	.dc.b	$0  ; x 160 y 154
+	.dc.b	$0  ; x 160 y 155
+	.dc.b	$0  ; x 160 y 156
+	.dc.b	$0  ; x 160 y 157
+	.dc.b	$0  ; x 160 y 158
+	.dc.b	$0  ; x 160 y 159
+	.dc.b	$0  ; x 160 y 160
+	.dc.b	$0  ; x 160 y 161
+	.dc.b	$0  ; x 160 y 162
+	.dc.b	$0  ; x 160 y 163
+	.dc.b	$0  ; x 160 y 164
+	.dc.b	$0  ; x 160 y 165
+	.dc.b	$0  ; x 160 y 166
+	.dc.b	$0  ; x 160 y 167
+	.dc.b	$0  ; x 160 y 168
+	.dc.b	$0  ; x 160 y 169
+	.dc.b	$0  ; x 160 y 170
+	.dc.b	$0  ; x 160 y 171
+	.dc.b	$0  ; x 160 y 172
+	.dc.b	$0  ; x 160 y 173
+	.dc.b	$0  ; x 160 y 174
+	.dc.b	$0  ; x 160 y 175
+	.dc.b	$0  ; x 160 y 176
+	.dc.b	$0  ; x 160 y 177
+	.dc.b	$0  ; x 160 y 178
+	.dc.b	$0  ; x 160 y 179
+	.dc.b	$0  ; x 160 y 180
+	.dc.b	$0  ; x 160 y 181
+	.dc.b	$0  ; x 160 y 182
+	.dc.b	$0  ; x 160 y 183
+	.dc.b	$0  ; x 160 y 184
+	.dc.b	$0  ; x 160 y 185
+	.dc.b	$0  ; x 160 y 186
+	.dc.b	$0  ; x 160 y 187
+	.dc.b	$0  ; x 160 y 188
+	.dc.b	$0  ; x 160 y 189
+	.dc.b	$0  ; x 160 y 190
+	.dc.b	$0  ; x 160 y 191
+	.dc.b	$0  ; x 160 y 192
+	.dc.b	$0  ; x 160 y 193
+	.dc.b	$0  ; x 160 y 194
+	.dc.b	$0  ; x 160 y 195
+	.dc.b	$0  ; x 160 y 196
+	.dc.b	$0  ; x 160 y 197
+	.dc.b	$0  ; x 160 y 198
+	.dc.b	$0  ; x 160 y 199
+.fake5:
+
+	.org (.fake5 + $ff) & $ff00
+
+
+PLAYFIELD5:
+
+	.dc.b	$0  ; x 192 y 0
+	.dc.b	$0  ; x 192 y 1
+	.dc.b	$0  ; x 192 y 2
+	.dc.b	$0  ; x 192 y 3
+	.dc.b	$0  ; x 192 y 4
+	.dc.b	$0  ; x 192 y 5
+	.dc.b	$0  ; x 192 y 6
+	.dc.b	$0  ; x 192 y 7
+	.dc.b	$0  ; x 192 y 8
+	.dc.b	$0  ; x 192 y 9
+	.dc.b	$0  ; x 192 y 10
+	.dc.b	$0  ; x 192 y 11
+	.dc.b	$0  ; x 192 y 12
+	.dc.b	$0  ; x 192 y 13
+	.dc.b	$0  ; x 192 y 14
+	.dc.b	$0  ; x 192 y 15
+	.dc.b	$0  ; x 192 y 16
+	.dc.b	$0  ; x 192 y 17
+	.dc.b	$0  ; x 192 y 18
+	.dc.b	$0  ; x 192 y 19
+	.dc.b	$0  ; x 192 y 20
+	.dc.b	$0  ; x 192 y 21
+	.dc.b	$0  ; x 192 y 22
+	.dc.b	$0  ; x 192 y 23
+	.dc.b	$0  ; x 192 y 24
+	.dc.b	$0  ; x 192 y 25
+	.dc.b	$0  ; x 192 y 26
+	.dc.b	$0  ; x 192 y 27
+	.dc.b	$0  ; x 192 y 28
+	.dc.b	$0  ; x 192 y 29
+	.dc.b	$0  ; x 192 y 30
+	.dc.b	$0  ; x 192 y 31
+	.dc.b	$0  ; x 192 y 32
+	.dc.b	$0  ; x 192 y 33
+	.dc.b	$0  ; x 192 y 34
+	.dc.b	$0  ; x 192 y 35
+	.dc.b	$0  ; x 192 y 36
+	.dc.b	$0  ; x 192 y 37
+	.dc.b	$0  ; x 192 y 38
+	.dc.b	$0  ; x 192 y 39
+	.dc.b	$0  ; x 192 y 40
+	.dc.b	$0  ; x 192 y 41
+	.dc.b	$0  ; x 192 y 42
+	.dc.b	$0  ; x 192 y 43
+	.dc.b	$0  ; x 192 y 44
+	.dc.b	$0  ; x 192 y 45
+	.dc.b	$0  ; x 192 y 46
+	.dc.b	$0  ; x 192 y 47
+	.dc.b	$0  ; x 192 y 48
+	.dc.b	$0  ; x 192 y 49
+	.dc.b	$0  ; x 192 y 50
+	.dc.b	$0  ; x 192 y 51
+	.dc.b	$0  ; x 192 y 52
+	.dc.b	$0  ; x 192 y 53
+	.dc.b	$0  ; x 192 y 54
+	.dc.b	$0  ; x 192 y 55
+	.dc.b	$0  ; x 192 y 56
+	.dc.b	$0  ; x 192 y 57
+	.dc.b	$0  ; x 192 y 58
+	.dc.b	$0  ; x 192 y 59
+	.dc.b	$0  ; x 192 y 60
+	.dc.b	$0  ; x 192 y 61
+	.dc.b	$0  ; x 192 y 62
+	.dc.b	$0  ; x 192 y 63
+	.dc.b	$0  ; x 192 y 64
+	.dc.b	$0  ; x 192 y 65
+	.dc.b	$0  ; x 192 y 66
+	.dc.b	$0  ; x 192 y 67
+	.dc.b	$0  ; x 192 y 68
+	.dc.b	$0  ; x 192 y 69
+	.dc.b	$0  ; x 192 y 70
+	.dc.b	$0  ; x 192 y 71
+	.dc.b	$0  ; x 192 y 72
+	.dc.b	$0  ; x 192 y 73
+	.dc.b	$0  ; x 192 y 74
+	.dc.b	$0  ; x 192 y 75
+	.dc.b	$0  ; x 192 y 76
+	.dc.b	$0  ; x 192 y 77
+	.dc.b	$0  ; x 192 y 78
+	.dc.b	$0  ; x 192 y 79
+	.dc.b	$0  ; x 192 y 80
+	.dc.b	$0  ; x 192 y 81
+	.dc.b	$0  ; x 192 y 82
+	.dc.b	$0  ; x 192 y 83
+	.dc.b	$0  ; x 192 y 84
+	.dc.b	$0  ; x 192 y 85
+	.dc.b	$0  ; x 192 y 86
+	.dc.b	$0  ; x 192 y 87
+	.dc.b	$0  ; x 192 y 88
+	.dc.b	$0  ; x 192 y 89
+	.dc.b	$0  ; x 192 y 90
+	.dc.b	$0  ; x 192 y 91
+	.dc.b	$0  ; x 192 y 92
+	.dc.b	$0  ; x 192 y 93
+	.dc.b	$0  ; x 192 y 94
+	.dc.b	$0  ; x 192 y 95
+	.dc.b	$0  ; x 192 y 96
+	.dc.b	$0  ; x 192 y 97
+	.dc.b	$0  ; x 192 y 98
+	.dc.b	$0  ; x 192 y 99
+	.dc.b	$0  ; x 192 y 100
+	.dc.b	$0  ; x 192 y 101
+	.dc.b	$0  ; x 192 y 102
+	.dc.b	$0  ; x 192 y 103
+	.dc.b	$0  ; x 192 y 104
+	.dc.b	$0  ; x 192 y 105
+	.dc.b	$0  ; x 192 y 106
+	.dc.b	$0  ; x 192 y 107
+	.dc.b	$0  ; x 192 y 108
+	.dc.b	$0  ; x 192 y 109
+	.dc.b	$0  ; x 192 y 110
+	.dc.b	$0  ; x 192 y 111
+	.dc.b	$0  ; x 192 y 112
+	.dc.b	$0  ; x 192 y 113
+	.dc.b	$0  ; x 192 y 114
+	.dc.b	$0  ; x 192 y 115
+	.dc.b	$0  ; x 192 y 116
+	.dc.b	$0  ; x 192 y 117
+	.dc.b	$0  ; x 192 y 118
+	.dc.b	$0  ; x 192 y 119
+	.dc.b	$0  ; x 192 y 120
+	.dc.b	$0  ; x 192 y 121
+	.dc.b	$0  ; x 192 y 122
+	.dc.b	$0  ; x 192 y 123
+	.dc.b	$0  ; x 192 y 124
+	.dc.b	$0  ; x 192 y 125
+	.dc.b	$0  ; x 192 y 126
+	.dc.b	$0  ; x 192 y 127
+	.dc.b	$0  ; x 192 y 128
+	.dc.b	$0  ; x 192 y 129
+	.dc.b	$0  ; x 192 y 130
+	.dc.b	$0  ; x 192 y 131
+	.dc.b	$0  ; x 192 y 132
+	.dc.b	$0  ; x 192 y 133
+	.dc.b	$0  ; x 192 y 134
+	.dc.b	$0  ; x 192 y 135
+	.dc.b	$0  ; x 192 y 136
+	.dc.b	$0  ; x 192 y 137
+	.dc.b	$0  ; x 192 y 138
+	.dc.b	$0  ; x 192 y 139
+	.dc.b	$0  ; x 192 y 140
+	.dc.b	$0  ; x 192 y 141
+	.dc.b	$0  ; x 192 y 142
+	.dc.b	$0  ; x 192 y 143
+	.dc.b	$0  ; x 192 y 144
+	.dc.b	$0  ; x 192 y 145
+	.dc.b	$0  ; x 192 y 146
+	.dc.b	$0  ; x 192 y 147
+	.dc.b	$0  ; x 192 y 148
+	.dc.b	$0  ; x 192 y 149
+	.dc.b	$0  ; x 192 y 150
+	.dc.b	$0  ; x 192 y 151
+	.dc.b	$0  ; x 192 y 152
+	.dc.b	$0  ; x 192 y 153
+	.dc.b	$0  ; x 192 y 154
+	.dc.b	$0  ; x 192 y 155
+	.dc.b	$0  ; x 192 y 156
+	.dc.b	$0  ; x 192 y 157
+	.dc.b	$0  ; x 192 y 158
+	.dc.b	$0  ; x 192 y 159
+	.dc.b	$0  ; x 192 y 160
+	.dc.b	$0  ; x 192 y 161
+	.dc.b	$0  ; x 192 y 162
+	.dc.b	$0  ; x 192 y 163
+	.dc.b	$0  ; x 192 y 164
+	.dc.b	$0  ; x 192 y 165
+	.dc.b	$0  ; x 192 y 166
+	.dc.b	$0  ; x 192 y 167
+	.dc.b	$0  ; x 192 y 168
+	.dc.b	$0  ; x 192 y 169
+	.dc.b	$0  ; x 192 y 170
+	.dc.b	$0  ; x 192 y 171
+	.dc.b	$0  ; x 192 y 172
+	.dc.b	$0  ; x 192 y 173
+	.dc.b	$0  ; x 192 y 174
+	.dc.b	$0  ; x 192 y 175
+	.dc.b	$0  ; x 192 y 176
+	.dc.b	$0  ; x 192 y 177
+	.dc.b	$0  ; x 192 y 178
+	.dc.b	$0  ; x 192 y 179
+	.dc.b	$0  ; x 192 y 180
+	.dc.b	$0  ; x 192 y 181
+	.dc.b	$0  ; x 192 y 182
+	.dc.b	$0  ; x 192 y 183
+	.dc.b	$0  ; x 192 y 184
+	.dc.b	$0  ; x 192 y 185
+	.dc.b	$0  ; x 192 y 186
+	.dc.b	$0  ; x 192 y 187
+	.dc.b	$0  ; x 192 y 188
+	.dc.b	$0  ; x 192 y 189
+	.dc.b	$0  ; x 192 y 190
+	.dc.b	$0  ; x 192 y 191
+	.dc.b	$0  ; x 192 y 192
+	.dc.b	$0  ; x 192 y 193
+	.dc.b	$0  ; x 192 y 194
+	.dc.b	$0  ; x 192 y 195
+	.dc.b	$0  ; x 192 y 196
+	.dc.b	$0  ; x 192 y 197
+	.dc.b	$0  ; x 192 y 198
+	.dc.b	$0  ; x 192 y 199.if . => $FFF0
+ .title OVERLOW!!!!!!!!!!!!!!! !
+;  playfield datan .list
+

@@ -1,0 +1,20 @@
+					4/14/89
+
+
+Dear Atari,
+
+	Here is a test program combined with playfield, showing that the
+"Top Rider" device works with the Atari 7800.  This is only a test
+and contains bugs where interrupts need tune-up.  The readout is
+numeric, without linkage of playfield interaction.
+
+	In the next day or two I will apply decoding of the "Top Rider"
+and link it to playfield action.  Is there a phone number I can
+upload it to in Chicago, via 1200 baud modem?
+
+    More soon!
+
+						---- Jim St. Louis
+							(707) 823-7037
+
+						    POB 100, Graton, Ca. 95444

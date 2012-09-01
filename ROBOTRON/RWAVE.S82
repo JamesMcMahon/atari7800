@@ -1,0 +1,953 @@
+******************************************************
+******************************************************
+*
+*
+*    ROBOTRON    29-JULY-83
+*                 2-AUGUST-83           12:00
+*                22-AUGUST-83            8:10
+*
+*
+*         RWAVE.S    - ROBOTRON WAVE-RELATED ROUTINES
+*
+******************************************************
+
+******************************************
+******************************************
+*
+*         WAVESTRT-- SUBROUTINE TO INITIALIZE THINGS BEFORE EACH WAVE
+*
+*                 NOTE:  THERE WILL HAVE TO BE AN ENTRY POINT INTO THIS*********
+*         ROUTINE THAT WILL RESTART A WAVE WHEN THE MC DIES AND THEN RETURNS.
+*         THIS POINT SHOULD BE AFTER THE INC OF WAVENUM AND AFTER THE LOAD
+*         OF THE WAVE-START NUMBERS FROM ROM.
+*
+******************************************
+*
+WAVESTRT  INC     WAVENUM                ;A NEW WAVE
+
+*         INITIALIZE NUMBERS OF EACH OBJECT:
+*         GET THE BLOCK OF STARTNUM NUMBERS FROM WAVETBL AND MOVE IT INTO
+*           THE RAM LOCATIONS STARTING WITH GNUM.
+*         HERE A Z80 WOULD BE NICE
+
+          LDA     #$00
+          STA     TEMP2       ;TEMP2 WILL BE USED FOR HI-BYTE OF WAVENUM*16
+          LDA     WAVENUM                ;THE CURRENT WAVE, 1 TO 255
+*         TURN WAVE NUMBERS OVER 40 INTO THE RANGE 20 - 40
+WS1       CMP     #40                    ;LESS THAN 40?
+          BCC     WS2                    ;IF SO, CONTINUE
+          SEC
+          SBC     #20                    ;CHOP OFF 20
+          JMP     WS1                    ; AND TRY AGAIN
+*         NOW A IS A WAVE # 1 - 40.  MULTIPLY IT BY 16 TO GET WAVETBL OFFSET
+WS2       ASL     A
+          ROL     TEMP2
+          ASL     A
+          ROL     TEMP2
+          ASL     A
+          ROL     TEMP2
+          ASL     A                      ;NOW A HAS LOW BYTE OF PRODUCT
+          ROL     TEMP2                  ;TEMP2 HAS HIGH BYTE OF PRODUCT
+*         ADD OFFSET (JUST COMPUTED) TO #WAVETBL TO FIND BLOCK BASE ADDRESS
+          CLC
+          ADC     #L(WAVETBL-$10) ;WAVETBL ACTUALLY STARTS WITH WAVE 1, NOT 0
+          STA     TEMP0                  ;LOW BYTE OF BLOCK BASE ADDRESS
+          LDA     TEMP2
+          ADC     #H(WAVETBL-$10)
+          STA     TEMP1                  ;HIGH BYTE OF BLOCK BASE ADDRESS
+*         NOW (TEMP0) IS BLOCK BASE ADDRESS. LOOP THRU NUMBERS TO MOVE WITH Y
+          LDY     #STARTNUM              ;NUMBER OF NUMBERS TO MOVE
+WLOOP1    LDA     (TEMP0),Y              ;GET A NUMBER FROM WAVETBL IN ROM
+          STA     GNUM,Y                 ;STORE IT IN RAM
+          DEY
+          BPL     WLOOP1                 ;Y NON-NEGATIVE - MORE TO MOVE
+
+**********NOW THE RAM VARIABLES ARE LOADED WITH START-OF-WAVE NUMBERS
+
+*         ZERO OUT THE OBJECT DATA TABLES
+*                 LOOP FROM XTBL TO XTBL+MAXOBJS*NUMTBLS
+*         THIS WILL WIPE OUT THE ENTIRE TOP PAGE OF THE TABLES, EVEN
+*                 ABOVE XTBL+MAXOBJS*NUMTBLS
+          LDA     #L(XTBL)
+          STA     TEMP0                  ;TEMP0 IS LOW BYTE OF ADDRESS
+          LDA     #H(XTBL)
+          STA     TEMP1
+          LDY     #$00                   ;USE PURE INDIRECT STORE
+WSZLOOP   LDA     #$00           ;ZERO OUT OBJECT DATA TABLES LOOP
+          STA     (TEMP0),Y              ;ZERO A LOCATION
+          INC     TEMP0
+          BNE     WSZLOOP
+          INC     TEMP1
+          LDA     TEMP1
+          CMP     #H(XTBL+MAXOBJS*NUMTBLS)
+          BCC     WSZLOOP                ;KEEP GOING IF TEMP1 LESS THAN TOP LOC
+          BEQ     WSZLOOP                ;ALSO GO IF EQUAL
+*         NOW TEMP1 (HI BYTE OF INDEX) IS ABOVE UPPER LIMIT, SO WE ARE DONE
+
+
+*         SET UP EACH TYPE OF OBJECT INDIVIDUALLY:
+*             SET OBJECT DATA TABLE SEGMENT POINTER (FPTR, HPTR, ETC.)
+*             CREATE SPECIFIED NUMBER OF OBJECTS IN OBJECT DATA TABLES
+*                      ( IF START-OF-WAVE NUMBER IS 0, CREATE 1 OBJECT
+*                        SO OTHER LOOPS WON'T GET SCREWED UP )
+*             SET ALL OBJECT DATA TABLE VARIABLES
+*             SET ALL VARIABLES GLOBAL TO A CERTAIN OBJECT TYPE (I.E. GSPEED)
+*
+*         X IS A RUNNING POINTER INTO THE OBJECT DATA TABLES
+          LDX     #$01
+*         INITIALIZE NUMBER OF CREATURES LEFT
+          LDA     #$00
+          STA     CRELEFT
+*
+
+**********GRUNTS
+*         NO NEED TO SET POINTER - OBJECT 1 IS ALWAYS THE FIRST GRUNT
+
+          LDY     GNUM                   ;LOOP THRU ALL GRUNTS
+          BNE     WSGGO                  ;AT LEAST 1 GRUNT - DISTRIBUTE GRUNTS
+*         NO GRUNTS
+          LDA     #NULLCODE
+          STA     CRTBL,X                ;STORE A NULL OBJECT
+          INX
+          JMP     WSGCONT                ;GO TO GLOBAL GRUNT VARIABLE SETUP
+
+WSGGO     DEY         ;Y INDEXES UNTIL NEGATIVE - FIX FENCEPOST ERROR
+WSGLOOP   JSR     RANDXYBX               ;GET A VALID GRUNT POSITION
+          LDA     RANDOMX
+          STA     XTBL,X                 ;GRUNT XPOS
+          CLC
+          ADC     #GWID                  ;COMPUTE EXTENT
+          STA     XEXTBL,X               ;GRUNT X EXTENT
+          LDA     RANDOMY
+          STA     YTBL,X                 ;GRUNT YPOS
+          CLC
+          ADC     #GHEIGHT               ;COMPUTE EXTENT
+          STA     YEXTBL,X               ;GRUNT Y EXTENT
+          TYA      ;USE GRUNT # AS SEED TO GET GOOD DISTRIBUTION OF MOVE TIMERS
+          AND     #MASK3                 ;GET A NUMBER 0 - 7
+          CLC
+          ADC     #WSWAIT
+          STA     MTTBL,X                ;NUMBER OF FRAMES UNTIL MOVE
+          JSR     RAND2                  ;GET A NUMBER, 0 - 2
+          CLC
+          ADC     #$01                   ;NUMBER, 1 - 3
+          STA     SATBL,X                ;GRUNT ANIMATION STEP
+          LDA     #$00
+          STA     DXTBL,X                ;GRUNT DX (DIR) MUST ALWAYS BE 0
+          LDA     #GCODE
+          STA     CRTBL,X                ;GRUNT OBJECT CODE
+          JSR     SETSTAT         ;FOR DEBUGGING @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+*         DLPHTBL,DLPLTBL AND DL2PTBL WILL BE SET UP BY THE LOAD AT THE END OF
+*                 THE WAVESTRT ROUTINE
+*         DONE WITH THIS GRUNT, ON TO NEXT...
+          INC     CRELEFT                ;ANOTHER LIVING CREATURE IS CREATED
+          INX                            ;INCREMENT RUNNING POINTER
+          DEY
+          BPL     WSGLOOP                ;MORE GRUNTS TO SET UP
+
+*         SET$GSPEED - NUMBER OF FRAMES BETWEEN GRUNT MOVES AT START
+*                OF WAVE    - THIS VARIABLE WILL BE CHANGED DURING THE WAVE
+WSGCONT   LDA     WAVENUM                ;CURRENT WAVE NUMBER
+          CMP     #$07                   ;ONLY HAVE 7 WAVES IN TABLE
+          BCC     LOOKGSP                ;LOOK UP GSPEED FROM TABLE
+*         WE ARE ABOVE WAVE 7, SET GSPEED TO #GSPMAX
+          LDA     #GSPMAX
+          STA     GSPEED
+          JMP     WSG1
+LOOKGSP   TAY                            ;PUT WAVE NUMBER IN Y
+          LDA     GSPTBL-1,Y   ;LOAD STARTING GSPEED - USE -1 BECAUSE NO WAVE 0
+          STA     GSPEED
+WSG1                                     ;DONE WITH GRUNT SETUP
+
+**********FAMILY
+          STX     FPTR                   ;SET POINTER TO START OF FAMILY
+
+          LDA     MONUM                  ;CHECK IF NO FAMILY EXIST
+          BNE     WSFLOOP                ;IF AT LEAST 1 MOMMY, OK TO SET UP
+          LDA     DNUM
+          BNE     WSFLOOP                ;IF AT LEAST 1 DADDY, OK TO SET UP
+          LDA     MINUM
+          BNE     WSFLOOP                ;IF AT LEAST 1 MIKEY, OK TO SET UP
+*         IF WE ARE HERE, NO FAMILY TO SET UP
+          LDA     #NULLCODE
+          STA     CRTBL,X                ;STORE A NULL OBJECT
+          INX
+          JMP     WSFCONT
+
+WSFLOOP   LDA     #$02                   ;TEMP2 IS FAMILY FINISHED FLAG - MO,
+          STA     TEMP2                  ;  D AND MI ROUTINES DEC THIS IF NO
+                   ;  MO, D OR MI TO SET UP. IF IT GOES NEGATIVE, WE ARE DONE
+*         CHECK MOMMIES
+          DEC     MONUM
+          BPL     ADDMOMMY               ;THERE ARE MOMMIES LEFT TO SET UP
+          DEC     TEMP2                  ;NO MOMMIES - DEC FAMILY FINISHED FLAG
+          JMP     WSFCHKD                ;MOVE ON TO DADDIES
+ADDMOMMY  LDA     #MOCODE
+          STA     CRTBL,X                ;STORE MOMMY CODE IN CRTBL
+          JSR     ADDFAM
+*         CHECK DADDIES
+WSFCHKD   DEC     DNUM
+          BPL     ADDDADDY               ;THERE ARE DADDIES LEFT TO SET UP
+          DEC     TEMP2                  ;NO DADDIES - DEC FAMILY FINISHED FLAG
+          JMP     WSFCHKMI               ;MOVE ON TO MIKEYS
+ADDDADDY  LDA     #DCODE
+          STA     CRTBL,X                ;STORE DADDY CODE IN CRTBL
+          JSR     ADDFAM
+*         CHECK MIKEYS
+WSFCHKMI  DEC     MINUM
+          BPL     ADDMIKEY               ;THERE ARE MIKEYS LEFT TO SET UP
+          DEC     TEMP2                  ;NO MIKEYS - DEC FAMILY FINISHED FLAG
+          JMP     WSF1
+ADDMIKEY  LDA     #MICODE
+          STA     CRTBL,X                ;STORE MIKEY CODE IN CRTBL
+          JSR     ADDFAM
+*         CHECK IF THERE ARE NO FAMILY MEMBERS LEFT
+WSF1      LDA     TEMP2
+          BPL     WSFLOOP                ;THERE ARE STILL MORE THINGS TO SET UP
+*         NO MORE FAMILY TO ADD
+          JMP     WSFCONT
+
+*         SUBROUTINE TO PUT A FAMILY MEMBER INTO OBJECT DATA TABLES WITH STATE
+*           VARIABLES SET UP.  ASSUME CRTBL,X ALREADY LOADED WITH CORRECT CODE
+ADDFAM
+          JSR     RANDXY                 ;GET A RANDOM POSITION
+          LDA     RANDOMX
+          STA     XTBL,X                 ;FAMILY XPOS
+          CLC
+          ADC     #FWID                  ;COMPUTE EXTENT
+          STA     XEXTBL,X               ;FAMILY X EXTENT
+          LDA     RANDOMY
+          STA     YTBL,X                 ;FAMILY YPOS
+          CLC
+          ADC     #FHEIGHT               ;COMPUTE EXTENT
+          STA     YEXTBL,X               ;FAMILY Y EXTENT
+          JSR     RANDOM
+          AND     #MASK3                 ;GET A NUMBER 0 - 7
+          STA     DTTBL,X                ;DIRECTION TIMER
+          STA     MTTBL,X                ;NUMBER OF FRAMES UNTIL MOVE
+          JSR     RAND2                  ;GET A NUMBER 0 - 2
+          STA     SATBL,X                ;FAMILY ANIMATION STEP
+          JSR     RANDOM
+          AND     #MASK3
+          STA     DXTBL,X                ;RANDOM DIRECTION 0 - 7
+          JSR     SETSTAT     ; FOR DEBUGGING @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+*         DLPHTBL,DLPLTBL AND DL2PTBL WILL BE SET UP BY THE LOAD AT THE END OF
+*                 THE WAVESTRT ROUTINE
+*         DONE WITH THIS GRUNT, ON TO NEXT...
+          INX                            ;INCREMENT RUNNING POINTER
+          RTS
+
+WSFCONT
+*         SET UP GLOBAL FAMILY VARIABLES
+          LDA     #$05                   ;MAY WANT TO USE A TABLE LOOKUP
+          STA     FSPEED                 ;FAMILY SPEED
+          LDA     #$00
+          STA     FAMLEVEL            ;RESET SCORE LEVEL FOR PICKING UP FAMILY
+
+
+**********HULKS
+          STX     HPTR                   ;POINTER TO START OF HULKS
+
+          LDY     HNUM                   ;LOOP THRU ALL HULKS
+          BNE     WSHGO                  ;AT LEAST 1 HULK - DISTRIBUTE HULKS
+*         NO HULKS
+          LDA     #NULLCODE
+          STA     CRTBL,X                ;STORE A NULL OBJECT
+          INX
+          JMP     WSHCONT                ;GO TO GLOBAL HULK VARIABLE SETUP
+
+WSHGO     DEY           ; Y MUST DEC UNTIL NEGATIVE
+WSHLOOP   JSR     RANDXYBX               ;GET A VALID HULK POSITION
+          LDA     RANDOMX
+          STA     XTBL,X                 ;HULK XPOS
+          CLC
+          ADC     #HWID                  ;COMPUTE EXTENT
+          STA     XEXTBL,X               ;HULK X EXTENT
+          LDA     RANDOMY
+          STA     YTBL,X                 ;HULK YPOS
+          CLC
+          ADC     #HHEIGHT               ;COMPUTE EXTENT
+          STA     YEXTBL,X               ;HULK Y EXTENT
+          TYA      ;USE HULK # AS SEED TO GET GOOD DISTRIBUTION OF MOVE TIMERS
+          AND     #MASK3                 ;GET A NUMBER 0 - 7
+          CLC
+          ADC     #WSWAIT                ;WAIT A LITTLE AFTER RES-IN
+          STA     MTTBL,X                ;NUMBER OF FRAMES UNTIL MOVE
+          JSR     RAND2                  ;GET A NUMBER 0 - 2
+          CLC
+          ADC     #$01                   ;GET A NUMBER 1, 2 OR 3
+          STA     SATBL,X                ;HULK ANIMATION STEP
+          JSR     RANDOM
+          AND     #MASK3
+          STA     DTTBL,X                ;# MOVES UNTIL DIR CHANGE
+          AND     #MASK2
+          STA     DXTBL,X                ;DIRECTION MOVING
+          LDA     #HCODE
+          STA     CRTBL,X                ;HULK OBJECT CODE
+          JSR     SETSTAT     ; FOR DEBUGGING @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+*         DLPHTBL,DLPLTBL AND DL2PTBL WILL BE SET UP BY THE LOAD AT THE END OF
+*                 THE WAVESTRT ROUTINE
+*         DONE WITH THIS HULK, ON TO NEXT...
+          INX                            ;INCREMENT RUNNING POINTER
+          DEY
+          BPL     WSHLOOP                ;MORE HULKS TO SET UP
+
+WSHCONT           ;SET UP VARIABLES GLOBAL TO HULKS
+*         SET HSPEED - NUMBER OF FRAMES BETWEEN HULK MOVES
+          LDA     WAVENUM                ;CURRENT WAVE NUMBER
+          CMP     #13                    ;ONLY HAVE 13 WAVES IN TABLE
+          BCC     LOOKHSP                ;LOOK UP HSPEED FROM TABLE
+*         WE ARE ABOVE WAVE 13, SET HSPEED TO #HSPMAX
+          LDA     #HSPMAX
+          STA     HSPEED
+          JMP     WSH1
+LOOKHSP   TAY                            ;PUT WAVE NUMBER IN Y
+          LDA     HSPTBL-1,Y   ;LOAD STARTING HSPEED - USE -1 BECAUSE NO WAVE 0
+          STA     HSPEED
+WSH1                                     ;DONE WITH HULK SETUP
+
+**********SPHERIODS AND QUARKS
+          STX     SPTR                   ;POINTER TO START OF SPHERIODS
+
+*         SET UP GLOBAL SPHERIOD AND QUARK VARIABLES - NEEDED FOR INDIV. SETUP
+*         SET SQBTIME  --  BASE TIME UNTIL FIRST BIRTH IN A WAVE
+          LDA     WAVENUM
+          CMP     #17
+          BCC     LOOKSQBT               ;LOOK UP WAVE 1 THRU 17 IN THE TABLE
+*         ABOVE WAVE 17, SET SQBTIME TO #SQBTMAX
+          LDA     #SQBTMAX
+          STA     SQBTIME
+          JMP     WSSQ1
+LOOKSQBT  TAY                            ;LOOK UP IN SQBTTBL
+          LDA     SQBTTBL-1,Y
+          STA     SQBTIME
+WSSQ1             ;SET UP INDIVIDUAL SPHEROIDS AND QUARKS NOW
+
+*         SPHEROID LOOP
+          LDY     SNUM                   ;LOOP THRU ALL SPHEROIDS
+          BNE     WSSGO                  ;AT LEAST 1 SPHEROID - DISTRIBUTE THEM
+*         NO SPHEROIDS
+          LDA     #NULLCODE
+          STA     CRTBL,X                ;STORE A NULL OBJECT
+          INX
+          JMP     WSSCONT                ;GO ON TO QUARKS
+
+WSSGO     DEY                            ;Y RUNS UNTIL NEGATIVE
+WSSLOOP   JSR     ADDSQ                  ;SET UP  MOST STATE VARIABLES
+          LDA     #SCODE
+          STA     CRTBL,X
+          LDA     #MAXSSPD
+          STA     TEMP4
+          JSR     RANDPM                 ;GET RANDOM NUM ON + OR - TEMP4
+          STA     DXTBL,X                ;START X SPEED
+          JSR     RANDPM
+          STA     DYTBL,X                ;START Y SPEED
+*         DONE WITH THIS SPHEROID, ON TO NEXT...
+          INC     CRELEFT                ;ANOTHER LIVING CREATURE IS CREATED
+          INX                            ;INCREMENT RUNNING POINTER
+          DEY
+          BPL     WSSLOOP                ;MORE SPHEROIDS TO SET UP
+
+WSSCONT   STX     QPTR                   ;START OF QUARKS
+
+*         QUARK LOOP
+          LDY     QNUM                   ;LOOP THRU ALL QUARKS
+          BNE     WSQGO                  ;AT LEAST 1 QUARK - DISTRIBUTE THEM
+*         NO QUARKS
+          LDA     #NULLCODE
+          STA     CRTBL,X                ;STORE A NULL OBJECT
+          INX
+          JMP     WSQCONT                ;SET UP GLOBAL QUARK VARIABLES
+
+WSQGO     DEY                            ;Y RUNS UNTIL NEGATIVE
+WSQLOOP   JSR     ADDSQ                  ;SET UP  MOST STATE VARIABLES
+          LDA     #QCODE
+          STA     CRTBL,X
+          JSR     RANDOM
+          AND     #MASK3
+          STA     DXTBL,X                ;DIR MOVING
+          STA     DYTBL,X                ;DIR CHANGE TIMER
+*         DONE WITH THIS QUARK, ON TO NEXT...
+          INC     CRELEFT                ;ANOTHER LIVING CREATURE IS CREATED
+          INX                            ;INCREMENT RUNNING POINTER
+          DEY
+          BPL     WSQLOOP                ;MORE QUARKS TO SET UP
+          JMP     WSQCONT
+
+*         SUBROUTINE TO SET UP STATE VARIABLES COMMON TO SPHEROIDS AND QUARKS
+ADDSQ             ;OBJECT NUMBER IS IN X
+          JSR     RANDXYBX               ;GET A VALID POSITION
+          LDA     RANDOMX
+          STA     XTBL,X                 ;XPOS
+          CLC
+          ADC     #SQWID                 ;COMPUTE EXTENT
+          STA     XEXTBL,X               ;X EXTENT
+          LDA     RANDOMY
+          STA     YTBL,X                 ;YPOS
+          CLC
+          ADC     #SQHEIGHT              ;COMPUTE EXTENT
+          STA     YEXTBL,X               ;Y EXTENT
+          JSR     RANDOM
+          AND     #MASK3
+          STA     MTTBL,X                ;# FRAMES UNTIL MOVE
+          LDA     #SQBIRTHS
+          STA     DTTBL,X                ;# OF BIRTHS LEFT
+          LDA     #SQSTEP1
+          STA     SATBL,X                ;STARTING ANIMATION STEP
+          JSR     RANDOM
+          AND     #MASK3
+          ADC     SQBTIME
+          STA     MISCTBL,X              ;# MOVES UNTIL FIRST BIRTH
+*         CALLING ROUTINE SHOULD SET UP SPECIFIC S + Q STATE VARIABLES:
+*                 SPHEROID:  DELTA X AND DELTA Y
+*                 QUARK:     DIR AND DIR CHANGE TIMER
+*                 BOTH:   CREATURE TYPE
+*
+*         DLPHTBL,DLPLTBL AND DL2PTBL WILL BE SET UP BY THE LOAD AT THE END OF
+*                 THE WAVESTRT ROUTINE
+          RTS
+
+WSQCONT           ;SET UP VARIABLES GLOBAL TO QUARKS
+*         SET QSPEED  - NUMBER OF FRAMES BETWEEN QUARK MOVES
+          LDA     WAVENUM                ;CURRENT WAVE NUMBER
+          CMP     #17                    ;ONLY HAVE 17 WAVES IN TABLE
+          BCC     LOOKQSP                ;LOOK UP QSPEED FROM TABLE
+*         WE ARE ABOVE WAVE 17, SET QSPEED TO #QSPMAX
+          LDA     #QSPMAX
+          STA     QSPEED
+          JMP     WSSQ2
+LOOKQSP   TAY                            ;PUT WAVE NUMBER IN Y
+          LDA     QSPTBL-1,Y   ;LOAD STARTING QSPEED - USE -1 BECAUSE NO WAVE 0
+          STA     QSPEED
+WSSQ2                                    ;DONE WITH QUARKS
+
+**********ENFORCERS AND TANKS
+
+*         ENFORCERS: ALLOCATE ENUM NULL ENFORCERS
+*                 (NORMALLY ENUM SHOULD BE SNUM * #SQBIRTHS)
+          STX     EPTR                   ;POINTER TO START OF ENFORCERS
+*         ENFORCER LOOP
+          LDY     ENUM                   ;LOOP THRU ALL ENFORCERS
+          BNE     WSEGO                  ;AT LEAST 1 ENFORCER - DISTRIBUTE THEM
+*         NO ENFORCERS
+          LDA     #NULLCODE
+          STA     CRTBL,X                ;STORE A NULL OBJECT
+          INX
+          JMP     WSECONT                ;SET UP GLOBAL ENFORCER VARIABLES
+
+WSEGO     DEY                            ;Y RUNS UNTIL NEGATIVE
+WSELOOP   LDA     #NULLCODE
+          STA     CRTBL,X                ;STORE NULL OBJECT
+          INX
+          DEY
+          BPL     WSELOOP                ;MORE ENFORCERS TO ALLOCATE
+WSECONT           ;SET UP VARIABLES GLOBAL TO ENFORCERS
+                  ;THERE ARE NONE SO FAR
+
+*         TANKS   -- THEY ACTUALLY EXIST AT START OF WAVE
+          STX     TPTR                   ;POINTER TO START OF TANKS
+
+          LDY     TNUM                   ;LOOP THRU ALL TANKS
+          BNE     WSTGO                  ;AT LEAST 1 TANK - DISTRIBUTE TANKS
+*         NO TANKS
+          LDA     #NULLCODE
+          STA     CRTBL,X                ;STORE A NULL OBJECT
+          INX
+          JMP     WSTCONT                ;GO TO GLOBAL TANK VARIABLE SETUP
+
+WSTGO     DEY                            ;Y RUNS UNTIL NEGATIVE
+WSTLOOP   JSR     RANDXYBX               ;GET A VALID TANK POSITION
+          LDA     RANDOMX
+          STA     XTBL,X                 ;TANK XPOS
+          CLC
+          ADC     #TWID                  ;COMPUTE EXTENT
+          STA     XEXTBL,X               ;TANK X EXTENT
+          LDA     RANDOMY
+          STA     YTBL,X                 ;TANK YPOS
+          CLC
+          ADC     #THEIGHT               ;COMPUTE EXTENT
+          STA     YEXTBL,X               ;TANK Y EXTENT
+          TYA      ;USE BRAIN # AS SEED TO GET GOOD DISTRIBUTION OF MOVE TIMERS
+          AND     #MASK3                 ;GET A NUMBER 0 - 7
+          STA     MTTBL,X                ;NUMBER OF FRAMES UNTIL MOVE
+          STA     DXTBL,X
+          AND     #MASK2
+          STA     SATBL,X
+          STA     DYTBL,X
+          JSR     RANDOM
+          AND     #MASK3
+          ADC     #TSTIME                ;BASE TIME BETWEEN TANK SHOTS
+          STA     MISCTBL,X
+          LDA     #TCODE
+          STA     CRTBL,X
+*         DLPHTBL,DLPLTBL AND DL2PTBL WILL BE SET UP BY THE LOAD AT THE END OF
+*                 THE WAVESTRT ROUTINE
+*         DONE WITH THIS TANK, ON TO NEXT...
+          INC     CRELEFT                ;ANOTHER LIVING CREATURE IS CREATED
+          INX                            ;INCREMENT RUNNING POINTER
+          DEY
+          BPL     WSTLOOP                ;MORE TANKS TO SET UP
+
+WSTCONT           ;SET UP VARIABLES GLOBAL TO TANKS
+*         SET TSPEED - NUMBER OF FRAMES BETWEEN TANK MOVES
+          LDA     WAVENUM                ;CURRENT WAVE NUMBER
+          CMP     #17                    ;ONLY HAVE 17 WAVES IN TABLE
+          BCC     LOOKTSP                ;LOOK UP TSPEED FROM TABLE
+*         WE ARE ABOVE WAVE 17, SET TSPEED TO #TSPMAX
+          LDA     #TSPMAX
+          STA     TSPEED
+          JMP     WST1
+LOOKTSP   TAY                            ;PUT WAVE NUMBER IN Y
+          LDA     TSPTBL-1,Y   ;LOAD STARTING TSPEED - USE -1 BECAUSE NO WAVE 0
+          STA     TSPEED
+WST1                                     ;DONE WITH TANK SETUP
+
+**********BRAINS
+          STX     BPTR                   ;POINTER TO START OF BRAINS
+
+          LDA     FPTR
+          STA     TEMP0                  ;POINTER USED TO SET UP TARGETS
+
+          LDY     BNUM                   ;LOOP THRU ALL BRAINS
+          BNE     WSBGO                  ;AT LEAST 1 BRAIN - DISTRIBUTE BRAINS
+*         NO BRAINS
+          LDA     #NULLCODE
+          STA     CRTBL,X                ;STORE A NULL OBJECT
+          INX
+          JMP     WSBCONT                ;GO TO GLOBAL BRAIN VARIABLE SETUP
+
+WSBGO     DEY                            ;Y RUNS UNTIL NEGATIVE
+WSBLOOP   JSR     RANDXYBX               ;GET A VALID BRAIN POSITION
+          LDA     RANDOMX
+          STA     XTBL,X                 ;BRAIN XPOS
+          CLC
+          ADC     #BWID                  ;COMPUTE EXTENT
+          STA     XEXTBL,X               ;BRAIN X EXTENT
+          LDA     RANDOMY
+          STA     YTBL,X                 ;BRAIN YPOS
+          CLC
+          ADC     #BHEIGHT               ;COMPUTE EXTENT
+          STA     YEXTBL,X               ;BRAIN Y EXTENT
+          TYA      ;USE BRAIN # AS SEED TO GET GOOD DISTRIBUTION OF MOVE TIMERS
+          AND     #MASK3                 ;GET A NUMBER 0 - 7
+          STA     MTTBL,X                ;NUMBER OF FRAMES UNTIL MOVE
+          JSR     RAND2                  ;GET A NUMBER 0 - 2
+          STA     SATBL,X                ;BRAIN ANIMATION STEP
+          JSR     RANDOM
+          AND     #MASK3
+          STA     DTTBL,X                ;FAMILY SEEK TIMER
+          STA     DXTBL,X                ;DIRECTION MOVING
+
+* SELECT TARGET FROM FAMILY OBJECTS AND PUT IT IN DYTBL (0 IF NO FAMILY)
+WSBTARG   LDA     TEMP0
+          CMP     HPTR
+          BCC     WSB02                  ;BRANCH IF TEMP0 IS STILL VALID
+*         RESET TEMP0 TO FPTR
+          LDA     FPTR
+          STA     TEMP0
+WSB02             ;NOW PUT TEMP0 INTO DYTBL - BRAIN TARGET
+          STA     DYTBL,X
+          INC     TEMP0
+
+          JSR     RANDOM
+          AND     #MASK3
+          ADC     BSTIME                 ;BASE TIME BEFORE BRAINS SHOOT
+          STA     MISCTBL,X              ;FRAMES UNTIL SHOOT
+          LDA     #BCODE
+          STA     CRTBL,X                ;BRAIN OBJECT CODE
+          JSR     SETSTAT         ;FOR DEBUGGING @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+*         DLPHTBL,DLPLTBL AND DL2PTBL WILL BE SET UP BY THE LOAD AT THE END OF
+*                 THE WAVESTRT ROUTINE
+*         DONE WITH THIS BRAIN, ON TO NEXT...
+          INC     CRELEFT                ;ANOTHER LIVING CREATURE IS CREATED
+          INX                            ;INCREMENT RUNNING POINTER
+          DEY
+          BPL     WSBLOOP                ;MORE BRAINS TO SET UP
+
+WSBCONT           ;SET UP VARIABLES GLOBAL TO BRAINS
+*         SET BSTIME AND BSPEED - BRAIN SHOOTING BASE TIME AND
+*                 NUMBER OF FRAMES BETWEEN BRAIN MOVES
+          LDA     WAVENUM                ;CURRENT WAVE NUMBER
+          CMP     #15                    ;ONLY HAVE 15 WAVES IN TABLE
+          BCC     LOOKBS                 ;LOOK UP BSTIME AND BSPEED
+*         WE ARE ABOVE WAVE 15, SET BSTIME=#BSTMAX, BSPEED=#BSPMAX
+          LDA     #BSPMAX
+          STA     BSPEED
+          LDA     #BSTMAX
+          STA     BSTIME
+          JMP     WSB1
+LOOKBS    TAY                            ;PUT WAVE NUMBER IN Y
+          LDA     BSPTBL-1,Y   ;LOAD STARTING BSTIME - USE -1 BECAUSE NO WAVE 0
+          STA     BSPEED
+          LDA     BSTTBL-1,Y
+          STA     BSTIME
+WSB1                                     ;DONE WITH BRAIN SETUP
+
+***********PROGS
+*         PROGS: ALLOCATE PNUM NULL PROGS
+          STX     PPTR                   ;POINTER TO START OF PROGS
+*         PROG LOOP
+          LDY     PNUM                   ;LOOP THRU ALL PROGS
+          BNE     WSPGO                  ;AT LEAST 1 PROG - DISTRIBUTE THEM
+*         NO PROGS
+          LDA     #NULLCODE
+          STA     CRTBL,X                ;STORE A NULL OBJECT
+          INX
+          JMP     WSPCONT                ;SET UP GLOBAL PROG VARIABLES
+
+WSPGO     DEY                            ;Y RUNS UNTIL NEGATIVE
+WSPLOOP   LDA     #NULLCODE
+          STA     CRTBL,X                ;STORE NULL OBJECT
+          INX
+          DEY
+          BPL     WSPLOOP                ;MORE PROGS TO ALLOCATE
+WSPCONT           ;SET UP VARIABLES GLOBAL TO PROGS
+                  ;THERE ARE NONE SO FAR
+
+**********MISSILES
+          STX     MPTR                   ;POINTER TO START OF MISSILES
+
+*         COMPUTE NUMBER OF MISSILES TO ALLOCATE: TOTAL OF THE 3 MISSILE TYPES
+          CLC
+          LDA     EMNUM
+          ADC     CMNUM
+          ADC     TMNUM
+          TAY                            ;Y IS INDEX FOR LOOP THRU ALL MISSILES
+          BNE     WSMGO                  ;AT LEAST 1 MISSILE - DISTRIBUTE THEM
+*           NO MISSILES
+          LDA     #NULLCODE
+          STA     CRTBL,X                ;STORE A NULL OBJECT
+          INX
+          JMP     WSMCONT                ;GO TO GLOBAL MISSILE VARIABLE SETUP
+
+WSMGO     DEY                            ;Y RUNS UNTIL NEGATIVE
+WSMLOOP   LDA     #NULLCODE
+          STA     CRTBL,X                ;STORE NULL OBJECT
+          INX
+          DEY
+          BPL     WSMLOOP                ;MORE PROGS TO ALLOCATE
+
+WSMCONT           ;SET UP VARIABLES GLOBAL TO MISSILES
+*         CURRENTLY WE HAVE NONE TO SET UP
+WSM1                                     ;DONE WITH MISSILE SETUP
+
+*@@@@@@@@@@@@@@@
+*@@       THIS IS A HACK TO ELIMINATE LOADER PROBLEMS
+*@@@@@
+*@@       SET UP NULL THINGS IN EACH ZONE AT THE END OF DISPLAY LIST
+
+          JMP     SHOOM                  ;SKIP OVER THIS ;;;;;;;;;;;;;;;;;;
+
+          LDA     #$01
+          STA     STTBL,X
+          LDA     #$05
+          STA     CRTBL,X
+          LDA     #$B0
+          STA     XTBL,X
+          LDA     #$B5
+          STA     XEXTBL,X
+          LDA     #$01
+          STA     YTBL,X
+          LDA     #$05
+          STA     YEXTBL,X
+          INX
+
+          LDA     #$01
+          STA     STTBL,X
+          LDA     #$05
+          STA     CRTBL,X
+          LDA     #$B0
+          STA     XTBL,X
+          LDA     #$B5
+          STA     XEXTBL,X
+          LDA     #$11
+          STA     YTBL,X
+          LDA     #$15
+          STA     YEXTBL,X
+          INX
+
+          LDA     #$01
+          STA     STTBL,X
+          LDA     #$05
+          STA     CRTBL,X
+          LDA     #$B0
+          STA     XTBL,X
+          LDA     #$B5
+          STA     XEXTBL,X
+          LDA     #$21
+          STA     YTBL,X
+          LDA     #$25
+          STA     YEXTBL,X
+          INX
+
+          LDA     #$01
+          STA     STTBL,X
+          LDA     #$05
+          STA     CRTBL,X
+          LDA     #$B0
+          STA     XTBL,X
+          LDA     #$B5
+          STA     XEXTBL,X
+          LDA     #$31
+          STA     YTBL,X
+          LDA     #$35
+          STA     YEXTBL,X
+          INX
+
+          LDA     #$01
+          STA     STTBL,X
+          LDA     #$05
+          STA     CRTBL,X
+          LDA     #$B0
+          STA     XTBL,X
+          LDA     #$B5
+          STA     XEXTBL,X
+          LDA     #$41
+          STA     YTBL,X
+          LDA     #$45
+          STA     YEXTBL,X
+          INX
+
+          LDA     #$01
+          STA     STTBL,X
+          LDA     #$05
+          STA     CRTBL,X
+          LDA     #$B0
+          STA     XTBL,X
+          LDA     #$B5
+          STA     XEXTBL,X
+          LDA     #$51
+          STA     YTBL,X
+          LDA     #$55
+          STA     YEXTBL,X
+          INX
+
+          LDA     #$01
+          STA     STTBL,X
+          LDA     #$05
+          STA     CRTBL,X
+          LDA     #$B0
+          STA     XTBL,X
+          LDA     #$B5
+          STA     XEXTBL,X
+          LDA     #$61
+          STA     YTBL,X
+          LDA     #$65
+          STA     YEXTBL,X
+          INX
+
+          LDA     #$01
+          STA     STTBL,X
+          LDA     #$05
+          STA     CRTBL,X
+          LDA     #$71
+          LDA     #$B0
+          STA     XTBL,X
+          LDA     #$B5
+          STA     XEXTBL,X
+          STA     YTBL,X
+          LDA     #$75
+          STA     YEXTBL,X
+          INX
+
+          LDA     #$01
+          STA     STTBL,X
+          LDA     #$05
+          STA     CRTBL,X
+          LDA     #$81
+          LDA     #$B0
+          STA     XTBL,X
+          LDA     #$B5
+          STA     XEXTBL,X
+          STA     YTBL,X
+          LDA     #$85
+          STA     YEXTBL,X
+          INX
+
+          LDA     #$01
+          STA     STTBL,X
+          LDA     #$05
+          STA     CRTBL,X
+          LDA     #$91
+          LDA     #$B0
+          STA     XTBL,X
+          LDA     #$B5
+          STA     XEXTBL,X
+          STA     YTBL,X
+          LDA     #$95
+          STA     YEXTBL,X
+          INX
+
+          LDA     #$01
+          STA     STTBL,X
+          LDA     #$05
+          STA     CRTBL,X
+          LDA     #$A1
+          LDA     #$B0
+          STA     XTBL,X
+          LDA     #$B5
+          STA     XEXTBL,X
+          STA     YTBL,X
+          LDA     #$A5
+          STA     YEXTBL,X
+          INX
+*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+SHOOM             ;;;;;;;;;;;;
+
+
+*******************
+*         WE HAVE FINISHED SETTING UP ALL THE OBJECTS IN THE OBJECT DATA TABLES.
+*******************
+*         SET LAST ENTRY IN CRTBL TO $FF
+          LDA     #$FF
+          STA     CRTBL,X
+*
+
+
+**************************
+*         NOW DO A LOAD WHICH SETS UP THE DISPLAY LIST AND ZONE LIST************
+*       FOR ALL THE OBJECTS                                          *********
+*************************
+
+*  FINALLY, READY TO START PLAYING:
+          RTS                            ;END OF WAVESTART SUBROUTINE
+*
+********************************************************************************
+
+
+******************************************
+*
+*         WAVESTMC  -  SET UP MC-RELATED STUFF AT WAVESTART
+*
+******************************************
+*
+
+WAVESTMC
+*   INITIALIZE MC SHOT TABLES AND SHOT TIMER TO ZERO
+          LDA     #$00
+          STA     SDIRTBL                ;SET DIRECTION CODE TO ZERO - NULL SHOT
+          STA     SDIRTBL+1
+          STA     SDIRTBL+2
+          STA     SDIRTBL+3
+          STA     SSATBL                 ;SET SHOT ANIMATION STEPS TO 0
+          STA     SSATBL+1
+          STA     SSATBL+2
+          STA     SSATBL+3
+          STA     MCSTMR                 ;LET MC SHOOT IMMEDIATELY
+          STA     MCMTMR                 ;LET MC MOVE IMMEDIATELY
+
+          LDA     #MCSCODE               ;CREATURE TYPE OF MC SHOTS
+          STA     SCRTBL                 ;SET SHOT CREATURE TYPES
+          STA     SCRTBL+1
+          STA     SCRTBL+2
+          STA     SCRTBL+3
+
+*  INITIALIZE MC POSITION AND MAKE HIM APPEAR
+          LDA     #MCXINIT
+          STA     MCXPOS                 ;MC X POSITION
+          LDA     #MCXINIT+MCWID
+          STA     MCXEX                  ;MC X EXTENT
+          LDA     #MCYINIT
+          STA     MCYPOS                 ;MC Y POSITION
+          LDA     #MCYINIT+MCHEIGHT
+          STA     MCYEX                  ;MC Y EXTENT
+          LDA     #$00
+          STA     SATBL                  ;MC START ANIMATION STEP
+          LDA     #$0D                   ;DOWN DIRECTION - D
+          STA     MCDIR                  ;MC START DIRECTION - SOUTH
+          LDA     #$01
+          STA     MCCTMR                 ;INITIALIZE MC COLLISION TIMER
+*
+          LDA     #$01        ;INITIALIZE STTBL FOR MC @@@@@@@@@@@@@@@@@@@@@@@@@
+          STA     STTBL                  ; THROWAWAY @@@@@@@@@@@@@@@@@@@@@@@@@@@
+*
+          RTS
+*
+
+
+********************************************************************************
+********************************************************************************
+
+*%        THIS IS FOR DEVELOPMENT OF WAVESTART ROUTINES ONLY
+*%
+*%        USE GLOBAL FIND/REPLACE IN THE EDITOR TO CUSTOMIZE THIS
+*%        ALSO REMOVE THE *% AT THE BEGINNING OF EACH LINE
+*%                WITH A F/*%//A
+*%
+*%        CREATURE NAME: CREE
+*%        CREATURE LETTER: @
+*%        NUMBER OF WAVES STORED IN TABLE FOR GLOBAL DATA: %%
+
+**********CREES
+*%          STX     @PTR                   ;POINTER TO START OF CREES
+*%
+*%          LDY     @NUM                   ;LOOP THRU ALL CREES
+*%          BNE     WS@LOOP                ;AT LEAST 1 CREE - DISTRIBUTE CREES
+*           NO CREES
+*%          LDA     #NULLCODE
+*%          STA     CRTBL,X                ;STORE A NULL OBJECT
+*%          INX
+*%          JMP     WS@CONT                ;GO TO GLOBAL CREE VARIABLE SETUP
+*%
+*%WS@LOOP   JSR     RANDXYBX               ;GET A VALID CREE POSITION
+*%          LDA     RANDOMX
+*%          STA     XTBL,X                 ;CREE XPOS
+*%          CLC
+*%          ADC     #@WID                  ;COMPUTE EXTENT
+*%          STA     XEXTBL,X               ;CREE X EXTENT
+*%          LDA     RANDOMY
+*%          STA     YTBL,X                 ;CREE YPOS
+*%          CLC
+*%          ADC     #@HEIGHT               ;COMPUTE EXTENT
+*%          STA     YEXTBL,X               ;CREE Y EXTENT
+*%          TYA      ;USE CREE # AS SEED TO GET GOOD DISTRIBUTION OF MOVE TIMERS
+*%          AND     #MASK3                 ;GET A NUMBER 0 - 7
+*%          STA     MTTBL,X                ;NUMBER OF FRAMES UNTIL MOVE
+*%          JSR     RAND2                  ;GET A NUMBER 0 - 2
+*%          STA     SATBL,X                ;CREE ANIMATION STEP
+*%          JSR     RANDOM
+*%          AND     #MASK3
+*%          STA     DTTBL,X                ;# MOVES UNTIL DIR CHANGE
+*%          AND     #MASK2
+*%          STA     DXTBL,X                ;DIRECTION MOVING
+*%          LDA     #@CODE
+*%          STA     CRTBL,X                ;CREE OBJECT CODE
+*         DLPHTBL,DLPLTBL AND DL2PTBL WILL BE SET UP BY THE LOAD AT THE END OF
+*                 THE WAVESTRT ROUTINE
+*         DONE WITH THIS CREE, ON TO NEXT...
+*%          INX                            ;INCREMENT RUNNING POINTER
+*%          DEY
+*%          BPL     WS@LOOP                ;MORE CREES TO SET UP
+*%
+*%WS@CONT           ;SET UP VARIABLES GLOBAL TO CREES
+*         SET @SPEED - NUMBER OF FRAMES BETWEEN CREE MOVES
+*%          LDA     WAVENUM                ;CURRENT WAVE NUMBER
+*%          CMP     #%%                    ;ONLY HAVE %% WAVES IN TABLE
+*%          BCC     LOOK@SP                ;LOOK UP @SPEED FROM TABLE
+*         WE ARE ABOVE WAVE %%, SET @SPEED TO #@SPMAX
+*%          LDA     #@SPMAX
+*%          STA     @SPEED
+*%          JMP     WS@1
+*%LOOK@SP   TAY                            ;PUT WAVE NUMBER IN Y
+*%          LDA     @SPTBL-1,Y   ;LOAD STARTING @SPEED - USE -1 BECAUSE NO WAVE
+*%          STA     @SPEED
+*%WS@1                                     ;DONE WITH CREE SETUP
+
+
+*%        THIS IS FOR DEVELOPMENT OF WAVESTART ROUTINES ONLY
+*%
+*%        USE GLOBAL FIND/REPLACE IN THE EDITOR TO CUSTOMIZE THIS
+*%        ALSO REMOVE THE *% AT THE BEGINNING OF EACH LINE
+*%                WITH A F/*%//A
+*%
+*%        CREATURE NAME: CREE
+*%        CREATURE LETTER: @
+*%        NUMBER OF WAVES STORED IN TABLE FOR GLOBAL DATA: %%
+
+*****************************************
+
+**********  END OF RWAVE.S **************
+
+          EJE
+

@@ -1,0 +1,23 @@
+*.PRG files may be run by themselves if they have been  INSTALLed 
+as "Tos-Takes-Parameters" programs.   Find INSTALL in one of  the 
+options at the top of the desktop screen.
+
+Feel free to telephone John Feagans at Atari (U.S.) at area  code 
+(408)  745-4923  any  time you have a question  about  using  the 
+software.   He  wrote the download program and the  transfer  rom 
+code.   He's the one who did not write any support  documentation 
+to go with his software.
+
+An explanation as to what all the programs on this disk do:
+
+     40COL.S        Source code for a short 7800 program
+     ASM.BAT        Submit file for the batch utility
+     BATCH.TTP      Batch utility: executes programs in submit file
+     CONV65.PRG     Converts memory image to "S Records" 
+     DOWNLOAD.PRG   Downloads code to the 7800
+     K.TTP          "Kermit" - for communication between computers
+     MARIA.S        Recommended 7800 equates file
+     WAIT.PRG       Allows messages to remain on screen until <CR>
+     MAC.PRG        Assembler (serialized in your name)
+     ME.TTP         MicroEmacs editor
+

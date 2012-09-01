@@ -1,0 +1,1930 @@
+******************
+*
+*
+*    ROBOTRON    20-JULY-83
+*                12-AUGUST-83            C:00
+*                19-AUGUST-83            5:30
+*
+*         RSTAMPS.S                   STAMP DATA
+*
+******************
+
+
+STAMPS    EQU     STAMPBAS+$F00
+
+
+****  LINE  0
+          ORG     STAMPS
+
+MCD0S0    DB      $FB,$C0   ;MC D0 S0
+MCD0S1    DB      $FB,$C0
+MCD0S2    DB      $FB,$C0
+MCD1S0    DB      $2A,0   ;MC D1
+MCD1S1    DB      $2A,0
+MCD1S2    DB      $2A,0
+MCD2S0    DB      $2A,$C0   ;MC D2
+MCD2S1    DB      $A,$B0
+MCD2S2    DB      $2A,$C0
+MCD3S0    DB      $EA,0   ;MC D3
+MCD3S1    DB      $3A,$80
+MCD3S2    DB      $EA,0
+GD0S0     DB      $A,$80 ;G D0
+GD0S1     DB      $A,$80
+GD0S2     DB      $A,$80
+MOD0S0    DB      $14,0  ;MO D0
+MOD0S1    DB      $14,0
+MOD0S2    DB      $14,0
+MOD1S0    DB      5,0  ;MO D1
+MOD1S1    DB      5,0
+MOD1S2    DB      5,0
+MOD2S0    DB      $14,0 ;MO D2
+MOD2S1    DB      $14,0
+MOD2S2    DB      $14,0
+MOD3S0    DB      $14,0 ;MO D3
+MOD3S1    DB      $14,0
+MOD3S2    DB      $14,0
+DD0S0     DB      $A,$80  ;D D0
+DD0S1     DB      $A,$80
+DD0S2     DB      $A,$80
+DD1S0     DB      $2A,0  ;D D1
+DD1S1     DB      $2A,0
+DD1S2     DB      $2A,0
+DD2S0     DB      $A8,0 ;D D2
+DD2S1     DB      $2A,0
+DD2S2     DB      $2A,0
+DD3S0     DB      $2A,0  ;D D3
+DD3S1     DB      $A,$80
+DD3S2     DB      $A,$80
+MID0S0    DB      $2A,0 ;MI D0
+MID0S1    DB      $2A,0
+MID0S2    DB      $2A,0
+MID1S0    DB      $2A,0  ;MID1
+MID1S1    DB      $2A,0
+MID1S2    DB      $2A,0
+MID2S0    DB      $A8,0  ;MID2
+MID2S1    DB      $2A,0
+MID2S2    DB      $2A,0
+MID3S0    DB      $A8,0  ;MID3
+MID3S1    DB      $2A,0
+MID3S2    DB      $2A,0
+SKULL     DB      1,$50,0
+SCORE1K   DB      $F2,$AA,$A0
+SCORE2K   DB      $FE,$AA,$A0
+SCORE3K   DB      $FE,$AA,$A0
+SCORE4K   DB      $C2,$AA,$A0
+SCORE5K   DB      $FE,$AA,$A0
+HD0S0     DB      5,$40   ;H D0
+HD0S1     DB      5,$40
+HD0S2     DB      5,$40
+HD1S0     DB      5,$40   ;H D1
+HD1S1     DB      5,$40
+HD1S2     DB      5,$40
+HD2S0     DB      $15,0   ;H D2
+HD2S1     DB      $15,0
+HD2S2     DB      $15,0
+HD3S0     DB      1,$50   ;H D3
+HD3S1     DB      1,$50
+HD3S2     DB      1,$50
+SD0S0     DB      $00,$00   ;S D0 S0
+SD0S1     DB      $00,$00
+SD0S2     DB      $00,$00
+SD0S3     DB      $00,$00
+SD0S4     DB      $00,$00
+SD0S5     DB      $00,$00
+SD0S6     DB      $00,$00
+SD0S7     DB      $00,$00
+QD0S0     DB      $00,$00   ;Q D0 S0
+QD0S1     DB      $00,$00
+QD0S2     DB      $00,$00
+QD0S3     DB      $00,$00
+QD0S4     DB      $00,$00
+QD0S5     DB      $00,$00
+QD0S6     DB      $00,$00
+QD0S7     DB      $00,$00
+ED0S0     DB      $00,$00   ;E D0 S0
+ED0S1     DB      $00,$00
+TD0S0     DB      $00,$00   ;T D0 S0
+TD0S1     DB      $00,$00
+TD0S2     DB      $00,$00
+TD0S3     DB      $00,$00
+BD0S0     DB      $26,$50   ;B D0
+BD0S1     DB      $26,$50
+BD0S2     DB      $26,$50
+BD1S0     DB      $16,$60   ;B D1
+BD1S1     DB      $16,$60
+BD1S2     DB      $16,$60
+BD2S0     DB      $19,$40   ;B D2
+BD2S1     DB      $19,$40
+BD2S2     DB      $19,$40
+BD3S0     DB      $05,$90   ;B D3
+BD3S1     DB      $05,$90
+BD3S2     DB      $05,$90
+MCSD0S0   DB      0   ;MCSD0
+MCSD5S0   DB      $40   ;D5
+MCSD6S0   DB      1     ;D6
+MCSD7S0   DB      $55   ;D7
+MCSDDS0   DB      $40   ;DD
+          DB      $C,$C0   ;G,BEX0
+GD0S3     DB      $A,$80   ;G,BEX1
+GD0S4     DB      $A,$80   ;G,BEX2
+GD0S5     DB      $2,$80   ;G,BEX3
+GD0S6     DB      $0,$00   ;G,BEX4
+GD0S7     DB      $0,$00   ;G,BEX5
+GD0S8     DB      $0,$0   ;G,BEX6
+
+
+****  LINE  1
+          ORG     STAMPS+$100
+
+          DB      $EA,$C0 ;MC D0 S0
+          DB      $EA,$C0
+          DB      $EA,$C0
+          DB      $FF,$C0 ;MC D1
+          DB      $FF,$C0
+          DB      $FF,$C0
+          DB      $AA,$C0 ;MC D2
+          DB      $2A,$B0
+          DB      $AA,$C0
+          DB      $EA,$80 ;MC D3
+          DB      $3A,$A0
+          DB      $EA,$80
+          DB      $3F,$F0 ;G D0
+          DB      $3F,$F0
+          DB      $3F,$F0
+          DB      $14,$00  ;MO D0
+          DB      $14,$00
+          DB      $14,$00
+          DB      $1A,$40  ;MO D1
+          DB      $1A,$40
+          DB      $1A,$40
+          DB      $18,0 ;MO D2
+          DB      $18,0
+          DB      $18,0
+          DB      $24,0 ;MO D3
+          DB      $24,0
+          DB      $24,0
+          DB      $0A,$80  ;D D0
+          DB      $0A,$80
+          DB      $0A,$80
+          DB      $0C,0  ;D D1
+          DB      $0C,0
+          DB      $0C,0
+          DB      $B0,0 ;D D2
+          DB      $2C,0
+          DB      $2C,0
+          DB      $E,0 ;D D3
+          DB      $03,$80
+          DB      $03,$80
+          DB      $2A,0  ;MID0
+          DB      $2A,0
+          DB      $2A,0
+          DB      $2A,0  ;MID1
+          DB      $2A,0
+          DB      $2A,0
+          DB      $A8,0  ;MID2
+          DB      $2A,0
+          DB      $2A,0
+          DB      $A8,0  ;MID3
+          DB      $2A,0
+          DB      $2A,0
+          DB      5,$54,0  ;SK
+          DB      $32,$22,$20  ;1K
+          DB      $E,$22,$20
+          DB      $E,$22,$20
+          DB      $CE,$22,$20
+          DB      $C2,$22,$20  ;5K
+          DB      1,0   ;H D0
+          DB      1,0
+          DB      1,0
+          DB      1,0   ;H D1
+          DB      1,0
+          DB      1,0
+          DB      4,0   ;H D2
+          DB      4,0
+          DB      4,0
+          DB      0,$40 ;H D3
+          DB      0,$40
+          DB      0,$40
+          DB      $00,$00   ;S D0 S0
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00   ;Q D0 S0
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00   ;E D0 S0
+          DB      $00,$00
+          DB      $00,$00   ;T D0 S0
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $66,$68   ;B D0
+          DB      $66,$68
+          DB      $66,$68
+          DB      $A6,$64   ;B D1
+          DB      $A6,$64
+          DB      $A6,$64
+          DB      $A9,$A0   ;B D2
+          DB      $A9,$A0
+          DB      $A9,$A0
+          DB      $29,$A8   ;B D3
+          DB      $29,$A8
+          DB      $29,$A8
+          DB      $00   ;MCSD0
+          DB      $40   ;D5
+          DB      $01   ;D6
+          DB      $00   ;D7
+          DB      $40   ;DD
+          DB      $F3,$F0   ;G,BEX0
+          DB      $3F,$F0   ;G,BEX1
+          DB      $3C,$F0   ;G,BEX2
+          DB      $20,$30   ;G,BEX3
+          DB      $20,$20   ;G,BEX4
+          DB      $00,$80   ;G,BEX5
+          DB      $00,$00   ;G,BEX6
+
+
+****  LINE  2
+          ORG     STAMPS+$200
+
+          DB      $EA,$C0 ;MC D0 S0
+          DB      $EA,$C0
+          DB      $EA,$C0
+          DB      $CC,$C0 ;MC D1
+          DB      $CC,$C0
+          DB      $CC,$C0
+          DB      $FF,$C0 ;MC D2
+          DB      $3F,$F0
+          DB      $FF,$C0
+          DB      $FF,$C0 ;MC D3
+          DB      $3F,$F0
+          DB      $FF,$C0
+          DB      $3F,$F0 ;G D0
+          DB      $3F,$F0
+          DB      $3F,$F0
+          DB      $55,$00  ;MO D0
+          DB      $55,$00
+          DB      $55,$00
+          DB      $19,$40  ;MO D1
+          DB      $19,$40
+          DB      $19,$40
+          DB      $54,0 ;MO D2
+          DB      $54,0
+          DB      $54,0
+          DB      $15,0 ;MO D3
+          DB      $15,0
+          DB      $15,0
+          DB      $0A,$80  ;D D0
+          DB      $0A,$80
+          DB      $0A,$80
+          DB      $3F,0  ;D D1
+          DB      $3F,0
+          DB      $3F,0
+          DB      $BC,0 ;D D2
+          DB      $2F,0
+          DB      $2F,0
+          DB      $3E,0  ;D D3
+          DB      $F,$80
+          DB      $F,$80
+          DB      $2A,0  ;MID0
+          DB      $2A,0
+          DB      $2A,0
+          DB      $19,0  ;MID1
+          DB      $19,0
+          DB      $19,0
+          DB      $A4,0  ;MID2
+          DB      $29,0
+          DB      $29,0
+          DB      $68,0  ;MID3
+          DB      $1A,0
+          DB      $1A,0
+          DB      5,$54,0  ;SK
+          DB      $32,$22,$20 ;1K
+          DB      $FE,$22,$20
+          DB      $3E,$22,$20
+          DB      $FE,$22,$20
+          DB      $FE,$22,$20  ;5K
+          DB      $EA,$AC   ;H D0
+          DB      $EA,$AC
+          DB      $EA,$AC
+          DB      $EA,$AC   ;H D1
+          DB      $EA,$AC
+          DB      $EA,$AC
+          DB      $AA,$80   ;H D2
+          DB      $AA,$80
+          DB      $AA,$80
+          DB      $A,$A8   ;H D3
+          DB      $A,$A8
+          DB      $A,$A8
+          DB      $00,$00   ;S D0 S0
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00   ;Q D0 S0
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00   ;E D0 S0
+          DB      $00,$00
+          DB      $00,$00   ;T D0 S0
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $95,$94   ;B D0
+          DB      $95,$94
+          DB      $95,$94
+          DB      $59,$58   ;B D1
+          DB      $59,$58
+          DB      $59,$58
+          DB      $65,$64   ;B D2
+          DB      $65,$64
+          DB      $65,$64
+          DB      $65,$64   ;B D3
+          DB      $65,$64
+          DB      $65,$64
+          DB      $00   ;MCSD0
+          DB      $10   ;D5
+          DB      $04   ;D6
+          DB      $00   ;D7
+          DB      $40   ;DD
+          DB      $15,$34   ;G,BEX0
+          DB      $3C,$F0   ;G,BEX1
+          DB      $30,$30   ;G,BEX2
+          DB      $30,$00   ;G,BEX3
+          DB      $00,$00   ;G,BEX4
+          DB      $20,$00   ;G,BEX5
+          DB      $02,$00   ;G,BEX6
+
+
+****  LINE  3
+          ORG     STAMPS+$300
+
+          DB      $2A,$00   ;MC D0 S0
+          DB      $2A,$00
+          DB      $2A,$00
+          DB      $3F,$00   ;MC D1
+          DB      $3F,$00
+          DB      $3F,$00
+          DB      $EA,$C0   ;MC D2
+          DB      $3A,$B0
+          DB      $EA,$C0
+          DB      $EA,$C0   ;MC D3
+          DB      $3A,$B0
+          DB      $EA,$C0
+          DB      $00,$00 ;G D0
+          DB      $00,$00
+          DB      $00,$00
+          DB      $55,$00  ;MO D0
+          DB      $55,$00
+          DB      $55,$00
+          DB      $15,$40  ;MO D1
+          DB      $15,$40
+          DB      $15,$40
+          DB      $60,0 ;MO D2
+          DB      $60,0
+          DB      $60,0
+          DB      $09,0 ;MO D3
+          DB      $09,0
+          DB      $09,0
+          DB      $0F,$C0  ;D D0
+          DB      $0F,$C0
+          DB      $0F,$C0
+          DB      $3F,0  ;D D1
+          DB      $3F,0
+          DB      $3F,0
+          DB      $FC,0 ;D D2
+          DB      $3F,0
+          DB      $3F,0
+          DB      $3F,0  ;D D3
+          DB      $F,$C0
+          DB      $F,$C0
+          DB      $2A,0  ;MID0
+          DB      $2A,0
+          DB      $2A,0
+          DB      $2A,0  ;MID1
+          DB      $2A,0
+          DB      $2A,0
+          DB      $A4,0  ;MID2
+          DB      $29,0
+          DB      $29,0
+          DB      $68,0  ;MID3
+          DB      $1A,0
+          DB      $1A,0
+          DB      5,$54,0  ;SK
+          DB      $32,$22,$20 ;1K
+          DB      $C2,$22,$20
+          DB      $E,$22,$20
+          DB      $E,$22,$20
+          DB      $E,$22,$20  ;5K
+          DB      $EA,$AC   ;H D0
+          DB      $EA,$AC
+          DB      $EA,$AC
+          DB      $EA,$AC   ;H D1
+          DB      $EA,$AC
+          DB      $EA,$AC
+          DB      $AE,$80 ;H D2
+          DB      $AE,$80
+          DB      $AE,$80
+          DB      $A,$E8 ;H D3
+          DB      $A,$E8
+          DB      $A,$E8
+          DB      $00,$00   ;S D0 S0
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00   ;Q D0 S0
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00   ;E D0 S0
+          DB      $00,$00
+          DB      $00,$00   ;T D0 S0
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $5A,$64   ;B D0
+          DB      $5A,$64
+          DB      $5A,$64
+          DB      $66,$94   ;B D1
+          DB      $66,$94
+          DB      $66,$94
+          DB      $96,$58   ;B D2
+          DB      $96,$58
+          DB      $96,$58
+          DB      $96,$58   ;B D3
+          DB      $96,$58
+          DB      $96,$58
+          DB      $00   ;MCSD0
+          DB      $10   ;D5
+          DB      $04   ;D6
+          DB      $00   ;D7
+          DB      $40   ;DD
+          DB      $C9,$9C   ;G,BEX0
+          DB      $00,$00   ;G,BEX1
+          DB      $00,$00   ;G,BEX2
+          DB      $00,$00   ;G,BEX3
+          DB      $00,$00   ;G,BEX4
+          DB      $00,$00   ;G,BEX5
+          DB      $00,$00   ;G,BEX6
+
+
+****  LINE  4
+          ORG     STAMPS+$400
+
+          DB      $15,$00   ;MC D0 S0
+          DB      $15,$00
+          DB      $15,$00
+          DB      $15,$00   ;MC D1
+          DB      $15,$00
+          DB      $15,$00
+          DB      $2A,$00   ;MC D2
+          DB      $0A,$80
+          DB      $2A,$00
+          DB      $2A,$00   ;MC D3
+          DB      $0A,$80
+          DB      $2A,$00
+          DB      $DA,$9C ;G D0
+          DB      $DA,$9C
+          DB      $DA,$9C
+          DB      $AA,$00  ;MO D0
+          DB      $A9,$00
+          DB      $6A,$00
+          DB      $2A,$80  ;MO D1
+          DB      $2A,$80
+          DB      $2A,$80
+          DB      $28,0   ;MO D2
+          DB      $28,0
+          DB      $28,0
+          DB      $28,0   ;MO D3
+          DB      $28,0
+          DB      $28,0
+          DB      $15,$50  ;D D0
+          DB      $15,$50
+          DB      $15,$50
+          DB      $5D,$40  ;D D1
+          DB      $5D,$40
+          DB      $5D,$40
+          DB      $64,0  ;D D2
+          DB      $25,0
+          DB      $1,0
+          DB      $19,0  ;D D3
+          DB      $5,$80
+          DB      $5,$40
+          DB      $6A,$40 ;MID0
+          DB      $2A,$40
+          DB      $6A,0
+          DB      $6A,$40 ;MID1
+          DB      $6A,0
+          DB      $2A,$40
+          DB      $20,0    ;MID2
+          DB      $5A,0
+          DB      $6A,0
+          DB      $20,0    ;MID3
+          DB      $29,$40
+          DB      $2A,$40
+          DB      $F,$7C,0  ;SK
+          DB      $FE,$AA,$A0 ;1K
+          DB      $FE,$AA,$A0
+          DB      $FE,$AA,$A0
+          DB      $E,$AA,$A0
+          DB      $FE,$AA,$A0 ;5K
+          DB      $EA,$AC   ;H D0
+          DB      $EA,$AC
+          DB      $EA,$AC
+          DB      $EA,$AC   ;H D1
+          DB      $EA,$AC
+          DB      $EA,$AC
+          DB      $AE,$80 ;H D2
+          DB      $AB,$B0
+          DB      $BA,$B0
+          DB      $A,$E8 ;H D3
+          DB      $3A,$B8
+          DB      $3B,$A8
+          DB      $00,$00   ;S D0 S0
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00   ;Q D0 S0
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00   ;E D0 S0
+          DB      $00,$00
+          DB      $00,$00   ;T D0 S0
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $9A,$68   ;B D0
+          DB      $9A,$68
+          DB      $9A,$68
+          DB      $AA,$A8   ;B D1
+          DB      $AA,$A8
+          DB      $AA,$A8
+          DB      $66,$A8   ;B D2
+          DB      $66,$A8
+          DB      $66,$A8
+          DB      $AA,$64   ;B D3
+          DB      $AA,$64
+          DB      $AA,$64
+          DB      $00   ;MCSD0
+          DB      $04   ;D5
+          DB      $10   ;D6
+          DB      $00   ;D7
+          DB      $40   ;DD
+          DB      $D6,$10   ;G,BEX0
+          DB      $DA,$9C   ;G,BEX1
+          DB      $D2,$18   ;G,BEX2
+          DB      $C2,$18   ;G,BEX3
+          DB      $08,$08   ;G,BEX4
+          DB      $02,$00   ;G,BEX5
+          DB      $00,$00   ;G,BEX6
+
+
+****  LINE  5
+          ORG     STAMPS+$500
+
+          DB      $95,$80 ;MC D0 S0
+          DB      $95,$80
+          DB      $95,$80
+          DB      $99,$80 ;MC D1
+          DB      $99,$80
+          DB      $99,$80
+          DB      $19,$00 ;MC D2
+          DB      $15,$00
+          DB      $64,$00
+          DB      $19,$00 ;MC D3
+          DB      $01,$90
+          DB      $05,$40
+          DB      $D6,$5C ;G D0
+          DB      $D6,$5C
+          DB      $D6,$5C
+          DB      $69,$00  ;MO D0
+          DB      $69,$C0
+          DB      $69,$00
+          DB      $1A,$40  ;MO D1
+          DB      $DA,$40
+          DB      $1A,$40
+          DB      $2A,0 ;MO D2
+          DB      $2A,0
+          DB      $2A,0
+          DB      $A8,0 ;MO D3
+          DB      $A8,0
+          DB      $A8,0
+          DB      $15,$50  ;D D0
+          DB      $15,$50
+          DB      $15,$50
+          DB      $5D,$40  ;D D1
+          DB      $5D,$40
+          DB      $5D,$40
+          DB      $64,0 ;D D2
+          DB      $95,0
+          DB      $16,0
+          DB      $19,0 ;D D3
+          DB      $5,$60
+          DB      $9,$40
+          DB      $6A,$40 ;MID0
+          DB      $6A,$40
+          DB      $6A,$40
+          DB      $6A,$40 ;MID1
+          DB      $6A,$40
+          DB      $6A,$40
+          DB      $98,0  ;MID2
+          DB      $5A,0
+          DB      $69,0
+          DB      $98,0  ;MID3
+          DB      $29,$40
+          DB      $1A,$40
+          DB      $11,$11,0  ;SK
+          DB      0,0,0     ;1K
+          DB      0,0,0
+          DB      0,0,0
+          DB      0,0,0
+          DB      0,0,0     ;5K
+          DB      $EA,$AC   ;H D0
+          DB      $EA,$AC
+          DB      $EA,$AC
+          DB      $EA,$AC   ;H D1
+          DB      $EA,$AC
+          DB      $EA,$AC
+          DB      $AE,$80 ;H D2
+          DB      $AA,$C0
+          DB      $EA,$80
+          DB      $A,$E8 ;H D3
+          DB      $A,$AC
+          DB      $E,$A8
+          DB      $00,$00   ;S D0 S0
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00   ;Q D0 S0
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00   ;E D0 S0
+          DB      $00,$00
+          DB      $00,$00   ;T D0 S0
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $A6,$98   ;B D0
+          DB      $A6,$98
+          DB      $A6,$98
+          DB      $96,$58   ;B D1
+          DB      $96,$58
+          DB      $96,$58
+          DB      $9A,$58   ;B D2
+          DB      $9A,$58
+          DB      $9A,$58
+          DB      $16,$98   ;B D3
+          DB      $16,$98
+          DB      $16,$98
+          DB      $00   ;MCSD0
+          DB      $04   ;D5
+          DB      $10   ;D6
+          DB      $00   ;D7
+          DB      $40   ;DD
+          DB      $25,$CC   ;G,BEX0
+          DB      $D4,$1C   ;G,BEX1
+          DB      $D0,$0C   ;G,BEX2
+          DB      $E0,$0C   ;G,BEX3
+          DB      $00,$00   ;G,BEX4
+          DB      $00,$00   ;G,BEX5
+          DB      $00,$00   ;G,BEX6
+
+
+****  LINE  6
+          ORG     STAMPS+$600
+
+          DB      $95,$80 ;MC D0 S0
+          DB      $95,$80
+          DB      $95,$80
+          DB      $99,$80 ;MC D1
+          DB      $99,$80
+          DB      $99,$80
+          DB      $19,$00 ;MC D2
+          DB      $A5,$00
+          DB      $6A,$00
+          DB      $19,$00 ;MC D3
+          DB      $0A,$90
+          DB      $05,$A0
+          DB      $F5,$7C ;G D0
+          DB      $F5,$7C
+          DB      $F5,$7C
+          DB      $69,$C0  ;MO D0
+          DB      $6B,$C0
+          DB      $29,$00
+          DB      $DA,$40  ;MO D1
+          DB      $FA,$40
+          DB      $1A,0
+          DB      $2A,0  ;MO D2
+          DB      $2A,0
+          DB      $2A,0
+          DB      $A8,0 ;MO D3
+          DB      $A8,0
+          DB      $A8,0
+          DB      $15,$50  ;D D0
+          DB      $15,$50
+          DB      $15,$70
+          DB      $5D,$40  ;D D1
+          DB      $9D,$40
+          DB      $5D,$40
+          DB      $64,0 ;D D2
+          DB      $95,$80
+          DB      $16,$80
+          DB      $19,0  ;D D3
+          DB      $25,$60
+          DB      $29,$40
+          DB      $6A,$40 ;MID0
+          DB      $6A,$40
+          DB      $6A,$40
+          DB      $6A,$40 ;MID1
+          DB      $6A,$40
+          DB      $6A,$40
+          DB      $98,0  ;MID2
+          DB      $6A,$40
+          DB      $69,$40
+          DB      $98,0  ;MID3
+          DB      $6A,$40
+          DB      $5A,$40
+          DB      $51,$51,$40  ;SK
+          DB      0,0,0     ;1K
+          DB      0,0,0
+          DB      0,0,0
+          DB      0,0,0
+          DB      0,0,0     ;5K
+          DB      $EA,$AC   ;H D0
+          DB      $EA,$AC
+          DB      $EA,$AC
+          DB      $EA,$AC   ;H D1
+          DB      $EA,$AC
+          DB      $EA,$AC
+          DB      $AE,$80 ;H D2
+          DB      $AA,$80
+          DB      $BA,$80
+          DB      $A,$E8 ;H D3
+          DB      $A,$B8
+          DB      $A,$A8
+          DB      $00,$00   ;S D0 S0
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00   ;Q D0 S0
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00   ;E D0 S0
+          DB      $00,$00
+          DB      $00,$00   ;T D0 S0
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $2A,$A0   ;B D0
+          DB      $2A,$A0
+          DB      $2A,$A0
+          DB      $2A,$A0   ;B D1
+          DB      $2A,$A0
+          DB      $2A,$A0
+          DB      $1A,$A0   ;B D2
+          DB      $1A,$A0
+          DB      $1A,$A0
+          DB      $2A,$90   ;B D3
+          DB      $2A,$90
+          DB      $2A,$90
+          DB      $00   ;MCSD0
+          DB      $01   ;D5
+          DB      $40   ;D6
+          DB      $00   ;D7
+          DB      $40   ;DD
+          DB      $02,$8C   ;G,BEX0
+          DB      $E4,$6C   ;G,BEX1
+          DB      $E0,$2C   ;G,BEX2
+          DB      $C0,$2C   ;G,BEX3
+          DB      $80,$20   ;G,BEX4
+          DB      $03,$08   ;G,BEX5
+          DB      $00,$00   ;G,BEX6
+
+
+****  LINE  7
+          ORG     STAMPS+$700
+
+          DB      $95,$80 ;MC D0 S0
+          DB      $15,$80
+          DB      $95,$00
+          DB      $99,$80 ;MC D1
+          DB      $99,$80
+          DB      $99,$80
+          DB      $19,$00 ;MC D2
+          DB      $95,$00
+          DB      $54,$00
+          DB      $19,$00 ;MC D3
+          DB      $01,$50
+          DB      $06,$60
+          DB      $E9,$AC ;G D0
+          DB      $C9,$AC
+          DB      $E9,$8C
+          DB      $AB,$C0  ;MO D0
+          DB      $AA,$00
+          DB      $AA,$C0
+          DB      $FA,$80  ;MO D1
+          DB      $2A,$40
+          DB      $DA,$80
+          DB      $38,0  ;MO D2
+          DB      $2F,0
+          DB      $F8,0
+          DB      $2C,0 ;MO D3
+          DB      $2F,0
+          DB      $F8,0
+          DB      $15,$70  ;D D0
+          DB      $D5,$70
+          DB      $15,$40
+          DB      $9D,$40  ;D D1
+          DB      $1D,$40
+          DB      $9F,$40
+          DB      $67,0 ;D D2
+          DB      $15,$F0
+          DB      $D5,0
+          DB      $D9,0  ;D D3
+          DB      $F5,$40
+          DB      $5,$70
+          DB      $2A,0  ;MID0
+          DB      $AA,0
+          DB      $2A,$80
+          DB      $2A,0  ;MID1
+          DB      $2A,$80
+          DB      $AA,0
+          DB      $98,0  ;MID2
+          DB      $2A,$40
+          DB      $69,$40
+          DB      $98,0  ;MID3
+          DB      $6A,0
+          DB      $5A,$40
+          DB      4,$44,$00  ;SK
+          DB      0,0,0     ;1K
+          DB      0,0,0
+          DB      0,0,0
+          DB      0,0,0
+          DB      0,0,0     ;5K
+          DB      $EA,$AC   ;H D0
+          DB      $EA,$AC
+          DB      $EA,$AC
+          DB      $EA,$AC   ;H D1
+          DB      $EA,$AC
+          DB      $EA,$AC
+          DB      $AF,$80 ;H D2
+          DB      $AA,$80
+          DB      $AA,$80
+          DB      $B,$E8 ;H D3
+          DB      $A,$A8
+          DB      $A,$A8
+          DB      $00,$00   ;S D0 S0
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00   ;Q D0 S0
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00   ;E D0 S0
+          DB      $00,$00
+          DB      $00,$00   ;T D0 S0
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $0A,$80   ;B D0
+          DB      $0A,$80
+          DB      $0A,$80
+          DB      $0A,$80   ;B D1
+          DB      $0A,$80
+          DB      $0A,$80
+          DB      $0A,$A0   ;B D2
+          DB      $0A,$A0
+          DB      $0A,$A0
+          DB      $2A,$80   ;B D3
+          DB      $2A,$80
+          DB      $2A,$80
+          DB      $00   ;MCSD0
+          DB      $01   ;D5
+          DB      $40   ;D6
+          DB      $00   ;D7
+          DB      $40   ;DD
+          DB      $C8,$80   ;G,BEX0
+          DB      $C0,$8C   ;G,BEX1
+          DB      $C8,$8C   ;G,BEX2
+          DB      $C8,$8C   ;G,BEX3
+          DB      $00,$00   ;G,BEX4
+          DB      $00,$00   ;G,BEX5
+          DB      $00,$08   ;G,BEX6
+
+
+****  LINE  8
+          ORG     STAMPS+$800
+
+          DB      $95,$80 ;MC D0 S0
+          DB      $15,$80
+          DB      $95,$C0
+          DB      $95,$80 ;MC D1
+          DB      $15,$80
+          DB      $95,$00
+          DB      $15,$00 ;MC D2
+          DB      $15,$80
+          DB      $56,$00
+          DB      $15,$00 ;MC D3
+          DB      $09,$50
+          DB      $25,$40
+          DB      $CA,$8C ;G D0
+          DB      $0A,$8C
+          DB      $CA,$80
+          DB      $AA,$0  ;MO D0
+          DB      $AA,$0
+          DB      $AA,$C0
+          DB      $2A,$80  ;MO D1
+          DB      $2A,$80
+          DB      $FA,$80
+          DB      $38,0   ;MO D2
+          DB      $2F,0
+          DB      $F8,0
+          DB      $2C,0  ;MO D3
+          DB      $2F,0
+          DB      $F8,0
+          DB      $C5,$40  ;D D0
+          DB      $F5,$40
+          DB      $CD,$40
+          DB      $17,$30  ;D D1
+          DB      $17,$30
+          DB      $17,$70
+          DB      $DF,0  ;D D2
+          DB      $15,$70
+          DB      $D5,$40
+          DB      $F7,0  ;D D3
+          DB      $D5,$40
+          DB      $15,$70
+          DB      $22,0  ;MID0
+          DB      $52,0
+          DB      $21,$40
+          DB      $22,0  ;MID1
+          DB      $21,$40
+          DB      $52,0
+          DB      $20,0  ;MID2
+          DB      $22,0
+          DB      $22,0
+          DB      $20,0  ;MID3
+          DB      $22,0
+          DB      $22,0
+          DB      1,$10,0  ;SK
+          DB      0,0,0     ;1K
+          DB      0,0,0
+          DB      0,0,0
+          DB      0,0,0
+          DB      0,0,0     ;5K
+          DB      $EA,$AC   ;H D0
+          DB      $EA,$AC
+          DB      $EA,$AC
+          DB      $FA,$BC ;H D1
+          DB      $FA,$BC
+          DB      $FA,$BC
+          DB      $AA,$80 ;H D2
+          DB      $AA,$80
+          DB      $AA,$80
+          DB      $A,$A8 ;H D3
+          DB      $A,$A8
+          DB      $A,$A8
+          DB      $00,$00   ;S D0 S0
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00   ;Q D0 S0
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00   ;E D0 S0
+          DB      $00,$00
+          DB      $00,$00   ;T D0 S0
+          DB      $00,0
+          DB      $00,$00
+          DB      $00,$00
+          DB      $0F,$C0   ;B D0
+          DB      $0F,$C0
+          DB      $0F,$C0
+          DB      $0F,$C0   ;B D1
+          DB      $0F,$C0
+          DB      $0F,$C0
+          DB      $03,$00   ;B D2
+          DB      $03,$00
+          DB      $03,$00
+          DB      $03,$00   ;B D3
+          DB      $03,$00
+          DB      $03,$00
+          DB      $00   ;MCSD0
+          DB      $00   ;D5
+          DB      $00   ;D6
+          DB      $00   ;D7
+          DB      $00   ;DD
+          DB      $08,$00   ;G,BEX0
+          DB      $CA,$8C   ;G,BEX1
+          DB      $C8,$0C   ;G,BEX2
+          DB      $C8,$08   ;G,BEX3
+          DB      $00,$00   ;G,BEX4
+          DB      $00,$00   ;G,BEX5
+          DB      $00,$00   ;G,BEX6
+
+
+****  LINE  9
+          ORG     STAMPS+$900
+
+          DB      $11,$00   ;MC D0 S0
+          DB      $11,$00
+          DB      $11,$00
+          DB      $11,$00   ;MC D1
+          DB      $11,$00
+          DB      $11,$00
+          DB      $28,$00   ;MC D2
+          DB      $28,$80
+          DB      $A2,$00
+          DB      $0A,$00   ;MC D3
+          DB      $08,$A0
+          DB      $22,$80
+          DB      $0A,$80 ;G D0
+          DB      $0A,$80
+          DB      $0A,$80
+          DB      $14,$00  ;MO D0
+          DB      $14,0
+          DB      $14,$00
+          DB      5,0  ;MO D1
+          DB      5,0
+          DB      5,0
+          DB      $28,0 ;MO D2
+          DB      $2A,0
+          DB      $2A,0
+          DB      $28,0 ;MO D3
+          DB      $A8,0
+          DB      $A8,0
+          DB      $F4,$40  ;D D0
+          DB      $F4,$40
+          DB      $FC,$40
+          DB      $13,$F0  ;D D1
+          DB      $13,$F0
+          DB      $13,$F0
+          DB      $DF,0 ;D D2
+          DB      $1F,$70
+          DB      $DF,$40
+          DB      $F7,0  ;D D3
+          DB      $DF,$40
+          DB      $1F,$70
+          DB      $51,$40 ;MID0
+          DB      $51,$40
+          DB      $51,$40
+          DB      $51,$40 ;MID1
+          DB      $51,$40
+          DB      $51,$40
+          DB      $14,0  ;MID2
+          DB      $10,$40
+          DB      $11,$40
+          DB      $50,0  ;MID3
+          DB      $41,0
+          DB      $51,0
+          DB      5,$14,0  ;SK
+          DB      0,0,0     ;1K
+          DB      0,0,0
+          DB      0,0,0
+          DB      0,0,0
+          DB      0,0,0     ;5K
+          DB      $C4,$4C ;H D0
+          DB      $C4,$4C
+          DB      $C4,$4C
+          DB      $C4,$4C ;H D1
+          DB      $C4,$4C
+          DB      $C4,$4C
+          DB      4,0 ;H D2
+          DB      $15,0
+          DB      5,0
+          DB      0,$40 ;H D3
+          DB      1,$40
+          DB      1,$50
+          DB      $00,$00   ;S D0 S0
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00   ;Q D0 S0
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00   ;E D0 S0
+          DB      $00,$00
+          DB      $00,$00   ;T D0 S0
+          DB      $00,$00
+          DB      $00,$00
+          DB      $00,$00
+          DB      $33,$30   ;B D0
+          DB      $33,$30
+          DB      $33,$30
+          DB      $33,$30   ;B D1
+          DB      $33,$30
+          DB      $33,$30
+          DB      $03,$F0   ;B D2
+          DB      $03,$F0
+          DB      $03,$F0
+          DB      $3F,$00   ;B D3
+          DB      $3F,$00
+          DB      $3F,$00
+          DB      $00   ;MCSD0
+          DB      $00   ;D5
+          DB      $00   ;D6
+          DB      $00   ;D7
+          DB      $00   ;DD
+          DB      $08,$80   ;G,BEX0
+          DB      $08,$80   ;G,BEX1
+          DB      $08,$80   ;G,BEX2
+          DB      $00,$80   ;G,BEX3
+          DB      $00,$80   ;G,BEX4
+          DB      $20,$00   ;G,BEX5
+          DB      $80,$00   ;G,BEX6
+
+
+****  LINE  A
+          ORG     STAMPS+$A00
+
+          DB      $11,$0   ;MC D0 S0
+          DB      $11,$40
+          DB      $51,$0
+          DB      $11,$0   ;MC D1
+          DB      $11,$40
+          DB      $51,$0
+          DB      $15,$0   ;MC D2
+          DB      $14,$50
+          DB      $51,$50
+          DB      $15,$0   ;MC D3
+          DB      $14,$50           ;TEMP TRY
+          DB      $51,$40
+          DB      $08,$80 ;G D0
+          DB      $08,$F0
+          DB      $3C,$80
+          DB      $14,$0  ;MO D0
+          DB      $54,0
+          DB      $15,00
+          DB      5,0  ;MO D1
+          DB      5,$40
+          DB      $15,0
+          DB      $04,0 ;MO D2
+          DB      $11,0
+          DB      $11,0
+          DB      $10,0 ;MO D3
+          DB      $44,0
+          DB      $44,0
+          DB      $F4,$40  ;D D0
+          DB      $04,$50
+          DB      $FC,$40
+          DB      $13,$F0  ;D D1
+          DB      $13,$F0
+          DB      $51,0
+          DB      $DF,0 ;D D2
+          DB      $1F,$70
+          DB      $DF,$40
+          DB      $F7,0 ;D D3
+          DB      $DF,$40
+          DB      $1F,$70
+          DB      $51,$40 ;MID0
+          DB      1,$40
+          DB      $50,0
+          DB      $51,$40 ;MID1
+          DB      $50,0
+          DB      1,$40
+          DB      $14,0  ;MID2
+          DB      $10,$40
+          DB      $11,$40
+          DB      $50,0  ;MID3
+          DB      $41,0
+          DB      $51,0
+          DB      0,0,0  ;SK
+          DB      0,0,0     ;1K
+          DB      0,0,0
+          DB      0,0,0
+          DB      0,0,0
+          DB      0,0,0     ;5K
+          DB      4,$40  ;H D0
+          DB      $14,$40
+          DB      4,$50
+          DB      4,$40  ;H D1
+          DB      $14,$40
+          DB      4,$50
+          DB      4,0   ;H D2
+          DB      $11,0
+          DB      $11,0
+          DB      0,$40  ;H D3
+          DB      1,$10
+          DB      1,$10
+          DB      $00,$0   ;S D0 S0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0   ;Q D0 S0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0   ;E D0 S0
+          DB      $00,$0
+          DB      $00,$0   ;T D0 S0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $03,$0   ;B D0
+          DB      $03,$C0
+          DB      $0F,$0
+          DB      $03,$0   ;B D1
+          DB      $03,$C0
+          DB      $0F,$0
+          DB      $03,$0   ;B D2
+          DB      $0B,$0
+          DB      $0F,$0
+          DB      $03,$0   ;B D3
+          DB      $03,$C0
+          DB      $03,$80
+          DB      $00   ;MCSD0
+          DB      $00   ;D5
+          DB      $00   ;D6
+          DB      $00   ;D7
+          DB      $00   ;DD
+          DB      $3C,$F0   ;G,BEX0
+          DB      $08,$80   ;G,BEX1
+          DB      $08,$80   ;G,BEX2
+          DB      $08,$00   ;G,BEX3
+          DB      $00,$00   ;G,BEX4
+          DB      $00,$80   ;G,BEX5
+          DB      $00,$00   ;G,BEX6
+
+
+****  LINE  B
+          ORG     STAMPS+$B00
+
+          DB      $51,$40 ;MC D0 S0
+          DB      $10,$0
+          DB      $01,$0
+          DB      $51,$40 ;MC D1
+          DB      $10,$0
+          DB      $01,$0
+          DB      $15,$40 ;MC D2
+          DB      $14,$50
+          DB      $51,$50
+          DB      $15,$0 ;MC D3
+          DB      $14,$50           ;TEMP TRY
+          DB      $51,$40
+          DB      $3C,$F0 ;G D0
+          DB      $3C,$0
+          DB      $00,$80
+          DB      $55,$00  ;MO D0
+          DB      4,0
+          DB      $10,0
+          DB      $15,$40  ;MO D1
+          DB      4,0
+          DB      1,0
+          DB      $04,0 ;MO D2
+          DB      $11,0
+          DB      $11,0
+          DB      $10,0 ;MO D3
+          DB      $44,0
+          DB      $44,0
+          DB      $14,$50  ;D D0
+          DB      $04,0
+          DB      $00,$40
+          DB      $51,$40  ;D D1
+          DB      $10,0
+          DB      $01,0
+          DB      $28,0 ;D D2
+          DB      $28,$A0
+          DB      $28,$A0
+          DB      $28,0  ;D D3
+          DB      $A2,$80
+          DB      $A2,$80
+          DB      0,0   ;MID0
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;MID1
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;MID2
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;MID3
+          DB      $0,0
+          DB      $0,0
+          DB      0,0,0   ;SK
+          DB      0,0,0     ;1K
+          DB      0,0,0
+          DB      0,0,0
+          DB      0,0,0
+          DB      0,0,0     ;5K
+          DB      $04,$40  ;H D0
+          DB      $14,$40
+          DB      4,$50
+          DB      4,$40  ;H D1
+          DB      $14,$40
+          DB      4,$50
+          DB      4,0   ;H D2
+          DB      $40,$44
+          DB      $40,$44
+          DB      0,$40  ;H D3
+          DB      $44,4
+          DB      $44,4
+          DB      $00,$0   ;S D0 S0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0   ;Q D0 S0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0   ;E D0 S0
+          DB      $00,$0
+          DB      $00,$0   ;T D0 S0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $0C,$0   ;B D0
+          DB      $0C,$0
+          DB      $00,$C0
+          DB      $0C,$0   ;B D1
+          DB      $0C,$0
+          DB      $00,$C0
+          DB      $03,$C0   ;B D2
+          DB      $08,$F0
+          DB      $0C,$E0
+          DB      $0F,$0   ;B D3
+          DB      $2C,$C0
+          DB      $3C,$80
+          DB      $00   ;MCSD0
+          DB      $00   ;D5
+          DB      $00   ;D6
+          DB      $00   ;D7
+          DB      $00   ;DD
+          DB      $00,$00   ;G,BEX0
+          DB      $3C,$F0   ;G,BEX1
+          DB      $2C,$E0   ;G,BEX2
+          DB      $20,$20   ;G,BEX3
+          DB      $20,$20   ;G,BEX4
+          DB      $00,$00   ;G,BEX5
+          DB      $00,$00   ;G,BEX6
+
+
+****  LINE  C
+          ORG     STAMPS+$C00
+
+          DB      $00,$0   ;MC D0 S0
+          DB      $50,$0
+          DB      $01,$40
+          DB      $00,$0   ;MC D1
+          DB      $50,$0
+          DB      $01,$40
+          DB      $00,$0   ;MC D2
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0   ;MC D3
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0   ;G D0
+          DB      $00,$0
+          DB      $00,$F0
+          DB      $0,0   ;MO D0
+          DB      4,$0
+          DB      $10,$0
+          DB      0,0   ;MO D1
+          DB      4,0
+          DB      1,0
+          DB      0,0 ;MO D2
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;MO D3
+          DB      0,0
+          DB      0,0
+          DB      $00,$00 ;D D0
+          DB      $14,$0
+          DB      $0,$C0
+          DB      $00,$00 ;D D1
+          DB      $10,$0
+          DB      $01,$0
+          DB      0,0 ;D D2
+          DB      $0,0
+          DB      $0,0
+          DB      0,0 ;D D3
+          DB      $0,0
+          DB      $0,0
+          DB      $0,0 ;MID0
+          DB      $0,0
+          DB      $0,0
+          DB      $0,0 ;MID1
+          DB      $0,0
+          DB      $0,0
+          DB      0,0   ;MID2
+          DB      $0,0
+          DB      $0,0
+          DB      0,0   ;MID3
+          DB      $0,0
+          DB      $0,0
+          DB      0,0,0   ;SK
+          DB      0,0,0     ;1K
+          DB      0,0,0
+          DB      0,0,0
+          DB      0,0,0
+          DB      0,0,0     ;5K
+          DB      $14,$50 ;H D0
+          DB      0,$40
+          DB      4,0
+          DB      $14,$50 ;H D1
+          DB      0,$40
+          DB      4,0
+          DB      5,0 ;H D2
+          DB      $40,$50
+          DB      $40,$50
+          DB      1,$40 ;H D3
+          DB      $14,4
+          DB      $14,4
+          DB      $00,$0   ;S D0 S0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0   ;Q D0 S0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0   ;E D0 S0
+          DB      $00,$0
+          DB      $00,$0   ;T D0 S0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0   ;B D0
+          DB      $0C,$0
+          DB      $00,$C0
+          DB      $00,$0   ;B D1
+          DB      $0C,$0
+          DB      $00,$C0
+          DB      $00,$0   ;B D2
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00,$0   ;B D3
+          DB      $00,$0
+          DB      $00,$0
+          DB      $00   ;MCSD0
+          DB      $00   ;D5
+          DB      $00   ;D6
+          DB      $00   ;D7
+          DB      $00   ;DD
+          DB      $00,$00   ;G,BEX0
+          DB      $00,$00   ;G,BEX1
+          DB      $00,$00   ;G,BEX2
+          DB      $00,$00   ;G,BEX3
+          DB      $00,$00   ;G,BEX4
+          DB      $00,$00   ;G,BEX5
+          DB      $00,$00   ;G,BEX6
+
+
+****  LINE  D
+          ORG     STAMPS+$D00
+
+          DB      0,0   ;MC D0 S0
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;MC D1
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;MC D2
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;MC D3
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;G D0
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;MO D0
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;MO D1
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;MO D2
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;MO D3
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;D D0
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;D D1
+          DB      0,0
+          DB      0,0
+          DB      0,0 ;D D2
+          DB      $0,0
+          DB      $0,0
+          DB      0,0 ;D D3
+          DB      $0,0
+          DB      $0,0
+          DB      $0,0 ;MID0
+          DB      $0,0
+          DB      $0,0
+          DB      $0,0 ;MID1
+          DB      $0,0
+          DB      $0,0
+          DB      0,0   ;MID2
+          DB      $0,0
+          DB      $0,0
+          DB      0,0   ;MID3
+          DB      0,0
+          DB      $0,0
+          DB      0,0,0   ;SK
+          DB      0,0,0     ;1K
+          DB      0,0,0
+          DB      0,0,0
+          DB      0,0,0
+          DB      0,0,0     ;5K
+          DB      $14,$50 ;H D0
+          DB      0,$50
+          DB      $14,0
+          DB      $14,$50 ;H D1
+          DB      0,$50
+          DB      $14,0
+          DB      5,0 ;H D2
+          DB      $50,0
+          DB      $50,0
+          DB      1,$40 ;H D3
+          DB      0,$14
+          DB      0,$14
+          DB      0,0   ;S D0 S0
+          DB      0,0
+          DB      0,0
+          DB      0,0
+          DB      0,0
+          DB      0,0
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;Q D0 S0
+          DB      0,0
+          DB      0,0
+          DB      0,0
+          DB      0,0
+          DB      0,0
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;E D0 S0
+          DB      0,0
+          DB      0,0   ;T D0 S0
+          DB      0,0
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;B D0
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;B D1
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;B D2
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;B D3
+          DB      0,0
+          DB      0,0
+          DB      $00   ;MCSD0
+          DB      $00   ;D5
+          DB      $00   ;D6
+          DB      $00   ;D7
+          DB      $00   ;DD
+          DB      $00,$00   ;G,BEX0
+          DB      $00,$00   ;G,BEX1
+          DB      $00,$00   ;G,BEX2
+          DB      $00,$00   ;G,BEX3
+          DB      $00,$00   ;G,BEX4
+          DB      $00,$00   ;G,BEX5
+          DB      $00,$00   ;G,BEX6
+
+
+****  LINE  E
+          ORG     STAMPS+$E00
+
+          DB      0,0   ;MC D0 S0
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;MC D1
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;MC D2
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;MC D3
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;G D0
+          DB      0,0
+          DB      0,0
+          DB      0,0 ;MO D0
+          DB      0,0
+          DB      0,0
+          DB      0,0 ;MO D1
+          DB      0,0
+          DB      0,0
+          DB      0,0 ;MO D2
+          DB      0,0
+          DB      0,0
+          DB      0,0 ;MO D3
+          DB      0,0
+          DB      0,0
+          DB      0,0 ;D D0
+          DB      0,0
+          DB      0,0
+          DB      0,0 ;D D1
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;D D2
+          DB      $0,0
+          DB      $0,0
+          DB      0,0 ;D D3
+          DB      $0,0
+          DB      $0,0
+          DB      $0,0 ;MID0
+          DB      $0,0
+          DB      $0,0
+          DB      $0,0 ;MID1
+          DB      $0,0
+          DB      $0,0
+          DB      0,0   ;MID2
+          DB      $0,0
+          DB      $0,0
+          DB      0,0   ;MID3
+          DB      $0,0
+          DB      $0,0
+          DB      0,0,0   ;SK
+          DB      0,0,0     ;1K
+          DB      0,0,0
+          DB      0,0,0
+          DB      0,0,0
+          DB      0,0,0     ;5K
+          DB      0,0   ;H D0
+          DB      0,$50
+          DB      $14,0
+          DB      0,0   ;H D1
+          DB      0,$50
+          DB      $14,0
+          DB      0,0   ;H D2
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;H D3
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;S D0 S0
+          DB      0,0
+          DB      0,0
+          DB      0,0
+          DB      0,0
+          DB      0,0
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;Q D0 S0
+          DB      0,0
+          DB      0,0
+          DB      0,0
+          DB      0,0
+          DB      0,0
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;E D0 S0
+          DB      0,0
+          DB      0,0   ;T D0 S0
+          DB      0,0
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;B D0
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;B D1
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;B D2
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;B D3
+          DB      0,0
+          DB      0,0
+          DB      $00   ;MCSD0
+          DB      $00   ;D5
+          DB      $00   ;D6
+          DB      $00   ;D7
+          DB      $00   ;DD
+          DB      $00,$00   ;G,BEX0
+          DB      $00,$00   ;G,BEX1
+          DB      $00,$00   ;G,BEX2
+          DB      $00,$00   ;G,BEX3
+          DB      $00,$00   ;G,BEX4
+          DB      $00,$00   ;G,BEX5
+          DB      $00,$00   ;G,BEX6
+
+
+****  LINE  F
+          ORG     STAMPS+$F00
+
+          DB      0,0   ;MC D0 S0
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;MC D1
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;MC D2
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;MC D3
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;G D0
+          DB      0,0
+          DB      0,0
+          DB      0,0 ;MO D0
+          DB      0,0
+          DB      0,0
+          DB      0,0 ;MO D1
+          DB      0,0
+          DB      0,0
+          DB      0,0 ;MO D2
+          DB      0,0
+          DB      0,0
+          DB      0,0 ;MO D3
+          DB      0,0
+          DB      0,0
+          DB      0,0 ;D D0
+          DB      0,0
+          DB      0,0
+          DB      0,0 ;D D1
+          DB      0,0
+          DB      0,0
+          DB      0,0 ;D D2
+          DB      $0,0
+          DB      $0,0
+          DB      0,0 ;D D3
+          DB      $0,0
+          DB      $0,0
+          DB      $0,0 ;MID0
+          DB      $0,0
+          DB      $0,0
+          DB      $0,0 ;MID1
+          DB      $0,0
+          DB      $0,0
+          DB      0,0   ;MID2
+          DB      $0,0
+          DB      $0,0
+          DB      0,0   ;MID3
+          DB      $0,0
+          DB      $0,0
+          DB      0,0,0   ;SK
+          DB      0,0,0     ;1K
+          DB      0,0,0
+          DB      0,0,0
+          DB      0,0,0
+          DB      0,0,0     ;5K
+          DB      0,0   ;H D0
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;H D1
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;H D2
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;H D3
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;S D0 S0
+          DB      0,0
+          DB      0,0
+          DB      0,0
+          DB      0,0
+          DB      0,0
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;Q D0 S0
+          DB      0,0
+          DB      0,0
+          DB      0,0
+          DB      0,0
+          DB      0,0
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;E D0 S0
+          DB      0,0
+          DB      0,0   ;T D0 S0
+          DB      0,0
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;B D0
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;B D1
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;B D2
+          DB      0,0
+          DB      0,0
+          DB      0,0   ;B D3
+          DB      0,0
+          DB      0,0
+          DB      $00   ;MCSD0
+          DB      $00   ;D5
+          DB      $00   ;D6
+          DB      $00   ;D7
+          DB      $00   ;DD
+
+****** END OF STAMP DATA ********
+ ;THE
+          END

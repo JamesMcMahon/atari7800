@@ -1,0 +1,241 @@
+	NEWPAGE	LKDFF
+
+OBIKESTRIGHTE:
+	.REPT	50
+	.DC.B	$00
+	.ENDR
+OBIKESTRIGHT1E:
+	.dc.b	$18 ; x 8 y 38
+	.dc.b	$18 ; x 8 y 40
+	.dc.b	$18 ; x 8 y 42
+	.dc.b	$18 ; x 8 y 44
+	.dc.b	$DB ; x 8 y 46
+	.dc.b	$DB ; x 8 y 48
+	.dc.b	$DB ; x 8 y 50
+	.dc.b	$DB ; x 8 y 52
+	.dc.b	$DB ; x 8 y 54
+	.dc.b	$FF ; x 8 y 56
+	.dc.b	$FF ; x 8 y 58
+	.dc.b	$FF ; x 8 y 60
+	.dc.b	$7E ; x 8 y 62
+	.dc.b	$3C ; x 8 y 64
+	.dc.b	$BD ; x 8 y 66
+	.dc.b	$FF ; x 8 y 68
+	.dc.b	$FF ; x 8 y 70
+	.dc.b	$7E ; x 8 y 72
+	.dc.b	$7E ; x 8 y 74
+	.dc.b	$3C ; x 8 y 76
+	.dc.b	$3C ; x 8 y 78
+	.dc.b	$18 ; x 8 y 80
+
+	.REPT	50
+	.DC.B	$00
+	.ENDR
+OBIKESTRIGHTO:
+	.REPT	30
+	.DC.B	$00
+	.ENDR
+OBIKESTRIGHT1O:
+	.dc.b	$18 ; x 8 y 39
+	.dc.b	$18 ; x 8 y 41
+	.dc.b	$18 ; x 8 y 43
+	.dc.b	$5A ; x 8 y 45
+	.dc.b	$FF ; x 8 y 47
+	.dc.b	$DB ; x 8 y 49
+	.dc.b	$DB ; x 8 y 51
+	.dc.b	$DB ; x 8 y 53
+	.dc.b	$FB ; x 8 y 55
+	.dc.b	$FF ; x 8 y 57
+	.dc.b	$FF ; x 8 y 59
+	.dc.b	$7E ; x 8 y 61
+	.dc.b	$7E ; x 8 y 63
+	.dc.b	$FF ; x 8 y 65
+	.dc.b	$BD ; x 8 y 67
+	.dc.b	$FF ; x 8 y 69
+	.dc.b	$FF ; x 8 y 71
+	.dc.b	$7E ; x 8 y 73
+	.dc.b	$3C ; x 8 y 75
+	.dc.b	$3C ; x 8 y 77
+	.dc.b	$3C ; x 8 y 79
+
+	.REPT	50
+	.DC.B	$00
+	.ENDR
+	
+OBIKECOLORO:
+OBIKECOLOR1O:
+
+
+
+	.DC.B	$0
+	.DC.B	$1
+	.DC.B	$10
+	.DC.B	$2
+	.DC.B	$2
+	.DC.B	$1
+	.DC.B	$0
+	.DC.B	$20
+	.DC.B	$21
+	.DC.B	$24
+	.DC.B	$25
+	.DC.B	$24
+	.DC.B	$22
+	.DC.B	$75
+	.DC.B	$71
+	.DC.B	$73
+	.DC.B	$75
+	.DC.B	$71
+	.DC.B	$3
+	.DC.B	$E
+	.DC.B	$F
+	.DC.B	$F
+OTBIKESTRIGHT1E:
+	.dc.b	$18 ; x 8 y 38
+	.dc.b	$18 ; x 8 y 40
+	.dc.b	$18 ; x 8 y 42
+	.dc.b	$18 ; x 8 y 44
+	.dc.b	$DB ; x 8 y 46
+	.dc.b	$DB ; x 8 y 48
+	.dc.b	$DB ; x 8 y 50
+	.dc.b	$DB ; x 8 y 52
+	.dc.b	$DB ; x 8 y 54
+	.dc.b	$FF ; x 8 y 56
+	.dc.b	$FF ; x 8 y 58
+	.dc.b	$FF ; x 8 y 60
+	.dc.b	$7E ; x 8 y 62
+	.dc.b	$3C ; x 8 y 64
+	.dc.b	$BD ; x 8 y 66
+	.dc.b	$FF ; x 8 y 68
+	.dc.b	$FF ; x 8 y 70
+	.dc.b	$7E ; x 8 y 72
+	.dc.b	$7E ; x 8 y 74
+	.dc.b	$3C ; x 8 y 76
+	.dc.b	$3C ; x 8 y 78
+	.dc.b	$18 ; x 8 y 80
+	NEWPAGE	WKIFSH
+	.REPT 30
+	.DC.B	0
+	.ENDR
+OTBIKECOLOR1O:
+
+
+	.DC.B	$0
+	.DC.B	$1
+	.DC.B	$10
+	.DC.B	$2
+	.DC.B	$2
+	.DC.B	$1
+	.DC.B	$0
+	.DC.B	$20
+	.DC.B	$21
+	.DC.B	$24
+	.DC.B	$25
+	.DC.B	$24
+	.DC.B	$22
+	.DC.B	$75
+	.DC.B	$71
+	.DC.B	$73
+	.DC.B	$75
+	.DC.B	$71
+	.DC.B	$3
+	.DC.B	$E
+	.DC.B	$F
+	.DC.B	$F
+OTBIKEMASKE:
+	.REPT	50
+	.DC.B	0
+	.ENDR
+OTBIKE1MASKE:
+	.REPT	22
+	.DC.B	$FF
+	.ENDR
+	.REPT	50
+	.DC.B	0
+	.ENDR
+OBIKECOLORE:
+OBIKECOLOR1E:
+	.DC.B	$0
+	.DC.B	$0
+	.DC.B	$1
+	.DC.B	$2
+	.DC.B	$2
+	.DC.B	$1
+	.DC.B	$01
+	.DC.B	$0
+	.DC.B	$20
+	.DC.B	$23
+	.DC.B	$25
+	.DC.B	$25
+	.DC.B	$23
+	.DC.B	$72
+	.DC.B	$74
+	.DC.B	$72
+	.DC.B	$74
+	.DC.B	$73
+	.DC.B	$1
+	.DC.B	$5
+	.DC.B	$F
+	.DC.B	$F
+
+OTBIKESTRIGHT1O:
+	.dc.b	$18 ; x 8 y 39
+	.dc.b	$18 ; x 8 y 41
+	.dc.b	$18 ; x 8 y 43
+	.dc.b	$5A ; x 8 y 45
+	.dc.b	$FF ; x 8 y 47
+	.dc.b	$DB ; x 8 y 49
+	.dc.b	$DB ; x 8 y 51
+	.dc.b	$DB ; x 8 y 53
+	.dc.b	$FB ; x 8 y 55
+	.dc.b	$FF ; x 8 y 57
+	.dc.b	$FF ; x 8 y 59
+	.dc.b	$7E ; x 8 y 61
+	.dc.b	$7E ; x 8 y 63
+	.dc.b	$FF ; x 8 y 65
+	.dc.b	$BD ; x 8 y 67
+	.dc.b	$FF ; x 8 y 69
+	.dc.b	$FF ; x 8 y 71
+	.dc.b	$7E ; x 8 y 73
+	.dc.b	$3C ; x 8 y 75
+	.dc.b	$3C ; x 8 y 77
+	.dc.b	$3C ; x 8 y 79
+OTBIKECOLOR1E:
+
+
+	.DC.B	$0
+	.DC.B	$0
+	.DC.B	$1
+	.DC.B	$2
+	.DC.B	$2
+	.DC.B	$1
+	.DC.B	$01
+	.DC.B	$0
+	.DC.B	$20
+	.DC.B	$23
+	.DC.B	$25
+	.DC.B	$25
+	.DC.B	$23
+	.DC.B	$72
+	.DC.B	$74
+	.DC.B	$72
+	.DC.B	$74
+	.DC.B	$73
+	.DC.B	$1
+	.DC.B	$5
+	.DC.B	$F
+	.DC.B	$F
+OTBIKEMASKO:
+	.REPT	50
+	.DC.B	0
+	.ENDR
+OTBIKE1MASKO:
+	.REPT	22
+	.DC.B	$FF
+	.ENDR
+	.REPT	50
+	.DC.B	0
+	.ENDR
+
+
+
+

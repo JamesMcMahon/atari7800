@@ -1,0 +1,43 @@
+------------------------------
+FILES ON THE DISTRIBUTION DISK
+------------------------------
+
+	README		Distribution disk documentation
+	MAC.PRG		Macro assembler
+	ALN.PRG		New linker [significantly faster]
+	DOINDEX.PRG	Library index file constructor (for ALN)
+	CONV65.PRG	6502 object file converter
+	M.PRG		"Quick" MAC.PRG invoker
+	ATARI.S		Preliminary Atari ST equates and macros
+	INSTMAC.PRG	Executable version of INSTMAC.S
+
+	EXAMPLES\	Example programs
+	    ATARI.S	    Copy of ATARI.S
+	    EXAMPLE.S	    \
+	    EXAMPLE1.S	    ->- Silly example programs
+	    EXAMPLE2.S	    /
+	    CODE.S	    68000 opcodes (examples)
+	    CODE65.S	    6502 opcodes (examples)
+	    BUGS.S	    \
+	    SHIFT.S	    ->- another silly example program
+	    IMAGES.S	    /
+	    INSTMAC.S	    Sample MAC installer (silly example)
+
+
+In addition to the distribution disk, you should also have two
+documents: a typeset assembler reference manual and a man page
+for the linker. 
+
+MAC and ALN *love* to eat memory.  You may have to remove or
+shrink your massive ramdisks and desk accessories.
+
+The example programs in the EXAMPLES directory were assembled
+with the following commandlines:
+
+	mac -p example				==> example.prg
+	mac -p example1				==> example1.prg
+	mac -p example2				==> example2.prg
+	mac -p bugs shift images		==> bugs.prg
+	mac -p instmac				==> instmac.prg
+	mac code				==> code.o
+	mac code65				==> code65.o

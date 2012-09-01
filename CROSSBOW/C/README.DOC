@@ -1,0 +1,75 @@
+File: README.DOC
+
+	ATARI 7800 CROSSBOW
+
+	Notes for final release
+
+	6/29/88
+
+	Scott Marshall
+
+
+	The disks contain the final relese of ATARI 7800 CROSSBOW, which
+includes all source and batch files for code maintainence.
+
+	Directories and Files:
+
+	\C		Main Crossbow directory
+	\C\BM		Bitmap files, switch banks, and the lower fixed bank
+
+	\C\C.S		Code for upper fixed bank ($C000 .. $FFFF)
+	\C\TABLES.S	Tables for upper fixed bank
+	\C\EQUATES.S	Constants
+	\C\VARS.S	Variables
+	\C\MACROS.S	Macros
+	\C\COLDET.S	Collision detection code
+	\C\AUDEQU.S	Audio equates
+
+	\C\MAKE.S	Maintainence batch files
+	\C\ASSEMBLE.S
+	\C\DOWNLOAD.S
+
+	\C\BM\M*.BAT	Batch file to make each bank
+	\C\BM\MAKE.BAT	Batch file to make all banks in \C\BM
+
+	\C\ADDR.S	Equates to set global addresses
+
+	\C\BM\BD*.S	Bank data, 0 .. 6 ($8000 .. $BFFF)
+
+	\C\BM\*.S	Graphics and data tables
+
+	\C\BM\BDF.S	Lower fixed bank ($4000 .. $7FFF)
+
+	\INCLUDE\MARIA.S	7800 includes.
+
+The lower fixed bank contains:
+
+	Grahics common to many crossbow screens.
+	Audio tables
+	Collision detection lookup table
+	Cave bat flying animation sequence (overflow from upper fixed bank)
+	Light gun code (currently a dummy subroutine)
+
+NOTES ON LIGHT GUN CODE:
+
+	I wrote a dummy light gun subroutine in the source file \C\BM\BDF.S.
+It is named "DOGUN", and 512 bytes are available for it. If the player selects
+"gun" instead of "stick", this subroutine is called during every vertical
+blanking period while a game board is active. If there is no firing, it
+should return zero, and non-zero if the gun has been fired. On firing, x and y
+positions should be written to the variables "movx+N_CURSOR" and
+"movy+N_CURSOR", with a fudge factor of 5 units subtracted from each to center
+the graphic "splotch". The routine should test the bit "S_STOPPED" in the byte
+"movsta+N_CURSOR" before allowing a fire. If this bit is high, it means that
+the fire sequence is still running, and subsequent firing should be prevented
+until this bit clears. Samples of all of this are working and commented in
+the dummy routine.
+
+	To modify and test this routine, run the batch file "\C\BM\MF.BAT",
+return to the directory "\C" and run "DOWNLOAD.BAT".
+
+
+	Any questions, I can be reached at 1-609-443-6617.
+
+	Yours Truly,
+	Scott Marshall

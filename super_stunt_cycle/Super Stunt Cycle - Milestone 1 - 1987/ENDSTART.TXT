@@ -1,0 +1,175 @@
+	NEWPAGE	QWEDFFF
+PLAY1START:
+	.DC.B	$FF
+	.DC.B	$E0
+	.DC.B	$C0
+	.DC.B	$80
+	.REPT	38
+	.DC.B	$00
+	.ENDR
+PLAY2START:
+	.REPT	5
+	.DC.B	$FF
+	.ENDR
+
+	.DC.B	$7F
+	.DC.B	$3F
+	.DC.B	$1F
+	.DC.B	$F
+	.DC.B	$7
+	.DC.B	$3
+	.DC.B	$1
+
+	.REPT	30
+	.DC.B	$00
+	.ENDR
+	NEWPAGE	QOWEDFFF
+PLAY3START:
+	.REPT	13
+	.DC.B	$FF
+	.ENDR
+
+	.DC.B	$FE
+	.DC.B	$FC
+	.DC.B	$F8
+	.DC.B	$F0
+	.DC.B	$E0
+	.DC.B	$C0
+	.DC.B	$80
+
+	.REPT	22
+	.DC.B	$00
+	.ENDR
+PLAY4START:
+	.REPT	21
+	.DC.B	$FF
+	.ENDR
+
+	.DC.B	$E0
+	.DC.B	$C0
+	.DC.B	$80
+	.REPT	18
+	.DC.B	$00
+	.ENDR
+PLAY5START:
+	.REPT	25
+	.DC.B	$FF
+	.ENDR
+
+	.DC.B	$7F
+	.DC.B	$3F
+	.DC.B	$1F
+	.DC.B	$0F
+	.DC.B	$7
+	.DC.B	$3
+	.DC.B	$1
+
+	.REPT	14
+	.DC.B	$00
+	.ENDR
+;	NEWPAGE	IIWODO
+PLAY6START:
+	.REPT	33
+	.DC.B	$FF
+	.ENDR
+
+	.DC.B	$FE
+	.DC.B	$FC
+	.DC.B	$F8
+	.DC.B	$F0
+	.DC.B	$E0
+	.DC.B	$C0
+	.DC.B	$80
+	.DC.B	0
+	.DC.B	0
+	.DC.B	0
+	.DC.B	0
+	.DC.B	0
+;++++++++++++++++++++++++++++++++++++++++++++
+	NEWPAGE	shueqW
+PLAY1ENDS:
+	.DC.B	$0
+	.DC.B	$10
+	.DC.B	$30
+	.DC.B	$70
+	.REPT	38
+	.DC.B	$FF
+	.ENDR
+PLAY2ENDS:
+	.REPT	5
+	.DC.B	$0
+	.ENDR
+	.DC.B	$80
+	.DC.B	$C0
+	.DC.B	$E0
+	.DC.B	$F0
+	.DC.B	$F8
+	.DC.B	$FC
+	.DC.B	$FE
+	.REPT	30
+	.DC.B	$FF
+	.ENDR
+	NEWPAGE	QWEDDFFFF
+
+PLAY3ENDS:
+	.REPT	13
+	.DC.B	$00
+	.ENDR
+
+	.DC.B	$1
+	.DC.B	$3
+	.DC.B	$7
+	.DC.B	$F
+	.DC.B	$1F
+	.DC.B	$3F
+	.DC.B	$7F
+
+	.REPT	22
+	.DC.B	$FF
+	.ENDR
+
+PLAY4ENDS:
+	.REPT	21
+	.DC.B	$0
+	.ENDR
+
+	.DC.B	$10
+	.DC.B	$30
+	.DC.B	$70
+	.DC.B	$F0
+
+	.REPT	18
+	.DC.B	$FF
+	.ENDR
+PLAY5ENDS:
+	.REPT	25
+	.DC.B	$0
+	.ENDR
+
+	.DC.B	$80
+	.DC.B	$C0
+	.DC.B	$E0
+	.DC.B	$F0
+	.DC.B	$F8
+	.DC.B	$FC
+	.DC.B	$FE
+
+	.REPT	18
+	.DC.B	$FF
+	.ENDR
+;	NEWPAGE	SWEEIT
+PLAY6ENDS:
+	.REPT	33
+	.DC.B	$0
+	.ENDR
+
+	.DC.B	$1
+	.DC.B	$3
+	.DC.B	$7
+	.DC.B	$F
+	.DC.B	$1F
+	.DC.B	$3F
+	.DC.B	$7F
+	.DC.B	$FF
+	.DC.B	$FF
+

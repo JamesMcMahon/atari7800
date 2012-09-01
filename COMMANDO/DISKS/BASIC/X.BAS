@@ -1,0 +1,4 @@
+10    DEF SEG=0
+20    DEFDBL S:S=&H436
+30    PRINT PEEK(S)
+

@@ -1,0 +1,106 @@
+06601030305800
+9[...................................................]001
+€                    2600/7800 DEVELOPMENT KIT
+
+
+                  CARE AND FEEDING INSTRUCTIONS
+
+
+
+A full, complete 2600/7800 development system includes the following:
+
+HARDWARE:
+     
+     520ST or 1040ST COMPUTER or 520STFM (w/ built-in drive)
+     SH204 HARD DISK 
+     SF354 or SF314 FLOPPY DISK (not incl. w/ 520STFM or 1040ST)
+     SM124 or SC1224 MONITOR 
+     7800 GAME MACHINE - O.S. ROM REPLACED BY TRANSFER ROM ASSEMBLY
+     CABLE
+     RAM CARTRIDGE
+     TELEVISION (notsuppliedbyAtari)
+     EPROM CARTRIDGE (FOR APPROPRIATE GAME SYSTEM)
+
+SOFTWARE:
+
+     DEVELOPMENT KIT DISK:
+          40COL.S
+          ASM.BAT
+          BATCH.TTP
+          CONV65.PRG
+          DOWNLOAD.PRG
+          K.TTP
+          MAC.PRG (SERIALIZED)
+          MARIA.S
+          ME.TTP
+          WAIT.PRG
+               Also included:  *
+                    ALN.PRG
+                    ATARI.S
+                    DOINDEX.PRG
+                    INSTMAC.PRG
+                    M.PRG
+                    (various "readme" files)
+                    (MADMAC "EXAMPLES" folder)
+
+     HARD DISK BOOT DISK (COMES WITH HARD DISK DRIVE)
+
+DOCUMENTATION FOR 2600 DEVELOPMENT:
+
+     ASSEMBLER MANUAL
+     EDITOR MANUAL
+     STELLA (2600) PROGRAMMER'S GUIDE
+     2600 GAME STANDARDS AND PROCEDURES 
+     7800 SUPER CART SPEC 
+     "USING THE SUPERCART... FOR DEVELOPMENT"
+     SARA SPEC 
+
+DOCUMENTATION FOR 7800 DEVELOPMENT:
+
+     ASSEMBLER MANUAL
+     EDITOR MANUAL
+     7800 PROGRAMMING GUIDE
+     MARIA SPEC
+     MARIA DIGEST (SHORT AND SUPERSHORT VERSIONS)
+     STELLA (2600) PROGRAMMER'S GUIDE
+     7800 GAME STANDARDS AND PROCEDURES 
+     7800 SUPER CART SPEC 
+     "USING THE SUPERCART... FOR DEVELOPMENT"
+
+Set up the ST computer per its instructions.  
+If your 7800 has not been equipped with transfer ROM assembly, 
+     you must install it according to the following instructions:
+     To open up the 7800, unscrew the bottom.  Lift the shielded 
+     PCB from the plastic housing.  Remove RF shield by twisting 
+     tabs.  Refer to attached sketch of PCB for position of OS 
+     rom.  Remove OS rom in easiest manner.  If you have older 
+     7800, simply pull rom from its socket.  If you have newer 
+     7800, clip the rom pins and remove solder from PCB holes.  
+     Install transfer rom, noting correct pin 1 position on 
+     attached sketch.  Put 7800 back together if desired and/or 
+     possible.  Note that it will be easier to remember which 
+     buttons are Pause, Reset, and Select if plastic housing is 
+     in place.
+Connect 7800 to power supply, attach 7800 to TV set.  
+Attach custom transfer cable to printer port of ST and to the 
+     joystick ports of 7800.  You will probably want to make a 
+     switchbox for the cable, so that you won't have to 
+     constantly remove the cable to plug in a joystick, and vice 
+     versa.
+If your supercart RAM card has not been equipped with a Write-Enable
+     switch, you will need to do that.  See supercart schematic 
+     (if you do not have one and need one, call Tom Sloper).  
+     Put as much RAM as you will need on the 1-meg ROM emulator.  
+     It is set up for (4) 256K bits RAM chips.
+Put the RAM card in the cartridge port (chips to the rear).
+
+And off you go!
+
+The 6502 cross-assembler is proprietary.  Your serial number is 
+     registered in your name.  Pirating is a no-no!
+
+If there are any questions regarding the use of the software or 
+     hardware, call John Feagans at Atari.  (408) 745-4923
+With any other problems, call Tom Sloper.  (408) 745-4874
+
+tas 6/17/87

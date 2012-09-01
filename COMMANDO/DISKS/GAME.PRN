@@ -1,0 +1,1432 @@
+
+                                        GAME.s               Page 1     MADMAC Atari Macro Assembler 0.11x (Atari ST)
+
+
+    1                                   	.6502
+    2                                   
+    3                                   	.INCLUDE	"MARIA2.S"
+    1                                   	.6502
+    2                                   	.SUBTTL	"MARIA EQUATES -- ATARI CONFIDENTIAL"
+    3                                   ;************************************************************************
+    4                                   ;	THIS DOCUMENT CONTAINS CONFIDENTIAL PROPRIETARY INFORMATION	*
+    5                                   ;	OF ATARI WHICH MAY NOT BE COPIED, DISCLOSED, OR USED EXCEPT	*
+    6                                   ;	AS EXPRESSLY AUTHORIZED IN WRITING BY ATARI.               	*
+    7                                   ;************************************************************************
+    8                                   ;
+    9                                   ;	MY MEMORY MAP USAGE OF THE 3600
+   10                                   ;
+   11                                   ;	00-1F		TIA REGISTERS
+   12                                   ;	20-3F		MARIA REGISTERS
+   13                                   ;	40-FF		ZERO PAGE RAM
+   14                                   ;	100-13F		SHADOW OF TIA AND MARIA REGISTERS -- USED FOR 
+   15                                   ;			PUSHING ACCUMULATOR ONTO REGISTERS
+   16                                   ;	140-1FF		RAM (STACK) -- SHADOW OF 40-FF
+   17                                   ;	200-27F		NOT USED
+   18                                   ;	280-2FF		PIA PORTS AND TIMERS
+   19                                   ;	300-17FF	NOT USED
+   20                                   ;	1800-203F	RAM
+   21                                   ;	2040-20FF	SHADOW OF ZERO PAGE RAM
+   22                                   ;	2100-213F	RAM
+   23                                   ;	2140-21FF	SHADOW OF STACK RAM
+   24                                   ;	2200-27FF	RAM
+   25                                   ;	2800-3FFF	DUPLICATION OF ADDRESS SPACE 2000-27FF
+   26                                   ;	4000-FF7F	UNUSED ADDRESS SPACE
+   27                                   ;	FF80-FFF9	RESERVED FOR ENCRYPTION
+   28                                   ;	FFFA-FFFF	6502 VECTORS
+   29                                   
+   30           =00000000               TIA	=	$00	;BASE ADDRESS FOR TIA CHIP
+   31                                   
+   32           =00000001               PTCTRL	=	$01	;INPUT PORT CONTROL ("VBLANK" IN TIA )
+   33           =00000008               INPT0	=	$08	;PADDLE CONTROL INPUT 0
+   34           =00000009               INPT1	=	$09	;PADDLE CONTROL INPUT 1
+   35           =0000000A               INPT2	=	$0A	;PADDLE CONTROL INPUT 2
+   36           =0000000B               INPT3	=	$0B	;PADDLE CONTROL INPUT 3
+   37           =0000000C               INPT4	=	$0C	;PLAYER 0 FIRE BUTTON INPUT
+   38           =0000000D               INPT5	=	$0D	;PLAYER 1 FIRE BUTTON INPUT
+   39           =00000015               AUDC0	=	$15	;AUDIO CONTROL CHANNEL 0
+   40           =00000016               AUDC1	=	$16	;AUDIO CONTROL CHANNEL 1
+   41           =00000017               AUDF0	=	$17	;AUDIO FREQUENCY CHANNEL 0
+   42           =00000018               AUDF1	=	$18	;AUDIO FREQUENCY CHANNEL 1
+   43           =00000019               AUDV0	=	$19	;AUDIO VOLUME CHANNEL 0
+   44           =0000001A               AUDV1	=	$1A	;AUDIO VOLUME CHANNEL 1
+   45                                   
+   46                                   ;
+   47                                   ;******************************************************************************
+   48                                   ;
+   49                                   
+   50           =00000020               MARIA	=	$20	;BASE ADDRESS FOR MARIA CHIP
+   51                                   
+   52           =00000020               BKGRND	=	$20	;BACKGROUND COLOR
+   53           =00000021               P0C1	=	$21	;PALETTE 0 - COLOR 1
+
+
+                                        MARIA2.S             Page 2     MADMAC Atari Macro Assembler 0.11x (Atari ST)
+MARIA EQUATES -- ATARI CONFIDENTIAL
+
+   54           =00000022               P0C2	=	$22	;          - COLOR 2
+   55           =00000023               P0C3	=	$23	;          - COLOR 3
+   56           =00000024               WSYNC	=	$24	;WAIT FOR SYNC
+   57           =00000025               P1C1	=	$25	;PALETTE 1 - COLOR 1
+   58           =00000026               P1C2	=	$26	;          - COLOR 2
+   59           =00000027               P1C3	=	$27	;          - COLOR 3
+   60           =00000028               MSTAT	=	$28	;MARIA STATUS
+   61           =00000029               P2C1	=	$29	;PALETTE 2 - COLOR 1
+   62           =0000002A               P2C2	=	$2A	;          - COLOR 2
+   63           =0000002B               P2C3	=	$2B	;          - COLOR 3
+   64           =0000002C               DPPH	=	$2C	;DISPLAY LIST LIST POINT HIGH BYTE
+   65           =0000002D               P3C1	=	$2D	;PALETTE 3 - COLOR 1
+   66           =0000002E               P3C2	=	$2E	;          - COLOR 2
+   67           =0000002F               P3C3	=	$2F	;          - COLOR 3
+   68           =00000030               DPPL	=	$30	;DISPLAY LIST LIST POINT LOW BYTE
+   69           =00000031               P4C1	=	$31	;PALETTE 4 - COLOR 1
+   70           =00000032               P4C2	=	$32	;          - COLOR 2
+   71           =00000033               P4C3	=	$33	;          - COLOR 3
+   72           =00000034               CHBASE	=	$34	;CHARACTER BASE ADDRESS
+   73           =00000035               P5C1	=	$35	;PALETTE 5 - COLOR 1
+   74           =00000036               P5C2	=	$36	;          - COLOR 2
+   75           =00000037               P5C3	=	$37	;          - COLOR 3
+   76           =00000038               OFFSET	=	$38	;FOR FUTURE EXPANSION HERE - STORE ZER0 HERE
+   77           =00000039               P6C1	=	$39	;PALETTE 6 - COLOR 1
+   78           =0000003A               P6C2	=	$3A	;          - COLOR 2
+   79           =0000003B               P6C3	=	$3B	;          - COLOR 3
+   80           =0000003C               CTRL	=	$3C	;MARIA CONTROL REGISTER
+   81           =0000003D               P7C1	=	$3D	;PALETTE 7 - COLOR 1
+   82           =0000003E               P7C2	=	$3E	;          - COLOR 2
+   83           =0000003F               P7C3	=	$3F	;          - COLOR 3
+   84                                   
+   85                                   ;
+   86                                   ; PIA and TIMER (6532) locations
+   87                                   ;
+   88                                   
+   89           =00000280               SWCHA	=	$0280	;player	and player 1 joysticks
+   90           =00000281               CTLSWA	=	$0281	;I/O CONTROL FOR SWCHA
+   91                                   
+   92           =00000001               RESET	=	1	;bits for consle switches
+   93           =00000002               SELECT	=	2
+   94           =00000008               PAUSE	=	8
+   95           =00000282               SWCHB	=	$0282	;console switches
+   96           =00000283               CTLSWB	=	$0283	;I/O CONTROL FOR SWCHB
+   97                                   
+   98           =00001800               RAM1	=	$1800	;FIRST SEGMENT OF MEMORY MINUS THE ZP,STACK, AND CHIPS
+   99           =00002100               RAM2	=	$2100	;FIRST SEGMENT OF MEMORY MINUS THE ZP,STACK, AND CHIPS
+  100           =00002200               RAM3	=	$2200	;FIRST SEGMENT OF MEMORY MINUS THE ZP,STACK, AND CHIPS
+  101           =00000840               R1SIZE	=	($2040-RAM1)	;SIZE OF THE RAM1 BLOCK
+  102           =00000040               R2SIZE	=	($2140-RAM2)	;SIZE OF THE RAM2 BLOCK
+  103           =00000600               R3SIZE	=	($2800-RAM3)	;SIZE OF THE RAM3 BLOCK
+  104                                   
+
+
+                                        MARIA2.S             Page 3     MADMAC Atari Macro Assembler 0.11x (Atari ST)
+system macros 7800
+
+  105                                   	.subttl	"system macros 7800"
+  106                                   ;********************************************************
+  107                                   ;	MARIA MACROS FOR EASIER GRAPHICS CONSTRUCTION	*
+  108                                   ;********************************************************
+  109                                   
+  110                                   ;
+  111                                   ;this macro constructs a 4 byte header for display lists
+  112                                   ;
+  113                                   	.macro	HEADER	address,palette,width,hpos
+  114                                 . 	dc.b	\address & $ff
+  115                                 . 	dc.b	(\palette*$20) | ($1f & -\width)
+  116                                 . 	dc.b	\address >> 8
+  117                                 . 	dc.b	\hpos
+  118                                 . 	.endm
+  119                                   ;
+  120                                   ;this macro constructs a 5 byte header for display lists
+  121                                   ;
+  122                                   	.macro	XHEADER	address,palette,width,hpos,wm,ind
+  123                                 . 
+  124                                 . 	dc.b	\address & $ff
+  125                                 . 	dc.b	((\wm*$80) | $40 | (\ind*$20))
+  126                                 . 	dc.b	\address >> 8
+  127                                 . 	dc.b	((\palette*$20) | ($1F & -\width))
+  128                                 . 	dc.b	\hpos
+  129                                 . 	.endm
+  130                                   
+  131                                   ;
+  132                                   ;this macro constructs a end-of-display-list header
+  133                                   ;
+  134                                   	.macro	NULLHDR
+  135                                 . 
+  136                                 . 	dc.b	0,0
+  137                                 . 	.endm
+  138                                   
+  139                                   ;
+  140                                   ;this macro constructs a display list entry for the display list list
+  141                                   ;
+  142                                   	.macro	DISPLAY	dli,h16,h8,offset,address
+  143                                 . 
+  144                                 . 	dc.b	((\dli*$80) | (\h16*$40) | (\h8*$20) | \offset)
+  145                                 . 	dc.b	\address >> 8
+  146                                 . 	dc.b	\address & $ff
+  147                                 . 	.endm
+  148                                   
+  149                                   ;
+  150                                   ;this macro loads a palette register with a color
+  151                                   ;
+  152                                   	.macro	paint	palnum,colornum,color,lum
+  153                                 . 
+  154                                 . 	lda	#(\color*$10) | \lum
+  155                                 . 	sta	\bkgrnd | ((\palnum*4) | (\colornum))
+  156                                 . 	.endm
+  157                                   
+  158                                   ;
+  159                                   ;this macro writes to the crtl register
+  160                                   ;
+
+
+                                        MARIA2.S             Page 4     MADMAC Atari Macro Assembler 0.11x (Atari ST)
+system macros 7800
+
+  161           =00000000               ckoff	=	$0	;normal color
+  162           =00000001               ckon	=	$1	;kill the color
+  163                                   
+  164           =00000003               dmaoff	=	$3	;turn off dma
+  165           =00000002               dmaon	=	$2	;normal dma
+  166                                   
+  167           =00000000               char1b	=	$0	;one byte character definition
+  168           =00000001               char2b	=	$1	;two byte character definition
+  169                                   
+  170           =00000000               bcoff	=	$0	;black border
+  171           =00000001               bcback	=	$1	;background colored border
+  172                                   
+  173           =00000000               kangoff	=	$0	;transparency
+  174           =00000001               kangon	=	$1	;"kangaroo" mode : no transparency!
+  175                                   
+  176           =00000000               mode1	=	$0	;160x2 or 160x4 modes
+  177           =00000002               modebd	=	$2	;320b or 320d modes
+  178           =00000003               modeac	=	$3	;320a or 320c modes
+  179                                   
+  180                                   	.macro	SCREEN	ck,dma,cw,bc,km,mode
+  181                                 . 	lda	#((\ck*$80) | (\dma*$20) | (\cw*$10) | (\bc*8) | (\km*4)|\mode)
+  182                                 . 	sta	CTRL
+  183                                 . 	.endm
+  184                                   
+  185                                   	.macro	DPPLOAD	adr
+  186                                 . 	lda	#\adr & $ff
+  187                                 . 	sta	DPPL
+  188                                 . 	lda	#\adr >> 8
+  189                                 . 	sta	DPPH
+  190                                 . 	.endm
+  191                                   
+  192                                   ;********************************************************
+  193                                   ;	end of the system macros definitions		*
+  194                                   ;********************************************************
+  195                                   
+    4                                   
+    5                                   	.INCLUDE	"GAMEQU.S"
+    1                                   
+    2                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    3                                   ;	GAME EQUATES
+    4                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    5                                   
+    6           =0000E000               ROMDATA		=	$E000
+    7           =0000F000               ROMCODE		=	$F000
+    8                                   
+    9           =00000020               ZONESIZE	=	32	
+   10                                   
+   11           =00000002               MAPMAX		=	2
+   12                                   
+   13                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   14                                   ;	OBJECT EQUATES
+   15                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   16                                   
+   17           =00000000               SQUARE		=	0
+    6                                   
+    7                                   	.INCLUDE	"PAGEZERO.S"
+
+
+                                        PAGEZERO.S           Page 5     MADMAC Atari Macro Assembler 0.11x (Atari ST)
+system macros 7800
+
+    1                                   
+    2                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    3                                   ;	PAGE ZERO
+    4                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    5                                   
+    6                                   	.ORG	$40
+    7                                   
+    8  00000040 =00000002               ZONEVEC:	.DS.B	2
+    9  00000042 =00000002               ZONETMP:	.DS.B	2
+   10  00000044 =00000002               OBJBASE:	.DS.B	2
+   11  00000046 =00000002               OBJADR:		.DS.B	2
+   12  00000048 =00000002               LINEOFF:	.DS.B	2
+   13  0000004A =00000002               TPTR1:		.DS.B	2
+   14                                   
+   15  0000004C =00000001               VLINES:		.DS.B	1
+   16  0000004D =00000001               OBJSTART:	.DS.B 	1
+   17  0000004E =00000001               INVISVAL:	.DS.B	1
+   18  0000004F =00000001               OBJVINIT:	.DS.B	1
+   19  00000050 =00000001               ?OFFTOP:	.DS.B	1
+   20  00000051 =00000001               ?OFFBOT:	.DS.B	1		
+   21  00000052 =00000001               VNDXCNT:	.DS.B	1
+   22  00000053 =00000001               SAVEVLSB:	.DS.B	1
+   23  00000054 =00000001               OBJVTMP:	.DS.B	1
+   24                                   
+   25  00000055 =00000001               CASENUM:	.DS.B	1	
+   26  00000056 =00000001               MAPNUM:		.DS.B	1
+   27  00000057 =00000001               VOFF:		.DS.B	1
+   28  00000058 =00000001               VNDX:		.DS.B	1
+   29  00000059 =00000001               VZONE:		.DS.B	1
+   30  0000005A =00000001               OBJNUM:		.DS.B	1
+   31  0000005B =00000001               OBJVCNT:	.DS.B	1
+   32  0000005C =00000001               OBJVPART:	.DS.B	1
+   33  0000005D =00000001               TWIDTH:		.DS.B	1
+   34  0000005E =00000001               TCOLOR:		.DS.B	1
+   35                                   
+   36  0000005F =00000001               FRAME:		.DS.B	1
+   37                                   
+   38                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   39                                   ;	HEADER BUFFER
+   40                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   41                                   
+   42  00000060 =00000001               LOADR:		.DS.B	1
+   43  00000061 =00000001               COLORWTH:	.DS.B	1
+   44  00000062 =00000001               HIADR:		.DS.B	1
+   45  00000063 =00000001               HPOS:		.DS.B	1
+   46                                   	
+    8                                   
+    9                                   	.INCLUDE	"RAMAREA.S"
+    1                                   	
+    2                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    3                                   ;	RAM AREA
+    4                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    5                                   
+    6                                   	.ORG	RAM1
+    7                                   
+    8  00001800 =00000020               V0ZONE1:	.DS.B	ZONESIZE
+
+
+                                        RAMAREA.S            Page 6     MADMAC Atari Macro Assembler 0.11x (Atari ST)
+system macros 7800
+
+    9  00001820 =00000020               V0ZONE2:	.DS.B	ZONESIZE
+   10  00001840 =00000020               V0ZONE3:	.DS.B	ZONESIZE
+   11  00001860 =00000020               V0ZONE4:	.DS.B	ZONESIZE
+   12  00001880 =00000020               V0ZONE5:	.DS.B	ZONESIZE
+   13  000018A0 =00000020               V0ZONE6:	.DS.B	ZONESIZE
+   14  000018C0 =00000020               V0ZONE7:	.DS.B	ZONESIZE
+   15  000018E0 =00000020               V0ZONE8:	.DS.B	ZONESIZE
+   16  00001900 =00000020               V0ZONE9:	.DS.B	ZONESIZE
+   17  00001920 =00000020               V0ZONE10:	.DS.B	ZONESIZE
+   18  00001940 =00000020               V0ZONE11:	.DS.B	ZONESIZE
+   19  00001960 =00000020               V0ZONE12:	.DS.B	ZONESIZE
+   20                                   
+   21                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   22                                   
+   23  00001980 =00000020               V1ZONE1:	.DS.B	ZONESIZE
+   24  000019A0 =00000020               V1ZONE2:	.DS.B	ZONESIZE
+   25  000019C0 =00000020               V1ZONE3:	.DS.B	ZONESIZE
+   26  000019E0 =00000020               V1ZONE4:	.DS.B	ZONESIZE
+   27  00001A00 =00000020               V1ZONE5:	.DS.B	ZONESIZE
+   28  00001A20 =00000020               V1ZONE6:	.DS.B	ZONESIZE
+   29  00001A40 =00000020               V1ZONE7:	.DS.B	ZONESIZE
+   30  00001A60 =00000020               V1ZONE8:	.DS.B	ZONESIZE
+   31  00001A80 =00000020               V1ZONE9:	.DS.B	ZONESIZE
+   32  00001AA0 =00000020               V1ZONE10:	.DS.B	ZONESIZE
+   33  00001AC0 =00000020               V1ZONE11:	.DS.B	ZONESIZE
+   34  00001AE0 =00000020               V1ZONE12:	.DS.B	ZONESIZE
+   35                                   
+   36                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   37                                   
+   38  00001B00 =00000018               ZONEPTR:	.DS.B	24
+   39                                   	
+   40                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   41                                   
+   42  00001B18 =00000003               MAPHPOS:	.DS.B	MAPMAX+1
+   43  00001B1B =00000003               MAPVLSB:	.DS.B	MAPMAX+1
+   44  00001B1E =00000003               MAPVMSB:	.DS.B	MAPMAX+1
+   45                                   	
+   46                                   	.ORG	RAM3
+   47                                   
+   48  00002200 =0000003C               DLLIST0:	DS.B	60
+   49  0000223C =0000003C               DLLIST1:	DS.B	60
+   50  00002278 =00000007               FILLER: 	DS.B	7
+   10                                   
+   11                                   	.INCLUDE	"ROMAREA.S"
+    1                                   ; THIS FILE CONTAINS DATA TABLES AND
+    2                                   ; VECTORS FOR COMMANDO GAME (X.S)
+    3                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    4                                   ;	ROM AREA
+    5                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    6                                   
+    7                                   	.ORG	ROMDATA
+    8                                   
+    9                                   ;	.INCLUDE	"XDTA.S"
+   10                                   RTREE1:
+   11                                   RTREE2:
+   12                                   RTREE3:
+
+
+                                        ROMAREA.S            Page 7     MADMAC Atari Macro Assembler 0.11x (Atari ST)
+system macros 7800
+
+   13                                   
+   14                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   15                                   
+   16                                   	.ORG	ROMCODE
+   17                                   
+                                        	DISPLAY	0,0,0,7,FILLER
+                                      @ 
+       0000F000  07                   @ 	dc.b	(($0*$80) | ($0*$40) | ($0*$20) | $7)
+       0000F001  22                   @ 	dc.b	FILLER >> 8
+   18  0000F002  78                   @ 	dc.b	FILLER & $ff
+                                        	DISPLAY	0,0,0,7,FILLER
+                                      @ 
+       0000F003  07                   @ 	dc.b	(($0*$80) | ($0*$40) | ($0*$20) | $7)
+       0000F004  22                   @ 	dc.b	FILLER >> 8
+   19  0000F005  78                   @ 	dc.b	FILLER & $ff
+                                        	DISPLAY	0,0,0,7,FILLER
+                                      @ 
+       0000F006  07                   @ 	dc.b	(($0*$80) | ($0*$40) | ($0*$20) | $7)
+       0000F007  22                   @ 	dc.b	FILLER >> 8
+   20  0000F008  78                   @ 	dc.b	FILLER & $ff
+                                        	DISPLAY	0,0,0,0,FILLER
+                                      @ 
+       0000F009  00                   @ 	dc.b	(($0*$80) | ($0*$40) | ($0*$20) | $0)
+       0000F00A  22                   @ 	dc.b	FILLER >> 8
+   21  0000F00B  78                   @ 	dc.b	FILLER & $ff
+                                        	DISPLAY	0,1,0,15,V0ZONE1
+                                      @ 
+       0000F00C  4F                   @ 	dc.b	(($0*$80) | ($1*$40) | ($0*$20) | $f)
+       0000F00D  18                   @ 	dc.b	V0ZONE1 >> 8
+   22  0000F00E  00                   @ 	dc.b	V0ZONE1 & $ff
+                                        	DISPLAY	0,1,0,15,V0ZONE2
+                                      @ 
+       0000F00F  4F                   @ 	dc.b	(($0*$80) | ($1*$40) | ($0*$20) | $f)
+       0000F010  18                   @ 	dc.b	V0ZONE2 >> 8
+   23  0000F011  20                   @ 	dc.b	V0ZONE2 & $ff
+                                        	DISPLAY	0,1,0,15,V0ZONE3
+                                      @ 
+       0000F012  4F                   @ 	dc.b	(($0*$80) | ($1*$40) | ($0*$20) | $f)
+       0000F013  18                   @ 	dc.b	V0ZONE3 >> 8
+   24  0000F014  40                   @ 	dc.b	V0ZONE3 & $ff
+                                        	DISPLAY	0,1,0,15,V0ZONE4
+                                      @ 
+       0000F015  4F                   @ 	dc.b	(($0*$80) | ($1*$40) | ($0*$20) | $f)
+       0000F016  18                   @ 	dc.b	V0ZONE4 >> 8
+   25  0000F017  60                   @ 	dc.b	V0ZONE4 & $ff
+                                        	DISPLAY	0,1,0,15,V0ZONE5
+                                      @ 
+       0000F018  4F                   @ 	dc.b	(($0*$80) | ($1*$40) | ($0*$20) | $f)
+       0000F019  18                   @ 	dc.b	V0ZONE5 >> 8
+   26  0000F01A  80                   @ 	dc.b	V0ZONE5 & $ff
+                                        	DISPLAY	0,1,0,15,V0ZONE6
+                                      @ 
+       0000F01B  4F                   @ 	dc.b	(($0*$80) | ($1*$40) | ($0*$20) | $f)
+       0000F01C  18                   @ 	dc.b	V0ZONE6 >> 8
+   27  0000F01D  A0                   @ 	dc.b	V0ZONE6 & $ff
+                                        	DISPLAY	0,1,0,15,V0ZONE7
+
+
+                                        ROMAREA.S            Page 8     MADMAC Atari Macro Assembler 0.11x (Atari ST)
+system macros 7800
+
+                                      @ 
+       0000F01E  4F                   @ 	dc.b	(($0*$80) | ($1*$40) | ($0*$20) | $f)
+       0000F01F  18                   @ 	dc.b	V0ZONE7 >> 8
+   28  0000F020  C0                   @ 	dc.b	V0ZONE7 & $ff
+                                        	DISPLAY	0,1,0,15,V0ZONE8
+                                      @ 
+       0000F021  4F                   @ 	dc.b	(($0*$80) | ($1*$40) | ($0*$20) | $f)
+       0000F022  18                   @ 	dc.b	V0ZONE8 >> 8
+   29  0000F023  E0                   @ 	dc.b	V0ZONE8 & $ff
+                                        	DISPLAY	0,1,0,15,V0ZONE9
+                                      @ 
+       0000F024  4F                   @ 	dc.b	(($0*$80) | ($1*$40) | ($0*$20) | $f)
+       0000F025  19                   @ 	dc.b	V0ZONE9 >> 8
+   30  0000F026  00                   @ 	dc.b	V0ZONE9 & $ff
+                                        	DISPLAY	0,1,0,15,V0ZONE10
+                                      @ 
+       0000F027  4F                   @ 	dc.b	(($0*$80) | ($1*$40) | ($0*$20) | $f)
+       0000F028  19                   @ 	dc.b	V0ZONE10 >> 8
+   31  0000F029  20                   @ 	dc.b	V0ZONE10 & $ff
+                                        	DISPLAY	0,1,0,15,V0ZONE11
+                                      @ 
+       0000F02A  4F                   @ 	dc.b	(($0*$80) | ($1*$40) | ($0*$20) | $f)
+       0000F02B  19                   @ 	dc.b	V0ZONE11 >> 8
+   32  0000F02C  40                   @ 	dc.b	V0ZONE11 & $ff
+                                        	DISPLAY	0,1,0,15,V0ZONE12
+                                      @ 
+       0000F02D  4F                   @ 	dc.b	(($0*$80) | ($1*$40) | ($0*$20) | $f)
+       0000F02E  19                   @ 	dc.b	V0ZONE12 >> 8
+   33  0000F02F  60                   @ 	dc.b	V0ZONE12 & $ff
+                                        	DISPLAY	0,0,0,7,FILLER
+                                      @ 
+       0000F030  07                   @ 	dc.b	(($0*$80) | ($0*$40) | ($0*$20) | $7)
+       0000F031  22                   @ 	dc.b	FILLER >> 8
+   34  0000F032  78                   @ 	dc.b	FILLER & $ff
+                                        	DISPLAY	0,0,0,7,FILLER
+                                      @ 
+       0000F033  07                   @ 	dc.b	(($0*$80) | ($0*$40) | ($0*$20) | $7)
+       0000F034  22                   @ 	dc.b	FILLER >> 8
+   35  0000F035  78                   @ 	dc.b	FILLER & $ff
+                                        	DISPLAY	0,0,0,7,FILLER
+                                      @ 
+       0000F036  07                   @ 	dc.b	(($0*$80) | ($0*$40) | ($0*$20) | $7)
+       0000F037  22                   @ 	dc.b	FILLER >> 8
+   36  0000F038  78                   @ 	dc.b	FILLER & $ff
+                                        	DISPLAY	0,0,0,1,FILLER
+                                      @ 
+       0000F039  01                   @ 	dc.b	(($0*$80) | ($0*$40) | ($0*$20) | $1)
+       0000F03A  22                   @ 	dc.b	FILLER >> 8
+   37  0000F03B  78                   @ 	dc.b	FILLER & $ff
+   38                                   
+   39                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   40                                   
+                                        	DISPLAY	0,0,0,7,FILLER
+                                      @ 
+       0000F03C  07                   @ 	dc.b	(($0*$80) | ($0*$40) | ($0*$20) | $7)
+       0000F03D  22                   @ 	dc.b	FILLER >> 8
+
+
+                                        ROMAREA.S            Page 9     MADMAC Atari Macro Assembler 0.11x (Atari ST)
+system macros 7800
+
+   41  0000F03E  78                   @ 	dc.b	FILLER & $ff
+                                        	DISPLAY	0,0,0,7,FILLER
+                                      @ 
+       0000F03F  07                   @ 	dc.b	(($0*$80) | ($0*$40) | ($0*$20) | $7)
+       0000F040  22                   @ 	dc.b	FILLER >> 8
+   42  0000F041  78                   @ 	dc.b	FILLER & $ff
+                                        	DISPLAY	0,0,0,7,FILLER
+                                      @ 
+       0000F042  07                   @ 	dc.b	(($0*$80) | ($0*$40) | ($0*$20) | $7)
+       0000F043  22                   @ 	dc.b	FILLER >> 8
+   43  0000F044  78                   @ 	dc.b	FILLER & $ff
+                                        	DISPLAY	0,0,0,0,FILLER
+                                      @ 
+       0000F045  00                   @ 	dc.b	(($0*$80) | ($0*$40) | ($0*$20) | $0)
+       0000F046  22                   @ 	dc.b	FILLER >> 8
+   44  0000F047  78                   @ 	dc.b	FILLER & $ff
+                                        	DISPLAY	0,1,0,15,V1ZONE1
+                                      @ 
+       0000F048  4F                   @ 	dc.b	(($0*$80) | ($1*$40) | ($0*$20) | $f)
+       0000F049  19                   @ 	dc.b	V1ZONE1 >> 8
+   45  0000F04A  80                   @ 	dc.b	V1ZONE1 & $ff
+                                        	DISPLAY	0,1,0,15,V1ZONE2
+                                      @ 
+       0000F04B  4F                   @ 	dc.b	(($0*$80) | ($1*$40) | ($0*$20) | $f)
+       0000F04C  19                   @ 	dc.b	V1ZONE2 >> 8
+   46  0000F04D  A0                   @ 	dc.b	V1ZONE2 & $ff
+                                        	DISPLAY	0,1,0,15,V1ZONE3
+                                      @ 
+       0000F04E  4F                   @ 	dc.b	(($0*$80) | ($1*$40) | ($0*$20) | $f)
+       0000F04F  19                   @ 	dc.b	V1ZONE3 >> 8
+   47  0000F050  C0                   @ 	dc.b	V1ZONE3 & $ff
+                                        	DISPLAY	0,1,0,15,V1ZONE4
+                                      @ 
+       0000F051  4F                   @ 	dc.b	(($0*$80) | ($1*$40) | ($0*$20) | $f)
+       0000F052  19                   @ 	dc.b	V1ZONE4 >> 8
+   48  0000F053  E0                   @ 	dc.b	V1ZONE4 & $ff
+                                        	DISPLAY	0,1,0,15,V1ZONE5
+                                      @ 
+       0000F054  4F                   @ 	dc.b	(($0*$80) | ($1*$40) | ($0*$20) | $f)
+       0000F055  1A                   @ 	dc.b	V1ZONE5 >> 8
+   49  0000F056  00                   @ 	dc.b	V1ZONE5 & $ff
+                                        	DISPLAY	0,1,0,15,V1ZONE6
+                                      @ 
+       0000F057  4F                   @ 	dc.b	(($0*$80) | ($1*$40) | ($0*$20) | $f)
+       0000F058  1A                   @ 	dc.b	V1ZONE6 >> 8
+   50  0000F059  20                   @ 	dc.b	V1ZONE6 & $ff
+                                        	DISPLAY	0,1,0,15,V1ZONE7
+                                      @ 
+       0000F05A  4F                   @ 	dc.b	(($0*$80) | ($1*$40) | ($0*$20) | $f)
+       0000F05B  1A                   @ 	dc.b	V1ZONE7 >> 8
+   51  0000F05C  40                   @ 	dc.b	V1ZONE7 & $ff
+                                        	DISPLAY	0,1,0,15,V1ZONE8
+                                      @ 
+       0000F05D  4F                   @ 	dc.b	(($0*$80) | ($1*$40) | ($0*$20) | $f)
+       0000F05E  1A                   @ 	dc.b	V1ZONE8 >> 8
+   52  0000F05F  60                   @ 	dc.b	V1ZONE8 & $ff
+
+
+                                        ROMAREA.S            Page 10    MADMAC Atari Macro Assembler 0.11x (Atari ST)
+system macros 7800
+
+                                        	DISPLAY	0,1,0,15,V1ZONE9
+                                      @ 
+       0000F060  4F                   @ 	dc.b	(($0*$80) | ($1*$40) | ($0*$20) | $f)
+       0000F061  1A                   @ 	dc.b	V1ZONE9 >> 8
+   53  0000F062  80                   @ 	dc.b	V1ZONE9 & $ff
+                                        	DISPLAY	0,1,0,15,V1ZONE10
+                                      @ 
+       0000F063  4F                   @ 	dc.b	(($0*$80) | ($1*$40) | ($0*$20) | $f)
+       0000F064  1A                   @ 	dc.b	V1ZONE10 >> 8
+   54  0000F065  A0                   @ 	dc.b	V1ZONE10 & $ff
+                                        	DISPLAY	0,1,0,15,V1ZONE11
+                                      @ 
+       0000F066  4F                   @ 	dc.b	(($0*$80) | ($1*$40) | ($0*$20) | $f)
+       0000F067  1A                   @ 	dc.b	V1ZONE11 >> 8
+   55  0000F068  C0                   @ 	dc.b	V1ZONE11 & $ff
+                                        	DISPLAY	0,1,0,15,V1ZONE12
+                                      @ 
+       0000F069  4F                   @ 	dc.b	(($0*$80) | ($1*$40) | ($0*$20) | $f)
+       0000F06A  1A                   @ 	dc.b	V1ZONE12 >> 8
+   56  0000F06B  E0                   @ 	dc.b	V1ZONE12 & $ff
+                                        	DISPLAY	0,0,0,7,FILLER
+                                      @ 
+       0000F06C  07                   @ 	dc.b	(($0*$80) | ($0*$40) | ($0*$20) | $7)
+       0000F06D  22                   @ 	dc.b	FILLER >> 8
+   57  0000F06E  78                   @ 	dc.b	FILLER & $ff
+                                        	DISPLAY	0,0,0,7,FILLER
+                                      @ 
+       0000F06F  07                   @ 	dc.b	(($0*$80) | ($0*$40) | ($0*$20) | $7)
+       0000F070  22                   @ 	dc.b	FILLER >> 8
+   58  0000F071  78                   @ 	dc.b	FILLER & $ff
+                                        	DISPLAY	0,0,0,7,FILLER
+                                      @ 
+       0000F072  07                   @ 	dc.b	(($0*$80) | ($0*$40) | ($0*$20) | $7)
+       0000F073  22                   @ 	dc.b	FILLER >> 8
+   59  0000F074  78                   @ 	dc.b	FILLER & $ff
+                                        	DISPLAY	0,0,0,1,FILLER
+                                      @ 
+       0000F075  01                   @ 	dc.b	(($0*$80) | ($0*$40) | ($0*$20) | $1)
+       0000F076  22                   @ 	dc.b	FILLER >> 8
+   60  0000F077  78                   @ 	dc.b	FILLER & $ff
+   61                                   
+   62                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   63                                   ; FILLER
+                                        	XHEADER	RAM1,0,1,0,1,0
+                                      @ 
+       0000F078  00                   @ 	dc.b	RAM1 & $ff
+       0000F079  C0                   @ 	dc.b	(($1*$80) | $40 | ($0*$20))
+       0000F07A  18                   @ 	dc.b	RAM1 >> 8
+       0000F07B  1F                   @ 	dc.b	(($0*$20) | ($1F & -$1))
+   64  0000F07C  00                   @ 	dc.b	$0
+                                        	NULLHDR
+                                      @ 
+   65  0000F07D  0000                 @ 	dc.b	0,0
+   66                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   67                                   
+   68                                   OBJPTR:
+
+
+                                        ROMAREA.S            Page 11    MADMAC Atari Macro Assembler 0.11x (Atari ST)
+system macros 7800
+
+   69  0000F07F  xxxx                   	.DC.W	XSQUARE
+   70                                   
+   71                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   72                                   
+   73                                   OBJVSIZE:
+   74  0000F081  02                     	.DC.B	2
+   75                                   
+   76                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   77                                   
+   78                                   OBJHSIZE:
+   79  0000F082  07                     	.DC.B	7
+   80                                   
+   81                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   82                                   
+   83                                   OBJCOLOR:
+   84  0000F083  00                     	.DC.B	0
+   85                                   
+   86                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   87                                   
+   88                                   OBJDEF:
+   89                                   XSQUARE:
+   90  0000F084  00E0                   	.DC.W	RTREE1
+   91  0000F086  00E0                   	.DC.W	RTREE2
+   92  0000F088  00E0                   	.DC.W	RTREE3
+   93                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   94                                   ;	VECTORS
+   95                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   96                                   
+   97                                   ZONES0:
+   98  0000F08A  0018                   	.DC.W	V0ZONE1
+   99  0000F08C  2018                   	.DC.W	V0ZONE2
+  100  0000F08E  4018                   	.DC.W	V0ZONE3
+  101  0000F090  6018                   	.DC.W	V0ZONE4
+  102  0000F092  8018                   	.DC.W	V0ZONE5
+  103  0000F094  A018                   	.DC.W	V0ZONE6
+  104  0000F096  C018                   	.DC.W	V0ZONE7
+  105  0000F098  E018                   	.DC.W	V0ZONE8
+  106  0000F09A  0019                   	.DC.W	V0ZONE9
+  107  0000F09C  2019                   	.DC.W	V0ZONE10
+  108  0000F09E  4019                   	.DC.W	V0ZONE11
+  109  0000F0A0  6019                   	.DC.W	V0ZONE12
+  110                                   
+  111                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  112                                   
+  113                                   ZONES1:
+  114  0000F0A2  8019                   	.DC.W	V1ZONE1
+  115  0000F0A4  A019                   	.DC.W	V1ZONE2
+  116  0000F0A6  C019                   	.DC.W	V1ZONE3
+  117  0000F0A8  E019                   	.DC.W	V1ZONE4
+  118  0000F0AA  001A                   	.DC.W	V1ZONE5
+  119  0000F0AC  201A                   	.DC.W	V1ZONE6
+  120  0000F0AE  401A                   	.DC.W	V1ZONE7
+  121  0000F0B0  601A                   	.DC.W	V1ZONE8
+  122  0000F0B2  801A                   	.DC.W	V1ZONE9
+  123  0000F0B4  A01A                   	.DC.W	V1ZONE10
+  124  0000F0B6  C01A                   	.DC.W	V1ZONE11
+
+
+                                        ROMAREA.S            Page 12    MADMAC Atari Macro Assembler 0.11x (Atari ST)
+system macros 7800
+
+  125  0000F0B8  E01A                   	.DC.W	V1ZONE12
+  126                                   
+  127                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  128                                   ;	MAP DEFINITIONS
+  129                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  130                                   
+  131                                   MAPOBJ:	
+  132  0000F0BA  00                     	.DC.B	SQUARE
+  133  0000F0BB  00                     	.DC.B	SQUARE
+  134  0000F0BC  00                     	.DC.B	SQUARE
+  135                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  136                                   
+  137                                   RMAPHPOS: 
+  138  0000F0BD  05                     	.DC.B	5
+  139  0000F0BE  1E                     	.DC.B	30
+  140  0000F0BF  37                     	.DC.B	55
+  141                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  142                                   
+  143                                   RMAPVLSB:
+  144  0000F0C0  00                     	.DC.B	0
+  145  0000F0C1  1E                     	.DC.B	30
+  146  0000F0C2  3C                     	.DC.B	60
+  147                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  148                                   
+  149                                   RMAPVMSB:
+  150  0000F0C3  00                     	.DC.B	$00
+  151  0000F0C4  00                     	.DC.B	$00
+  152  0000F0C5  00                     	.DC.B	$00
+  153                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  154                                   
+   12                                   
+   13                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   14                                   ;	MAIN PROGRAM	
+   15                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   16                                   
+   17                                   ; START COMMANDO
+   18                                   ; place for IRQ and NMI to attach
+   19                                   dummy:
+   20  0000F0C6  40                     	rti
+   21                                   
+   22                                   main:		
+   23  0000F0C7  78                     	sei
+   24  0000F0C8  D8                     	cld
+   25                                   
+   26  0000F0C9  A2FF                   	ldx	#$FF	;init stack
+   27  0000F0CB  9A                      	txs
+   28                                   
+   29  0000F0CC  A907                   	lda	#$7
+   30  0000F0CE  8501                   	sta	PTCTRL
+   31                                   
+   32  0000F0D0  E8                     	inx
+   33                                   loop:
+   34                                   ;move display list list to RAM
+   35                                   
+   36  0000F0D1  BD00F0                 	lda	ROMCODE,x
+   37  0000F0D4  9D0022                 	sta	RAM3,x
+
+
+                                        GAME.s               Page 13    MADMAC Atari Macro Assembler 0.11x (Atari ST)
+system macros 7800
+
+   38                                   
+   39  0000F0D7  BD00F1                 	lda	ROMCODE+$100,x
+   40  0000F0DA  9D0023                 	sta	RAM3+$100,x
+   41                                   
+   42  0000F0DD  E8                     	inx
+   43  0000F0DE  D0F1                    	bne	loop
+   44                                   main30:
+   45  0000F0E0  2428                   	bit	MSTAT	;Vblank?
+   46  0000F0E2  30FC                   	bmi	main30	
+   47                                   main32:
+   48  0000F0E4  2428                   	bit	MSTAT 	;Vblank?
+   49  0000F0E6  10FC                   	bpl	main32	
+   50                                   
+                                        	SCREEN	0,2,0,1,0,2
+       0000F0E8  A94A                 @ 	lda	#(($0*$80) | ($2*$20) | ($0*$10) | ($1*8) | ($0*4)|$2)
+   51  0000F0EA  853C                 @ 	sta	CTRL
+   52                                   	
+   53                                   ;0=normal color.
+   54                                   ;2=Normal DMA.
+   55                                   ;0=single byte wide characters.
+   56                                   ;1=background colored border.
+   57                                   ;0=transparency mode.
+   58                                   ;3=320 a or c mode.
+   59                                   
+   60                                   ; DO CODE INITIALIZATION
+   61                                   
+   62  0000F0EC  A900                   	LDA	#$0
+   63  0000F0EE  8548                   	STA	LINEOFF
+   64  0000F0F0  855F                   	STA	FRAME
+   65  0000F0F2  8555                   	STA	CASENUM
+   66  0000F0F4  A900                   	LDA	#$00
+   67  0000F0F6  8520                   	STA	BKGRND		
+   68                                   
+   69  0000F0F8  A906                   	LDA	#$06	
+   70  0000F0FA  8521                   	STA	P0C1
+   71  0000F0FC  A920                   	LDA	#$20
+   72  0000F0FE  8522                   	STA	P0C2
+   73  0000F100  A9D4                   	LDA	#$D4
+   74  0000F102  8523                   	STA 	P0C3
+   75                                   ; TRANSFER MAP VALUES FROM ROM TO RAM
+   76  0000F104  A202                   	LDX	#MAPMAX
+   77                                   MAPLOOP:
+   78  0000F106  BDBDF0                 	LDA	RMAPHPOS,X
+   79  0000F109  9D181B                 	STA	MAPHPOS,X
+   80  0000F10C  BDC0F0                 	LDA	RMAPVLSB,X
+   81  0000F10F  9D1B1B                 	STA	MAPVLSB,X
+   82  0000F112  BDC3F0                 	LDA	RMAPVMSB,X
+   83  0000F115  9D1E1B                 	STA	MAPVMSB,X
+   84  0000F118  CA                     	DEX
+   85  0000F119  10EB                   	BPL	MAPLOOP	
+   86                                   ; REPEAT - WAIT UNTIL VBLANK
+   87                                   
+   88                                   MAIN40:
+   89  0000F11B  2428                   	bit	MSTAT	;Vblank?
+   90  0000F11D  30FC                   	bmi	MAIN40	
+   91                                   MAIN50:
+
+
+                                        GAME.s               Page 14    MADMAC Atari Macro Assembler 0.11x (Atari ST)
+system macros 7800
+
+   92  0000F11F  2428                   	bit	MSTAT 	;Vblank?
+   93  0000F121  10FC                   	bpl	MAIN50
+   94                                   
+   95  0000F123  A900                   	LDA	#$00
+   96  0000F125  8520                   	STA	BKGRND
+   97                                   ;  IF CASENUM = 0
+   98  0000F127  A555                   	LDA	CASENUM
+   99  0000F129  C900                   	CMP	#0
+  100  0000F12B  D0xx                   	BNE	MAIN60
+  101                                   ;   DLL=DLLIST0
+  102                                   ;   ZONEVEC=ZONES0
+                                        	DPPLOAD	DLLIST1
+       0000F12D  A93C                 @ 	lda	#DLLIST1 & $ff
+       0000F12F  8530                 @ 	sta	DPPL
+       0000F131  A922                 @ 	lda	#DLLIST1 >> 8
+  103  0000F133  852C                 @ 	sta	DPPH
+  104                                   
+  105  0000F135  A98A                   	LDA	#ZONES0 & $FF
+  106  0000F137  8540                   	STA	ZONEVEC
+  107  0000F139  A9F0                   	LDA	#ZONES0 >> 8
+  108  0000F13B  8541                   	STA	ZONEVEC+1
+  109  0000F13D  4Cxxxx                 	JMP	MAIN70
+  110                                   ;  ELSE DLL=DLLIST1
+  111                                   ;   ZONEVEC=ZONES1
+                                        MAIN60:	DPPLOAD	DLLIST0
+       0000F140  A900                 @ 	lda	#DLLIST0 & $ff
+       0000F142  8530                 @ 	sta	DPPL
+       0000F144  A922                 @ 	lda	#DLLIST0 >> 8
+  112  0000F146  852C                 @ 	sta	DPPH
+  113                                   
+  114  0000F148  A9A2                   	LDA	#ZONES1 & $FF
+  115  0000F14A  8540                   	STA	ZONEVEC
+  116  0000F14C  A9F0                   	LDA	#ZONES1 >> 8
+  117  0000F14E  8541                   	STA	ZONEVEC+1
+  118                                   ;  ENDIF
+  119                                   ;  ZONEPTR'S = ZONEBASES
+  120  0000F150  A017                   MAIN70:	LDY	#23
+  121  0000F152  B140                   ZLOOP:	LDA 	(ZONEVEC),Y
+  122  0000F154  99001B                 	STA	ZONEPTR,Y
+  123  0000F157  88                     	DEY
+  124  0000F158  B140                   	LDA	(ZONEVEC),Y
+  125  0000F15A  99001B                 	STA	ZONEPTR,Y
+  126  0000F15D  88                     	DEY
+  127  0000F15E  10F2                   	BPL	ZLOOP
+  128                                   ;  DO TERRAIN
+  129  0000F160  20xxxx                 	JSR	TERRAIN
+  130                                   ;  INCREMENT FRAME
+  131  0000F163  E65F                   	INC	FRAME	
+  132                                   ;  TERMINATE HEADER ZONES
+  133  0000F165  A217                   	LDX	#23
+  134  0000F167  BD001B                 Z2LOOP:	LDA	ZONEPTR,X
+  135  0000F16A  854B                   	STA	TPTR1+1
+  136  0000F16C  CA                     	DEX
+  137  0000F16D  BD001B                 	LDA	ZONEPTR,X
+  138  0000F170  854A                   	STA	TPTR1
+  139                                   
+
+
+                                        GAME.s               Page 15    MADMAC Atari Macro Assembler 0.11x (Atari ST)
+system macros 7800
+
+  140  0000F172  A900                   	LDA 	#0
+  141  0000F174  A000                   	LDY	#0
+  142  0000F176  914A                   	STA	(TPTR1),Y
+  143  0000F178  C8                     	INY
+  144  0000F179  914A                   	STA 	(TPTR1),Y
+  145  0000F17B  CA                     	DEX
+  146  0000F17C  10E9                   	BPL	Z2LOOP
+  147                                   ;   IF CASENUM=0
+  148  0000F17E  A555                   	LDA	CASENUM
+  149  0000F180  C900                   	CMP	#0
+  150  0000F182  D0xx                   	BNE	MAIN80
+  151                                   ;    CASENUM=1
+  152  0000F184  A901                   	LDA	#1
+  153  0000F186  8555                   	STA	CASENUM
+  154  0000F188  4Cxxxx                 	JMP	MAIN90
+  155                                   ;   ELSE CASENUM=0
+  156  0000F18B  A900                   MAIN80:	LDA	#0
+  157  0000F18D  8555                   	STA	CASENUM
+  158                                   ;   ENDIF
+  159  0000F18F  A922                   MAIN90:	LDA	#$22
+  160  0000F191  8520                   	STA	BKGRND
+  161                                   ;  UNTIL FOREVER	
+  162  0000F193  4C1BF1                 	JMP	MAIN40
+  163                                   ; END COMMANDDO
+  164                                   
+  165                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  166                                   
+  167                                   ; START TERRAIN
+  168                                   ;  MAPNUM=#MAPMAX
+  169                                   TERRAIN:
+  170  0000F196  A902                   	LDA	#MAPMAX
+  171  0000F198  8556                   	STA	MAPNUM
+  172                                   ;  REPEAT
+  173                                   ;   IF OBJECT VISIBLE
+  174                                   TLOOP:
+  175  0000F19A  20xxxx                 	JSR	VISCHK
+  176  0000F19D  F0xx                   	BEQ	TERR10
+  177                                   ;    DRAW OBJECT
+  178  0000F19F  20xxxx                 	JSR	DRAW
+  179                                   ;   ENDIF
+  180                                   ;   DO SCROLL
+  181                                   TERR10:
+  182                                   ;	JSR	SCROLL
+  183                                   ;   DECREMENT MAPNUM
+  184  0000F1A2  C656                   	DEC 	MAPNUM
+  185                                   ;  UNTIL MAPNUM < 0
+  186  0000F1A4  10F4                   	BPL	TLOOP
+  187                                   ; END TERRAIN
+  188  0000F1A6  60                     	RTS
+  189                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  190                                   
+  191                                   ; START DRAW
+  192                                   ;  VZONE=VPOS/16
+  193                                   ;  VOFF=REMAINDER
+  194  0000F1A7  A656                   DRAW:	LDX	MAPNUM
+  195  0000F1A9  BD1B1B                 	LDA	MAPVLSB,X
+
+
+                                        GAME.s               Page 16    MADMAC Atari Macro Assembler 0.11x (Atari ST)
+system macros 7800
+
+  196  0000F1AC  290F                   	AND	#$0F
+  197  0000F1AE  8557                   	STA	VOFF
+  198  0000F1B0  BD1B1B                 	LDA	MAPVLSB,X
+  199  0000F1B3  4A                     	LSR
+  200  0000F1B4  4A                     	LSR
+  201  0000F1B5  4A                     	LSR
+  202  0000F1B6  4A                     	LSR
+  203  0000F1B7  8559                   	STA	VZONE
+  204                                   ;  OBJNUM=MAPOBJ
+  205  0000F1B9  A656                   	LDX	MAPNUM
+  206  0000F1BB  BDBAF0                 	LDA	MAPOBJ,X
+  207  0000F1BE  855A                   	STA	OBJNUM
+  208                                   ;  OBJADR=OBJPTR
+  209  0000F1C0  0A                     	ASL
+  210  0000F1C1  A8                     	TAY
+  211  0000F1C2  B97FF0                 	LDA	OBJPTR,Y
+  212  0000F1C5  8546                   	STA	OBJADR
+  213  0000F1C7  C8                     	INY
+  214  0000F1C8  B97FF0                 	LDA	OBJPTR,Y
+  215  0000F1CB  8547                   	STA	OBJADR+1
+  216                                   ;  TCOLOR=OBJCOLOR*32
+  217  0000F1CD  A65A                   	LDX	OBJNUM
+  218  0000F1CF  BD83F0                 	LDA	OBJCOLOR,X
+  219  0000F1D2  0A                     	ASL
+  220  0000F1D3  0A                     	ASL
+  221  0000F1D4  0A                     	ASL
+  222  0000F1D5  0A                     	ASL		
+  223  0000F1D6  0A                        	ASL
+  224  0000F1D7  855E                   	STA	TCOLOR
+  225                                   ;  TWIDTH=$1F-OBJHSIZE
+  226  0000F1D9  38                     	SEC
+  227  0000F1DA  A91F                   	LDA	#$1F
+  228  0000F1DC  FD82F0                 	SBC	OBJHSIZE,X
+  229  0000F1DF  855D                   	STA	TWIDTH
+  230                                   ;  COLORWTH=TCOLOR OR TWIDTH
+  231  0000F1E1  A55E                   	LDA	TCOLOR
+  232  0000F1E3  055D                   	ORA	TWIDTH
+  233  0000F1E5  8561                   	STA	COLORWTH
+  234                                   ;  OBJVCNT=OBJVSIZE-OBJVINIT
+  235  0000F1E7  38                     	SEC
+  236  0000F1E8  BD81F0                 	LDA	OBJVSIZE,X
+  237  0000F1EB  E54F                   	SBC	OBJVINIT
+  238  0000F1ED  855B                   	STA	OBJVCNT
+  239                                   ;  OBJVPART=OBJVSIZE-OBJVCNT
+  240  0000F1EF  38                     	SEC
+  241  0000F1F0  BD81F0                 	LDA	OBJVSIZE,X
+  242  0000F1F3  E55B                   	SBC	OBJVCNT
+  243  0000F1F5  855C                   	STA	OBJVPART
+  244                                   ;   IF ?OFFBOT SET
+  245  0000F1F7  A551                   	LDA	?OFFBOT
+  246  0000F1F9  F0xx                   	BEQ	DRAW35
+  247                                   ;    INCREMENT OBJVINIT
+  248  0000F1FB  A554                   	LDA	OBJVTMP
+  249  0000F1FD  855B                   	STA	OBJVCNT
+  250                                   ;    IF VOFF=0
+  251  0000F1FF  A557                   	LDA	VOFF
+
+
+                                        GAME.s               Page 17    MADMAC Atari Macro Assembler 0.11x (Atari ST)
+system macros 7800
+
+  252  0000F201  D0xx                   	BNE	DRAW35
+  253                                   ;     DECREMENT OBJVCNT
+  254  0000F203  C65B                   	DEC	OBJVCNT
+  255                                   ;   ENDIF
+  256                                   ;  ENDIF
+  257                                   ;  HPOS=MAPHPOS
+  258  0000F205  A656                   DRAW35:	LDX	MAPNUM
+  259  0000F207  BD181B                 	LDA	MAPHPOS,X
+  260  0000F20A  8563                   	STA	HPOS
+  261                                   ;  IF VOFF=0
+  262  0000F20C  A557                   	LDA	VOFF
+  263  0000F20E  D0xx                   	BNE	DRAW30
+  264                                   ;   IF ?OFFTOP SET
+  265  0000F210  A550                   	LDA	?OFFTOP
+  266  0000F212  F0xx                   	BEQ	DRAW30
+  267                                   ;   DECREMENT OBJVCNT
+  268  0000F214  E652                   	INC	VNDXCNT
+  269                                   ;  ENDIF
+  270                                   ;  VNDX=VZONE+OBJVPART
+  271  0000F216  18                     DRAW30:	CLC
+  272  0000F217  A559                   	LDA	VZONE
+  273  0000F219  6552                   	ADC	VNDXCNT
+  274  0000F21B  8558                   	STA	VNDX
+  275                                   ;  REPEAT
+  276                                   ;   IF VOFF=0
+  277  0000F21D  A557                   DLOOP:	LDA	VOFF
+  278  0000F21F  D0xx                   	BNE	DRAW10
+  279                                   ;    LOADR=OBJDEF LO
+  280                                   ;    HIADR=OBJDEF HI
+  281  0000F221  A55C                   	LDA	OBJVPART
+  282  0000F223  0A                     	ASL
+  283  0000F224  A8                     	TAY
+  284  0000F225  B146                   	LDA	(OBJADR),Y
+  285  0000F227  8560                   	STA	LOADR
+  286  0000F229  C8                     	INY
+  287  0000F22A  B146                   	LDA	(OBJADR),Y
+  288  0000F22C  8562                   	STA	HIADR
+  289                                   ;    DO HEADER
+  290                                   ;    TRANSFER HEADER
+  291  0000F22E  A558                   	LDA	VNDX
+  292  0000F230  0A                     	ASL
+  293  0000F231  AA                     	TAX
+  294  0000F232  BD001B                 	LDA	ZONEPTR,X
+  295  0000F235  8542                   	STA	ZONETMP
+  296  0000F237  E8                     	INX
+  297  0000F238  BD001B                 	LDA	ZONEPTR,X
+  298  0000F23B  8543                   	STA	ZONETMP+1
+  299  0000F23D  A003                   	LDY 	#3
+  300  0000F23F  B96000                 HEAD30:	LDA	LOADR,Y
+  301  0000F242  9142                   	STA	(ZONETMP),Y
+  302  0000F244  88                     	DEY
+  303  0000F245  10F8                   	BPL	HEAD30
+  304                                   ;    UPDATE ZONEPTR
+  305  0000F247  CA                     	DEX
+  306                                   
+  307  0000F248  18                     	CLC
+
+
+                                        GAME.s               Page 18    MADMAC Atari Macro Assembler 0.11x (Atari ST)
+system macros 7800
+
+  308  0000F249  BD001B                 	LDA	ZONEPTR,X
+  309  0000F24C  6904                   	ADC	#04
+  310  0000F24E  9D001B                 	STA	ZONEPTR,X
+  311                                   ;    INCREMENT VNDXCNT
+  312  0000F251  E658                   	INC	VNDX 
+  313  0000F253  4Cxxxx                 	JMP	DRAW20
+  314                                   ;   ELSE CALCADR
+  315  0000F256  4Cxxxx                 DRAW10:	JMP	CALCADR
+  316                                   ;   ENDIF
+  317                                   ;   INCREMENT OBJVPART
+  318  0000F259  E65C                   DRAW20:	INC	OBJVPART
+  319                                   ;   DECREMENT OBJVCNT
+  320  0000F25B  C65B                   	DEC	OBJVCNT
+  321                                   ;  UNTIL OBJVCNT < 0
+  322  0000F25D  10BE                   	BPL	DLOOP
+  323                                   ;  RESTORE MAPVLSB
+  324  0000F25F  A553                   	LDA	SAVEVLSB
+  325  0000F261  A456                   	LDY	MAPNUM
+  326  0000F263  991B1B                 	STA	MAPVLSB,Y
+  327                                   ; END DRAW
+  328  0000F266  60                     	RTS
+  329                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  330                                   
+  331                                   ; START CALCADR
+  332                                   ;  OBJBASE=OBJDEF
+  333                                   CALCADR:
+  334  0000F267  A55C                   	LDA	OBJVPART
+  335  0000F269  0A                     	ASL
+  336  0000F26A  A8                     	TAY
+  337  0000F26B  B146                   	LDA	(OBJADR),Y
+  338  0000F26D  8560                   	STA	LOADR
+  339  0000F26F  C8                     	INY
+  340  0000F270  B146                   	LDA	(OBJADR),Y
+  341  0000F272  8545                   	STA	OBJBASE+1
+  342                                   ;  IF ?OFFTOP CLEAR
+  343  0000F274  A550                   	LDA	?OFFTOP
+  344  0000F276  D0xx                   	BNE	CALC10
+  345                                   ;  LINEOFF=VOFF*256
+  346  0000F278  A557                   	LDA	VOFF
+  347  0000F27A  8549                   	STA 	LINEOFF+1
+  348                                   ;  LOADR=(OBJBASE+LINEOFF) LO
+  349                                   ;  HIADR=(OBJBASE+LINEOFF) HI
+  350  0000F27C  18                     	CLC
+  351  0000F27D  A545                   	LDA	OBJBASE+1
+  352  0000F27F  6549                   	ADC	LINEOFF+1
+  353  0000F281  8562                   	STA	HIADR
+  354                                   ;  DO HEADER
+  355                                   ;  TRANSFER HEADER
+  356  0000F283  A558                   	LDA	VNDX
+  357  0000F285  0A                     	ASL
+  358  0000F286  AA                     	TAX
+  359  0000F287  BD001B                 	LDA	ZONEPTR,X
+  360  0000F28A  8542                   	STA	ZONETMP
+  361  0000F28C  E8                     	INX
+  362  0000F28D  BD001B                 	LDA	ZONEPTR,X
+  363  0000F290  8543                   	STA	ZONETMP+1
+
+
+                                        GAME.s               Page 19    MADMAC Atari Macro Assembler 0.11x (Atari ST)
+system macros 7800
+
+  364  0000F292  A003                   	LDY 	#3
+  365  0000F294  B96000                 HEAD20:	LDA	LOADR,Y
+  366  0000F297  9142                   	STA	(ZONETMP),Y
+  367  0000F299  88                     	DEY
+  368  0000F29A  10F8                   	BPL	HEAD20
+  369                                   ;  UPDATE ZONEPTR
+  370  0000F29C  CA                     	DEX
+  371                                   
+  372  0000F29D  18                     	CLC
+  373  0000F29E  BD001B                 	LDA	ZONEPTR,X
+  374  0000F2A1  6904                   	ADC	#04
+  375  0000F2A3  9D001B                 	STA	ZONEPTR,X
+  376  0000F2A6  4Cxxxx                 	JMP	CALC20
+  377                                   ;  ELSE CLEAR ?OFFTOP
+  378  0000F2A9  A900                   CALC10:	LDA	#0
+  379  0000F2AB  8550                   	STA	?OFFTOP
+  380                                   ;  ENDIF
+  381                                   ;  VNDXCNT=VNDXCNT+1
+  382  0000F2AD  E658                   CALC20:	INC	VNDX
+  383                                   ;  IF OBJVCNT=0
+  384  0000F2AF  A55B                   	LDA	OBJVCNT
+  385  0000F2B1  D0xx                   	BNE	CALC25
+  386                                   ;  IF ?OFFBOT CLEAR
+  387  0000F2B3  A551                   	LDA	?OFFBOT
+  388  0000F2B5  D0xx                   	BNE	CALC30	
+  389                                   ;  LINEOFF=(16-VOFF)*256
+  390  0000F2B7  38                     CALC25:	SEC
+  391  0000F2B8  A910                   	LDA	#16
+  392  0000F2BA  E557                   	SBC	VOFF
+  393  0000F2BC  8549                   	STA	LINEOFF+1
+  394                                   ;  LOADR=(OBJBASE-LINEOFF) LO 
+  395                                   ;  HIADR=(OBJBASE-LINEOFF) HI
+  396  0000F2BE  38                     	SEC
+  397  0000F2BF  A545                   	LDA	OBJBASE+1
+  398  0000F2C1  E549                   	SBC	LINEOFF+1
+  399  0000F2C3  8562                   	STA	HIADR
+  400                                   ;  DO HEADER
+  401                                   ;  TRANSFER HEADER
+  402  0000F2C5  A558                   	LDA	VNDX
+  403  0000F2C7  0A                     	ASL
+  404  0000F2C8  AA                     	TAX
+  405  0000F2C9  BD001B                 	LDA	ZONEPTR,X
+  406  0000F2CC  8542                   	STA	ZONETMP
+  407  0000F2CE  E8                     	INX
+  408  0000F2CF  BD001B                 	LDA	ZONEPTR,X
+  409  0000F2D2  8543                   	STA	ZONETMP+1
+  410  0000F2D4  A003                   	LDY 	#3
+  411  0000F2D6  B96000                 HEAD10:	LDA	LOADR,Y
+  412  0000F2D9  9142                   	STA	(ZONETMP),Y
+  413  0000F2DB  88                     	DEY
+  414  0000F2DC  10F8                   	BPL	HEAD10
+  415                                   ;  UPDATE ZONEPTR
+  416  0000F2DE  CA                     	DEX
+  417                                   
+  418  0000F2DF  18                     	CLC
+  419  0000F2E0  BD001B                 	LDA	ZONEPTR,X
+
+
+                                        GAME.s               Page 20    MADMAC Atari Macro Assembler 0.11x (Atari ST)
+system macros 7800
+
+  420  0000F2E3  6904                   	ADC	#04
+  421  0000F2E5  9D001B                 	STA	ZONEPTR,X
+  422                                   ;  ENDIF
+  423                                   ; END CALCADR
+  424  0000F2E8  4C59F2                 CALC30:	JMP DRAW20
+  425                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  426                                   
+  427                                   ; START
+  428                                   ;  IF MAPVMSB=$FF
+  429  0000F2EB  A656                   VISCHK:	LDX	MAPNUM
+  430  0000F2ED  BD1E1B                 	LDA	MAPVMSB,X
+  431  0000F2F0  C9FF                   	CMP	#$FF
+  432  0000F2F2  D0xx                   	BNE	VIS10
+  433                                   ;   VLINES=OBJVSIZE*16
+  434                                   ;   VLINES=VLINES-1 
+  435  0000F2F4  BCBAF0                 	LDY	MAPOBJ,X
+  436  0000F2F7  845A                   	STY	OBJNUM
+  437                                   
+  438  0000F2F9  18                     	CLC
+  439  0000F2FA  B981F0                 	LDA	OBJVSIZE,Y
+  440  0000F2FD  6901                   	ADC	#1
+  441                                   
+  442  0000F2FF  0A                     	ASL
+  443  0000F300  0A                     	ASL
+  444  0000F301  0A                     	ASL
+  445  0000F302  0A                     	ASL
+  446  0000F303  854C                   	STA	VLINES
+  447                                   ;	DEC	VLINES
+  448                                   ;   INVISVAL=191-MAPVLSB
+  449  0000F305  38                     	SEC
+  450  0000F306  A9C0                   	LDA	#192
+  451  0000F308  FD1B1B                 	SBC	MAPVLSB,X
+  452  0000F30B  854E                   	STA	INVISVAL
+  453                                   ;   IF INVISVAL < VLIINES (OFF TOP)
+  454  0000F30D  C54C                   	CMP	VLINES
+  455  0000F30F  B0xx                   	BCS	VIS40
+  456                                   ;    OBJVINIT=INVISVAL/16
+  457                                   ;    SAVEVLSB=MAPVLSB    
+  458                                   ;    MAPVLSB=REMAINDER
+  459                                   ;    SET ?OFFTOP
+  460                                   ;    CLEAR ?OFFBOT	
+  461                                   ;    VNDXCNT=FF	
+  462                                   ;    ACC=TRUE
+  463  0000F311  BD1B1B                 	LDA	MAPVLSB,X
+  464  0000F314  8553                   	STA	SAVEVLSB
+  465  0000F316  290F                   	AND	#$0F
+  466  0000F318  9D1B1B                 	STA	MAPVLSB,X
+  467                                   
+  468  0000F31B  A54E                   	LDA	INVISVAL
+  469  0000F31D  4A                     	LSR
+  470  0000F31E  4A                     	LSR
+  471  0000F31F  4A                     	LSR
+  472  0000F320  4A                     	LSR
+  473  0000F321  854F                   	STA	OBJVINIT
+  474                                   
+  475  0000F323  A900                   	LDA	#0
+
+
+                                        GAME.s               Page 21    MADMAC Atari Macro Assembler 0.11x (Atari ST)
+system macros 7800
+
+  476  0000F325  8551                   	STA	?OFFBOT
+  477  0000F327  A9FF                   	LDA	#$FF
+  478  0000F329  8550                   	STA	?OFFTOP
+  479  0000F32B  8552                   	STA	VNDXCNT
+  480  0000F32D  4Cxxxx                 	JMP	VIS20
+  481                                   ;   ELSE
+  482  0000F330  A900                   VIS40:	LDA	#0
+  483                                   ;   ENDIF
+  484  0000F332  4Cxxxx                 	JMP	VIS20
+  485                                   ;  ELSEIF MAPVMSB=0
+  486  0000F335  BD1E1B                 VIS10:	LDA	MAPVMSB,X
+  487  0000F338  C900                   	CMP	#0
+  488  0000F33A  D0xx                   	BNE	VIS30
+  489                                   ;   VLINES=OBJVSIZE*16
+  490                                   ;   VLINES=VLINES-1 
+  491  0000F33C  BCBAF0                 	LDY	MAPOBJ,X
+  492  0000F33F  845A                   	STY	OBJNUM
+  493                                   
+  494  0000F341  18                     	CLC
+  495  0000F342  B981F0                 	LDA	OBJVSIZE,Y
+  496  0000F345  6901                   	ADC	#1
+  497                                   
+  498  0000F347  0A                     	ASL
+  499  0000F348  0A                     	ASL
+  500  0000F349  0A                     	ASL
+  501  0000F34A  0A                     	ASL
+  502  0000F34B  854C                   	STA	VLINES
+  503                                   ;	DEC	VLINES
+  504                                   ;   INVISVAL=191-MAPVLSB
+  505  0000F34D  38                     	SEC
+  506  0000F34E  A9C0                   	LDA	#192
+  507  0000F350  FD1B1B                 	SBC	MAPVLSB,X
+  508  0000F353  854E                   	STA	INVISVAL
+  509                                   ;   IF INVISVAL < VLIINES (OFF BOTTOM)
+  510  0000F355  C54C                   	CMP	VLINES
+  511  0000F357  B0xx                   	BCS	VIS42
+  512                                   ;    OBJVINIT=OBJVSIZE-(INVISVAL/16)
+  513                                   ;    SAVEVLSB=MAPVLSB    
+  514                                   ;    SET ?OFFTBOT
+  515                                   ;    CLEAR ?OFFTOP
+  516                                   ;    VNDXCNT=0	
+  517                                   ;    ACC=TRUE
+  518  0000F359  BD1B1B                 	LDA	MAPVLSB,X
+  519  0000F35C  8553                   	STA	SAVEVLSB
+  520                                   
+  521  0000F35E  A54E                   	LDA	INVISVAL
+  522  0000F360  4A                     	LSR
+  523  0000F361  4A                     	LSR
+  524  0000F362  4A                     	LSR
+  525  0000F363  4A                     	LSR
+  526  0000F364  8554                   	STA	OBJVTMP
+  527                                   
+  528                                   ;	SEC
+  529                                   ;	LDA	OBJVSIZE,Y
+  530                                   ;	SBC	OBJVINIT
+  531                                   ;	STA	OBJVINIT
+
+
+                                        GAME.s               Page 22    MADMAC Atari Macro Assembler 0.11x (Atari ST)
+system macros 7800
+
+  532                                   
+  533  0000F366  A900                   	LDA	#0
+  534  0000F368  854F                   	STA	OBJVINIT
+  535  0000F36A  8551                   	STA	?OFFBOT
+  536  0000F36C  8552                   	STA	VNDXCNT
+  537  0000F36E  A9FF                   	LDA	#$FF
+  538  0000F370  8551                   	STA	?OFFBOT
+  539  0000F372  4Cxxxx                 	JMP 	VIS20
+  540                                   ;   ELSE DO FULL OBJECT
+  541                                   ;    OBJVINIT=0
+  542                                   ;    CLEAR ?OFFTOP
+  543                                   ;    CLEAR ?OFFBOT	
+  544                                   ;    VNDXCNT=0
+  545                                   ;    SAVEVLSB=MAPVLSB	
+  546                                   ;    ACC=TRUE
+  547  0000F375  A900                   VIS42:	LDA	#0
+  548  0000F377  8550                   	STA	?OFFTOP
+  549  0000F379  8551                   	STA	?OFFBOT
+  550  0000F37B  8552                   	STA	VNDXCNT
+  551  0000F37D  854F                   	STA	OBJVINIT
+  552                                   
+  553  0000F37F  BD1B1B                 	LDA	MAPVLSB,X
+  554  0000F382  8553                   	STA	SAVEVLSB
+  555                                   
+  556  0000F384  A9FF                   	LDA	#$FF
+  557  0000F386  4Cxxxx                 	JMP	VIS20
+  558                                   ;  ELSE ACC=FALSE
+  559  0000F389  A900                   VIS30:	LDA	#0
+  560                                   ;  ENDIF
+  561                                   ; END VISCHK
+  562  0000F38B  60                     VIS20:	RTS
+  563                                   	 
+  564                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  565                                   
+  566                                   ; START SCROLL
+  567                                   SCROLL:
+  568  0000F38C  A55F                   	LDA	FRAME
+  569  0000F38E  2903                   	AND	#$03
+  570  0000F390  D0xx                   	BNE	SCROLL10
+  571                                   
+  572  0000F392  A656                   	LDX	MAPNUM
+  573  0000F394  FE1B1B                 	INC	MAPVLSB,X
+  574                                   ;	INC	MAPHPOS,X
+  575  0000F397  BD1B1B                 	LDA	MAPVLSB,X
+  576  0000F39A  C9C0                   	CMP	#192
+  577  0000F39C  D0xx                   	BNE	SCROLL10
+  578  0000F39E  FE1E1B                 	INC	MAPVMSB,X
+  579                                   
+  580                                   ;	LDA	MAPVMSB,X
+  581                                   ;	CMP	#0
+  582                                   ;	BNE	SCROLL10
+  583                                   
+  584                                   ;	LDA	MAPVLSB,X
+  585                                   ;	CMP	#150
+  586                                   ;	BNE	SCROLL10
+  587                                   
+
+
+                                        GAME.s               Page 23    MADMAC Atari Macro Assembler 0.11x (Atari ST)
+system macros 7800
+
+  588                                   ;	LDA	MAPVMSB,X
+  589                                   ;	CMP	#1
+  590                                   ;	BNE	SCROLL20
+  591                                   	
+  592                                   ;	LDA	#$FF
+  593                                   ;	STA	MAPVMSB,X
+  594                                   SCROLL20:
+  595  0000F3A1  A900                   	LDA	#0
+  596  0000F3A3  9D1B1B                 	STA	MAPVLSB,X
+  597                                   SCROLL10:
+  598  0000F3A6  60                     	RTS
+  599                                   		
+  600                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  601                                   ; SET INTERRUPT VECTORS
+  602                                   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  603                                   	.org	$FFF8
+  604                                   
+  605  0000FFF8  FFF7                   	.dc.w	$F7FF
+  606  0000FFFA  C6F0                   	.dc.w	dummy	;NMI
+  607  0000FFFC  C7F0                   	.dc.w	main	;RESET
+  608  0000FFFE  C6F0                   	.dc.w	dummy	;IRQ
+
+
+                                                             Page 24    MADMAC Atari Macro Assembler 0.11x (Atari ST)
+Symbol Table
+
+           ?OFFBOT 00000051  a            MAPLOOP 0000F106  a           RMAPHPOS 0000F0BD  a            VNDXCNT 00000052  a 
+           ?OFFTOP 00000050  a             MAPMAX 00000002 ea           RMAPVLSB 0000F0C0  a               VOFF 00000057  a 
+             AUDC0 00000015 ea             MAPNUM 00000056  a           RMAPVMSB 0000F0C3  a              VZONE 00000059  a 
+             AUDC1 00000016 ea             MAPOBJ 0000F0BA  a            ROMCODE 0000F000 ea              WSYNC 00000024 ea 
+             AUDF0 00000017 ea            MAPVLSB 00001B1B  a            ROMDATA 0000E000 ea            XHEADER macro       
+             AUDF1 00000018 ea            MAPVMSB 00001B1E  a             RTREE1 0000E000  a            XSQUARE 0000F084  a 
+             AUDV0 00000019 ea              MARIA 00000020 ea             RTREE2 0000E000  a             Z2LOOP 0000F167  a 
+             AUDV1 0000001A ea              MSTAT 00000028 ea             RTREE3 0000E000  a              ZLOOP 0000F152  a 
+            BKGRND 00000020 ea            NULLHDR macro                 SAVEVLSB 00000053  a            ZONEPTR 00001B00  a 
+            CALC10 0000F2A9  a             OBJADR 00000046  a             SCREEN macro                   ZONES0 0000F08A  a 
+            CALC20 0000F2AD  a            OBJBASE 00000044  a             SCROLL 0000F38C  a             ZONES1 0000F0A2  a 
+            CALC25 0000F2B7  a           OBJCOLOR 0000F083  a           SCROLL10 0000F3A6  a           ZONESIZE 00000020 ea 
+            CALC30 0000F2E8  a             OBJDEF 0000F084  a           SCROLL20 0000F3A1  a            ZONETMP 00000042  a 
+           CALCADR 0000F267  a           OBJHSIZE 0000F082  a             SELECT 00000002 ea            ZONEVEC 00000040  a 
+           CASENUM 00000055  a             OBJNUM 0000005A  a             SQUARE 00000000 ea            address 00000000   #
+            CHBASE 00000034 ea             OBJPTR 0000F07F  a              SWCHA 00000280 ea            address 00000000   #
+          COLORWTH 00000061  a           OBJSTART 0000004D  a              SWCHB 00000282 ea            address 00000004   #
+            CTLSWA 00000281 ea            OBJVCNT 0000005B  a             TCOLOR 0000005E  a                adr 00000000   #
+            CTLSWB 00000283 ea           OBJVINIT 0000004F  a             TERR10 0000F1A2  a                 bc 00000003   #
+              CTRL 0000003C ea           OBJVPART 0000005C  a            TERRAIN 0000F196  a             bcback 00000001 ea 
+           DISPLAY macro                 OBJVSIZE 0000F081  a                TIA 00000000 ea              bcoff 00000000 ea 
+           DLLIST0 00002200  a            OBJVTMP 00000054  a              TLOOP 0000F19A  a             char1b 00000000 ea 
+           DLLIST1 0000223C  a             OFFSET 00000038 ea              TPTR1 0000004A  a             char2b 00000001 ea 
+             DLOOP 0000F21D  a               P0C1 00000021 ea             TWIDTH 0000005D  a                 ck 00000000   #
+              DPPH 0000002C ea               P0C2 00000022 ea            V0ZONE1 00001800  a              ckoff 00000000 ea 
+              DPPL 00000030 ea               P0C3 00000023 ea           V0ZONE10 00001920  a               ckon 00000001 ea 
+           DPPLOAD macro                     P1C1 00000025 ea           V0ZONE11 00001940  a              color 00000002   #
+              DRAW 0000F1A7  a               P1C2 00000026 ea           V0ZONE12 00001960  a           colornum 00000001   #
+            DRAW10 0000F256  a               P1C3 00000027 ea            V0ZONE2 00001820  a                 cw 00000002   #
+            DRAW20 0000F259  a               P2C1 00000029 ea            V0ZONE3 00001840  a                dli 00000000   #
+            DRAW30 0000F216  a               P2C2 0000002A ea            V0ZONE4 00001860  a                dma 00000001   #
+            DRAW35 0000F205  a               P2C3 0000002B ea            V0ZONE5 00001880  a             dmaoff 00000003 ea 
+            FILLER 00002278  a               P3C1 0000002D ea            V0ZONE6 000018A0  a              dmaon 00000002 ea 
+             FRAME 0000005F  a               P3C2 0000002E ea            V0ZONE7 000018C0  a              dummy 0000F0C6  a 
+            HEAD10 0000F2D6  a               P3C3 0000002F ea            V0ZONE8 000018E0  a                h16 00000001   #
+            HEAD20 0000F294  a               P4C1 00000031 ea            V0ZONE9 00001900  a                 h8 00000002   #
+            HEAD30 0000F23F  a               P4C2 00000032 ea            V1ZONE1 00001980  a               hpos 00000003   #
+            HEADER macro                     P4C3 00000033 ea           V1ZONE10 00001AA0  a               hpos 00000003   #
+             HIADR 00000062  a               P5C1 00000035 ea           V1ZONE11 00001AC0  a                ind 00000005   #
+              HPOS 00000063  a               P5C2 00000036 ea           V1ZONE12 00001AE0  a            kangoff 00000000 ea 
+             INPT0 00000008 ea               P5C3 00000037 ea            V1ZONE2 000019A0  a             kangon 00000001 ea 
+             INPT1 00000009 ea               P6C1 00000039 ea            V1ZONE3 000019C0  a                 km 00000004   #
+             INPT2 0000000A ea               P6C2 0000003A ea            V1ZONE4 000019E0  a               loop 0000F0D1  a 
+             INPT3 0000000B ea               P6C3 0000003B ea            V1ZONE5 00001A00  a                lum 00000003   #
+             INPT4 0000000C ea               P7C1 0000003D ea            V1ZONE6 00001A20  a               main 0000F0C7  a 
+             INPT5 0000000D ea               P7C2 0000003E ea            V1ZONE7 00001A40  a             main30 0000F0E0  a 
+          INVISVAL 0000004E  a               P7C3 0000003F ea            V1ZONE8 00001A60  a             main32 0000F0E4  a 
+           LINEOFF 00000048  a              PAUSE 00000008 ea            V1ZONE9 00001A80  a               mode 00000005   #
+             LOADR 00000060  a             PTCTRL 00000001 ea              VIS10 0000F335  a              mode1 00000000 ea 
+            MAIN40 0000F11B  a             R1SIZE 00000840 ea              VIS20 0000F38B  a             modeac 00000003 ea 
+            MAIN50 0000F11F  a             R2SIZE 00000040 ea              VIS30 0000F389  a             modebd 00000002 ea 
+            MAIN60 0000F140  a             R3SIZE 00000600 ea              VIS40 0000F330  a             offset 00000003   #
+            MAIN70 0000F150  a               RAM1 00001800 ea              VIS42 0000F375  a              paint macro       
+            MAIN80 0000F18B  a               RAM2 00002100 ea             VISCHK 0000F2EB  a            palette 00000001   #
+            MAIN90 0000F18F  a               RAM3 00002200 ea             VLINES 0000004C  a            palette 00000001   #
+           MAPHPOS 00001B18  a              RESET 00000001 ea               VNDX 00000058  a             palnum 00000000   #
+
+
+                                                             Page 25    MADMAC Atari Macro Assembler 0.11x (Atari ST)
+Symbol Table
+
+             width 00000002   #
+             width 00000002   #
+                wm 00000004   #
+

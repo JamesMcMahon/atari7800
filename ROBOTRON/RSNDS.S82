@@ -1,0 +1,473 @@
+******************
+*
+*
+*    ROBOTRON    22-AUGUST-83
+*                24-AUGUST-83            4:00
+*
+*         RSOUNDS.S                 SOUND ROUTINES AND DATA
+*
+******************
+
+*    ORIGINALLY:    ALIEN;TUNES.S            - SOUND DRIVER
+
+*  THERE ARE 3 EXTERNAL ROUTINES IN THIS PACKAGE:
+*         DOTUNE  STARTS A TUNE, THE NUMBER OF THE TUNE IS IN THE ACCUMULATOR
+*         KILLTUNE KILLS A TUNE, THE NUMBER OF THE TUNE IS IN THE ACCUMULATOR
+*         CLEARTUN CLEARS OUT ALL TUNES, INCLUDING BACKED UP TUNES
+*  NOTE THAT THESE ALL PRESERVE X AND Y REGISTERS.
+*  IN ADDITION, THERE IS A ROUTINE CALLED 'TUNER' WHICH SHOULD BE CALLED ONCE
+*  PER FRAME (PREFERABLY AT ABOUT THE SAME TIME EACH FRAME).  NOTE THAT IT
+*  CAN BE CALLED LESS FREQUENTLY (SAY ONCE PER TWO FRAMES) IF THE DURATION
+*  DATA IS HALVED AND YOU ARE WILLING TO LIVE WITH THE DECREASED DURATION
+*  RESOLUTION.
+
+*  A BRIEF DESCRIPTION OF THE DRIVER.  THIS IS A PRIORITY BASED TUNE DRIVER
+*  WITH TWO BACK-UP CHANNELS.  WHENEVER A DOTUNE IS EXECUTED, A CLEAR CHANNEL
+*  IS LOOKED FOR.  IF IT IS NOT AVAILABLE, PRIORITIES ARE CHECKED TO SEE IF
+*  THE NEW TUNE SHOULD PREEMPT A LOWER PRIORITY TUNE.  WHICHEVER TUNE LOSES
+*  IS STORED IN ONE OF THE BACK-UP CHANNELS AND RESTARTED WHENEVER A CHANNEL
+*  FREES ITSELF.  IF MORE THAN ONE IS BACKED UP, THE HIGHER PRIORITY ONE IS
+*  RESTARTED.  CONCEPTUALLY THERE ARE 4 SOUND CHANNELS, OF WHICH CHANNELS 0
+*  AND 1 ARE ACTIVE AND CHANNELS 2 AND 3 ARE INACTIVE.  THERE ARE PROVISIONS
+*  FOR INFINITE TUNES AND TUNES WHICH INVOKE OTHER TUNES WHEN THEY ARE FINISHED.
+
+*  LET'S START WITH THE DATA.  NOTE THAT I HAVE LEFT A SELECTION OF TUNES
+*  AND SOUND EFFECTS FROM MS PAC-MAN IN HERE TO SHOW HOW THE DATA IS ORGANIZED.
+*  THERE ARE 5 TABLES WHICH CONTROL THE TUNES.  THESE ARE INDEXED BY THE TUNE
+*  TUMBER.  THESE ARE:
+*         TBASE   LOW BYTE OF BASE ADDRESS OF TUNE DATA
+*         TBASE1  HI BYTE
+*         TCTLOFF OFFSET INTO TUNE DATA WHERE CTL DATA STARTS
+*         TVOLOFF OFFSET INTO TUNE DATA WHERE VOLUME DATA STARTS
+*         TPRIOR  PRIORITY OF THIS TUNE (FROM 0 TO $7F, 0 IS LOWEST)
+*  THESE TABLES TELL WHERE TO FIND AND HOW TO INTERPRET THE 'TUNE DATA' FOR
+*  EACH TUNE.  THE TUNE DATA IS ORGANIZED AS FOLLOWS:
+*         FREQUENCY INFORMATION:  THIS IS A SET OF PAIRS 'FREQ,DUR' WHERE
+*                 FREQ IS THE VALUE TO STUFF INTO AUDF0 AND DUR IS THE NUMBER
+*                 OF FRAMES TO LEAVE IT THERE.  THE TUNE IS TERMINATED WHEN
+*                 A NEGATIVE FREQ IS ENCOUNTERED (THERE ARE ONLY 5 SIGNIFICANT
+*                 BITS OF FREQ, SO THIS DOES NOT LIMIT THE TUNES).  THERE ARE
+*                 THE FOLLOWING WAYS TO TERMINATE A TUNE:
+*                   $FF - THE TUNE IS OVER
+*                   $FE - REPEAT THE TUNE (MAKES THE TUNE INFINITE)
+*                   $FD,TUNENUM - IMMEDIATELY START TUNENUM
+*         CONTROL INFORMATION:  THIS IS A SET OF PAIRS 'CTL,DUR' WHERE CTL IS
+*                 THE VALUE TO STUFF INTO AUDC0 AND DUR IS THE NUMBER OF FRAMES
+*                 TO LEAVE IT THERE.  A DUR OF '$00' WILL MAKE THE CTL LAST THE
+*                 ENTIRE TUNE.
+*         VOLUME INFORMATION:  THIS IS A SET OF PAIRS 'VOL,DUR' WHERE VOL IS
+*                 THE VALUE TO STUFF INTO AUDV0 AND DUR IS THE NUMBER OF FRAMES
+*                 TO LEAVE IT THERE.  AGAIN, A DUR OF '$00' WILL KEEP THE VOL
+*                 FOR THE ENTIRE TUNE.
+*  NOTE THAT THE TUNE DATA FOR A SINGLE TUNE CANNOT BE LARGER THAN A PAGE.
+*  BREAK THE TUNE INTO TWO PARTS WITH ONE STARTING THE OTHER IF YOU NEED A
+*  LARGER TUNE.  TAKE A LOOK AT THE EXAMPLES AT THE END OF THIS FILE IF THIS
+*  DESCRIPTION DOESN'T MAKE SENSE, THERE ARE EXAMPLES OF INFINITE TUNES AND
+*  TUNES CALLING EACH OTHER.  NOTE THAT AN INFINITE TUNE CAN BE STOPPED BY
+*  A KILLTUN OR A CLEARTUN.
+
+*  AND NOW TO THE VARIABLES NEEDED.  COPY OUT THESE VARIABLES (CHANGING THE
+*  LOCATIONS AS NEEDED):
+
+*
+*         ALL VARIABLES USED ARE IN RMAIN.S
+*
+*  NOTE THAT SOUNDZP CAN PROBABLY BE PUT THE SAME PLACE AS YOUR LOADER TEMP
+*  VARIABLES.
+*  THE ONLY VARIABLES HERE THAT YOU MIGHT WISH TO LOOK AT FROM 'OUTSIDE' ARE
+*  TUNON AND TUNINDEX.  TUNON IS 1 IF A CHANNEL IS USED, 0 IF IT IS FREE.
+*  TUNINDEX IS THE TUNE NUMBER OF A USED CHANNEL, 0 IF THE CHANNEL IS FREE.
+*  NOTE THAT IF TUNON IS 0, A ZERO VOLUME IS FORCED INTO THE APPROPRIATE VOLUME
+*  REGISTER, SO SIMPLY ZEROING THE TUNE DATA WILL SHUT THE TIA UP (OF COURSE,
+*  CLEARTUN ALSO DOES THIS).
+
+*  THE SIZE OF THIS CODE IS ABOUT $200 BYTES.  NOTE THAT THE TUNE DATA WILL
+*  PROBABLY RUN MUCH LARGER.
+
+
+*  THIS ROUTINE ENTERS A TUNE INTO ONE OF THE SOUND CHANNELS IF IT CAN
+*  INPUT:  TUNE NUMBER IN A
+*  X AND Y ARE PRESERVED
+DOTUNE    STA     TUNNUM                 ;SAVE IT
+          TXA                            ;STACK REGISTERS
+          PHA
+          TYA
+          PHA
+
+          LDX     TUNNUM                 ;FIND PRIORITY OF NEW TUNE
+          LDA     TPRIOR,X
+          STA     TUNTEMP0
+          JSR     GETCHANL               ;GET A CHANNEL
+          CPX     #$00                   ;SEE IF WE GOT ONE
+          BMI     DTOUT
+          LDA     TUNNUM
+          JSR     BEGINTUN               ;START THE TUNE
+
+DTOUT     PLA                            ;UNSTACK REGISTERS
+          TAY
+          PLA
+          TAX
+          RTS
+
+
+*  THIS ROUTINE TRIES TO GET A CHANNEL TO PUT A TUNE INTO.  THIS IS DONE BY
+*  GIVING AN OPEN CHANNEL IF AVAILABLE OR BUMPING SOMEONE IF NONE ARE OPEN.
+*  IF THE PRIORITY IS TO LOW TO GET ANYTHING, FF IS RETURNED.
+*  INPUT: PRIORITY OF REQUESTOR IN TUNTEMP0
+*  OUTPUT:CHANNEL IN X, $FF IF NO CHANNEL AVAILABLE
+*  USES:  X, Y
+GETCHANL  LDX     #$01                   ;FIRST - SEE IF OPEN ACTIVE CHANNEL
+GCLOOP0   LDA     TUNON,X                ;SEE IF CHANNEL OPEN
+          BNE     GCNEXT0
+          RTS                            ;GOT IT - EASY
+GCNEXT0   DEX
+          BPL     GCLOOP0
+
+          LDX     #$00                   ;NOW, TRY TO BUMP ACTIVE CHANNEL
+          LDA     TUNPRIOR               ;GET INDEX OF LOWER PRIORITY ACTIVE CNL
+          CMP     TUNPRIOR+1
+          BMI     GCJMP0
+          INX
+GCJMP0    LDA     TUNPRIOR,X             ;SEE IF OUR PRIORITY HIGHER
+          CMP     TUNTEMP0
+          BPL     GCNONE                 ;NO CHANNELS AVAILABLE
+
+          JMP     ENDTUNE
+
+                  ;HERE I DELETED STUFF TO HANDLE BACKUP CHANNELS
+
+GCNONE    LDX     #$FF                   ;NO CHANNELS AVAILABLE
+          RTS
+
+
+*  ROUTINE TO KILL A PARTICULAR TUNE - IF IT IS RUNNING
+*  INPUT: TUNE NUMBER IN A
+*  X AND Y ARE PRESERVED
+KILLTUNE  STA     TUNNUM                 ;SAVE IT
+          TXA                            ;STACK REGISTERS
+          PHA
+          TYA
+          PHA
+          LDX     #$01                   ;CHECK ALL CHANNELS
+KTLOOP    LDA     TUNON,X                ;SEE IF CHANNEL ON
+          BEQ     KTNEXT
+          LDA     TUNINDEX,X             ;SEE IF HAS TUNE TO BE KILLED
+          CMP     TUNNUM
+          BNE     KTNEXT
+          JSR     ENDTUNE                ;ERASE IT
+KTNEXT    DEX
+          BPL     KTLOOP
+          PLA                            ;UNSTACK REGISTERS
+          TAY
+          PLA
+          TAX
+          RTS
+
+
+*  THIS ROUTINE ERASES ALL TUNES
+*  X AND Y ARE PRESERVED
+CLEARTUN  TXA                            ;STACK REGISTERS
+          PHA
+          TYA
+          PHA
+          LDX     #$01
+CTLOOP    JSR     ENDTUNE                ;ERASE CURRENT TUNE
+          DEX
+          BPL     CTLOOP
+          PLA                            ;UNSTACK REGISTERS
+          TAY
+          PLA
+          TAX
+          RTS
+
+
+*  THIS ROUTINE IS CALLED EVERY VBLANK TO TAKE CARE OF TUNES
+*  REGISTERS ARE NOT SAVED
+TUNER     LDX     #$01                   ;TWO TUNES CHANNELS, START WITH SECOND
+TUNLOOP   LDA     TUNON,X
+          BNE     TUNBODY
+          STA     AUDV0,X                ;CHANNEL OFF - MAKE SURE VOLUME OFF
+          JMP     TUNNEXT
+
+TUNBODY   LDA     TUNBASE,X              ;GET ADDRESS OF TUNE
+          STA     SOUNDZP
+          LDA     TUNBASE1,X
+          STA     SOUNDZP+1
+
+          DEC     FREQTIME,X             ;DO FREQUENCY
+          BNE     TUNCTL
+          JSR     TNXTFREQ               ;TIME FOR NEXT FREQUENCY
+TUNCTL    LDA     CTLTIME,X              ;DO CONTROL
+          BEQ     TUNVOL                 ;IS CTL CONSTANT? (STARTS AT 0)
+          DEC     CTLTIME,X
+          BNE     TUNVOL
+          JSR     TNXTCTL                ;TIME FOR NEXT CTL
+TUNVOL    LDA     VOLTIME,X              ;DO VOLUME
+          BEQ     TUNNEXT                ;IS VOLUME CONSTANT? (STARTS AT 0)
+          DEC     VOLTIME,X
+          BNE     TUNNEXT
+          JSR     TNXTVOL                ;TIME FOR NEXT VOLUME
+
+TUNNEXT   DEX                            ;DONE WITH THAT TUNE, IS THERE ANOTHER?
+          BPL     TUNLOOP
+          RTS                            ;ALL DONE
+
+*  ROUTINES TO GET NEXT FREQUENCY, CTL, OR VOLUME
+
+*  THIS ROUTINE GETS NEXT FREQUENCY
+TNXTFREQ  LDY     FREQOFF,X              ;GET INDEX INTO TABLE
+          LDA     (SOUNDZP),Y            ;GET FREQUENCY
+          BMI     TNFENDT                ;IS THIS THE END OF THE TUNE?
+          STA     AUDF0,X
+          INY
+          LDA     (SOUNDZP),Y            ;GET DURATION
+          STA     FREQTIME,X
+          INY
+          TYA
+          STA     FREQOFF,X
+          RTS
+TNFENDT   CMP     #$FF                   ;SEE IF TUNE OVER
+          BEQ     TNFEOVER
+          CMP     #$FE                   ;SEE IF TUNE REPEATS
+          BEQ     TNFEREPT
+          INY                            ;ANOTHER TUNE COMING
+          LDA     (SOUNDZP),Y            ;FIND OUT WHICH TUNE
+          JSR     BEGINTUN               ;START TUNE
+          JMP     TNFEOUT
+
+TNFEREPT  LDA     TUNINDEX,X             ;TUNE REPEATS - RESTART IT
+          JSR     BEGINTUN               ;START TUNE
+          JMP     TNFEOUT
+
+TNFEOVER  JSR     ENDTUNE                ;TUNE FINISHED
+TNFEOUT   PLA                            ;END OF TUNE
+          PLA                            ;GET RID OF WHERE WE ARE RTS'ING TO
+          JMP     TUNLOOP                ;UPDATE THIS CHANNEL
+
+
+*  THIS ROUTINE GETS NEXT CONTROL BYTE
+TNXTCTL   LDY     CTLOFF,X               ;GET INDEX INTO TABLE
+          LDA     (SOUNDZP),Y            ;GET FREQUENCY
+          STA     AUDC0,X
+          INY
+          LDA     (SOUNDZP),Y            ;GET DURATION
+          STA     CTLTIME,X
+          INY
+          TYA
+          STA     CTLOFF,X
+          RTS
+
+
+*  THIS ROUTINE GETS NEXT VOLUME BYTE
+TNXTVOL   LDY     VOLOFF,X               ;GET INDEX INTO TABLE
+          LDA     (SOUNDZP),Y            ;GET FREQUENCY
+          STA     AUDV0,X
+          INY
+          LDA     (SOUNDZP),Y            ;GET DURATION
+          STA     VOLTIME,X
+          INY
+          TYA
+          STA     VOLOFF,X
+          RTS
+
+
+*  THIS ROUTINE CLEARS OUT A TUNE CHANNEL
+*  INPUT: X IS CHANNEL
+ENDTUNE   LDA     #$00
+          STA     TUNON,X                ;INDICATE CHANNEL CLEAR
+          STA     TUNINDEX,X             ;CLEAR TUNE INDEX
+                  ;HERE WAS BACKUP CHANNEL STUFF
+ETOUT     RTS
+
+
+*  THIS ROUTINE STARTS A TUNE IN A CHANNEL
+*  INPUT: X IS CHANNEL, A IS TUNE
+*  USES:  Y
+BEGINTUN  TAY                            ;PUT TUNE IN Y
+          STA     TUNINDEX,X             ;SET THE TUNE INDEX
+          LDA     TBASE,Y                ;SET THE BASE ADDRESS FOR TUNE
+          STA     TUNBASE,X
+          LDA     TBASE1,Y
+          STA     TUNBASE1,X
+          LDA     #$00                   ;FREQUENCY IS AT START OF TUNE
+          STA     FREQOFF,X
+          LDA     TCTLOFF,Y              ;SET CONTROL OFFSET
+          STA     CTLOFF,X
+          LDA     TVOLOFF,Y              ;SET VOLUME OFFSET
+          STA     VOLOFF,X
+          LDA     TPRIOR,Y               ;SET PRIORITY
+          STA     TUNPRIOR,X
+          LDA     #$01                   ;SET FREQ, CTL, AND VOL TO BE SET
+          STA     FREQTIME,X             ;  NEXT VBLANK (TICK DOWN TO 0 EACH)
+          STA     CTLTIME,X
+          STA     VOLTIME,X
+          STA     TUNON,X                ;AND TURN THE TUNE ON!
+          RTS
+
+
+*  THIS ROUTINE MOVES A TUNE FROM ONE CHANNEL TO ANOTHER
+*  INPUT: Y IS FROM CHANNEL, X IS TO CHANNEL
+          ; THIS ROUTINE IS NO LONGER NECESSARY
+
+*  DATA FOR TUNES
+
+*  TUNE TABLES, BASE ADDRESSES FOR TUNES AND THE OFFSETS WITHIN THE TUNES WHERE
+*  THE CTL AND VOL INFORMATION START
+TBASE     DB      L(TMCS),L(TFPICK),L(TCREDIE),L(TSKULL0),L(TSKULL1),L(TEXTRA)
+          DB      L(TRACKA),L(TRACKB),L(TMCDIE)
+
+TBASE1    DB      H(TMCS),H(TFPICK),H(TCREDIE),H(TSKULL0),H(TSKULL1),H(TEXTRA)
+          DB      H(TRACKA),H(TRACKB),H(TMCDIE)
+
+TCTLOFF   DB      021,023,015,017,017,009,078,111,009
+
+TVOLOFF   DB      023,039,019,019,019,011,206,159,011
+
+TPRIOR    DB      005,020,006,015,015,025,018,018,022
+
+*  TUNE 0 - MUTANT CLONE SHOOTING
+SMCS      EQU     0                      ;TUNE 0
+TMCS      DB      $02,$01,$03,$01,$04,$01,$05,$01,$06,$01        ;FREQ
+          DB      $07,$01,$08,$01,$09,$01,$0A,$01,$0B,$01,$FF
+
+          DB      $06,$00                                        ;CTL
+
+          DB      $09,$00                                        ;VOL
+
+*  TUNE 1 - FAMILY PICKUP SOUND
+SFPICK    EQU     1
+TFPICK    DB      $15,$09,$0D,$03,$15,$03,$14,$03,$0C,$03
+          DB      $15,$03,$13,$03,$0B,$03,$15,$03,$12,$03
+          DB      $0A,$03,$FF
+
+          DB      $06,$06,$0D,$06,$06,$03,$0D,$06,$06,$03
+          DB      $0D,$06,$06,$03,$0D,$06
+
+          DB      $09,$00
+
+*  TUNE 2 - GENERIC EXPLOSION
+SCREDIE   EQU     2
+TCREDIE   DB      $02,$03,$03,$03,$04,$03,$05,$03,$06,$03
+          DB      $15,$03,$19,$03,$FF
+
+          DB      $08,$0F,$02,$06
+
+          DB      $09,$03,$07,$03,$06,$03,$05,$03,$04,$03
+          DB      $06,$03,$03,$03
+
+
+*  TUNE 3 - SKULL AND CROSSBONES SCREAM CHANNEL 0
+SSKULL0   EQU     3
+TSKULL0   DB      $0C,$04,$0D,$04,$0E,$04,$0F,$04,$10,$04
+          DB      $11,$04,$12,$04,$13,$04,$FF
+
+          DB      $04,$00
+
+          DB      $09,$00
+
+*  TUNE 4 - SKULL AND CROSSBONES SCREAM CHANNEL 1
+SSKULL1   EQU     4
+TSKULL1   DB      $1F,$04,$1E,$04,$1D,$04,$1C,$04,$1B,$04
+          DB      $1A,$04,$19,$04,$18,$04,$FF
+
+          DB      $04,$00
+
+          DB      $02,$04,$03,$04,$04,$04,$05,$04,$06,$04
+          DB      $05,$04,$04,$04,$03,$04,$FF
+
+
+*  TUNE 5 - EXTRA MAN
+SEXTRA    EQU     5
+TEXTRA    DB      $03,$02,$04,$02,$05,$02,$06,$02,$FF
+
+          DB      $0F,$00
+
+          DB      $09,$00
+
+*  TUNE 6 - BETWEEN RACK SOUND PART A
+SRACKA    EQU     6
+TRACKA    DB      $1F,$04,$1D,$04,$1B,$04,$1A,$04,$18,$04        ;FREQ
+          DB      $17,$04,$16,$04,$14,$04,$13,$04,$12,$04
+          DB      $11,$04,$10,$04,$0F,$04,$0E,$04,$0D,$04
+          DB      $0C,$04,$0B,$04,$0A,$04,$09,$02,$1F,$02
+          DB      $08,$02,$1D,$02,$07,$02,$1B,$02,$06,$02
+          DB      $1A,$02,$05,$02,$18,$02,$04,$02,$17,$02
+          DB      $15,$04,$14,$04,$13,$04,$12,$04,$11,$04
+          DB      $10,$04,$0F,$04,$0E,$04,$FD,$07
+
+
+          DB      $06,$02,$0D,$02,$06,$02,$0D,$02                 ;CTL
+          DB      $06,$02,$0D,$02,$06,$02,$0D,$02
+          DB      $06,$02,$0D,$02,$06,$02,$0D,$02
+          DB      $06,$02,$0D,$02,$06,$02,$0D,$02
+          DB      $06,$02,$0D,$02,$06,$02,$0D,$02
+          DB      $06,$02,$0D,$02,$06,$02,$0D,$02
+          DB      $06,$02,$0D,$02,$06,$02,$0D,$02
+          DB      $06,$02,$0D,$02,$06,$02,$0D,$02
+          DB      $06,$02,$0D,$02,$06,$02,$0D,$02
+          DB      $06,$02,$04,$02,$06,$02,$04,$02
+          DB      $06,$02,$04,$02,$06,$02,$04,$02
+          DB      $06,$02,$04,$02,$06,$02,$04,$02
+          DB      $0D,$02,$04,$02,$0D,$02,$04,$02
+          DB      $0D,$02,$04,$02,$0D,$02,$04,$02
+          DB      $0D,$02,$04,$02,$0D,$02,$04,$02
+          DB      $0D,$02,$04,$02,$0D,$02,$04,$02
+
+          DB      $09,$00                                       ;VOL
+
+*  TUNE 7 - BETWEEN RACK SOUND PART B
+SRACKB    EQU     7
+TRACKB    DB                              $0D,$04,$09,$02        ;FREQ
+          DB      $13,$02,$18,$02,$1D,$02,$0B,$02,$0F,$02
+          DB      $10,$02,$16,$02,$0A,$02,$12,$02,$15,$02
+          DB      $1D,$02,$0D,$02,$0E,$02,$09,$02,$13,$02
+          DB      $18,$02,$1D,$02,$0B,$02,$0F,$02,$10,$02
+          DB      $16,$02,$0A,$02,$12,$02,$15,$02,$1D,$02
+          DB      $0D,$02,$0E,$02,$09,$02,$13,$02,$18,$02
+          DB      $1D,$02,$0B,$02,$0F,$02,$10,$02,$16,$02
+          DB      $0A,$02,$12,$02,$15,$02,$1D,$02,$0D,$02
+          DB      $0E,$02,$09,$02,$13,$02,$18,$02,$1D,$02
+          DB      $0B,$02,$0F,$02,$10,$02,$16,$02,$0A,$02
+          DB      $12,$02,$15,$02,$1D,$02,$FF
+
+          DB      $0D,$02,$04,$04,$0D,$06,$06,$04                 ;CTL
+          DB      $04,$06,$0D,$06,$06,$04,$04,$02
+          DB      $0D,$06,$06,$04,$04,$06,$0D,$06
+          DB      $06,$04,$04,$02,$0D,$06,$06,$04
+          DB      $04,$06,$0D,$06,$06,$04,$04,$02
+          DB      $0D,$06,$06,$04,$04,$06,$0D,$06
+
+          DB      $09,$00                                       ;VOL
+
+*  TUNE 8 - MC DEATH SOUND
+SMCDIE    EQU     8
+TMCDIE    DB      $0A,$04,$0C,$04,$0F,$04,$1F,$80,$FF
+
+          DB      $08,$00
+
+          DB      $09,$0C,$0F,$10,$0A,$10,$09,$10,$07,$10
+          DB      $05,$10,$04,$10,$03,$0C,$02,$0C,$01,$0C
+
+
+
+
+***********
+*         TEMPORARY EQUIVALENCES FOR ROBOTRON
+***********
+
+*SSKULL    EQU     SPACDTH
+*SFPICK    EQU     SANIM10
+*SMCS      EQU     SMUNCH
+*SCREDIE   EQU     SFRTBNC
+*SMCDIE    EQU     SENERGA
+
+
+*  TUNE # - 
+;S         EQU     #
+;T         DB      $00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+;          DB      $00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+;          DB      $00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+
+*********** END OF RSOUNDS.S *************
+
+          EJE

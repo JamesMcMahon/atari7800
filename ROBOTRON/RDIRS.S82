@@ -1,0 +1,546 @@
+******************
+*
+*
+*    ROBOTRON    20-JULY-83
+*                12-AUGUST-83            C:00
+*                24-AUGUST-83           10:10
+*
+*         RDIRS.S                    DIRECTION DATA
+*
+*         FOLLOWED BY RSTAMPS.S
+******************
+
+***
+*
+*         INFORMATION FOR LINKER
+*
+          PUBLIC  CRETODST,DIRTOSTE,STAMPHGH
+          PUBLIC  STAMPL,STAMPS,PALNWID,STAMPPWD
+*
+
+************
+*
+*         TABLES FOR ANIMATION
+*
+************
+
+
+          ORG    $4000
+
+*******
+*         CRETODST STANDS FOR CREATURE TO DIRECTION START
+*         IT TELLS WHICH ENTRY IN THE DIRECTION TABLE IS THE
+*         FIRST POINTER TO THE STEPS
+
+CRETODST  DB      0          ;MC
+          DB      (GD-DIRTOSTE) ;GD
+          DB      (MOD-DIRTOSTE)   ;MOD
+          DB      (DD-DIRTOSTE) ;DD
+          DB      (MID-DIRTOSTE)   ;MI
+          DB      (HD-DIRTOSTE) ;H
+          DB      (SD-DIRTOSTE) ;S
+          DB      (QD-DIRTOSTE) ;Q
+          DB      (ED-DIRTOSTE) ;E
+          DB      (TD-DIRTOSTE) ;T
+          DB      (BD-DIRTOSTE) ;B
+          DB      0
+          DB      0
+          DB      0
+          DB      0
+          DB      (MCSD-DIRTOSTE)  ;MCS
+
+*******
+*         DIRTOSTE STANDS FOR DIRECTION TO STEP
+*         IT IS ACCESSED BY ADDING THE CONTENTS OF  CRETODST
+*         TO THE DIRECTION AND USING THAT TO INDEX IN.
+*         TAKING ITS CONTENTS AND ADDING THE STEP GIVES A POINTER
+*         INTO ALL THE STAMP TABLES
+
+DIRTOSTE  DB      0             ;MC DIRECTIONS
+          DB      0   ;1
+          DB      0   ;2
+          DB      0   ;3
+          DB      0   ;4
+          DB      (MCD2-STAMPL)   ;5
+          DB      (MCD2-STAMPL)   ;6
+          DB      (MCD2-STAMPL)   ;7
+          DB      0         ;8
+          DB      (MCD3-STAMPL)   ;9
+          DB      (MCD3-STAMPL)   ;A
+          DB      (MCD3-STAMPL)   ;B
+          DB      0         ;C
+          DB      (MCD1-STAMPL)   ;D
+          DB      0         ;E
+          DB      0         ;F
+GD        DB      (GD0-STAMPL)   ;G
+MOD       DB      (MOD0-STAMPL)  ;MOMMY DIRECTIONS
+          DB      (MOD1-STAMPL)
+          DB      (MOD2-STAMPL)
+          DB      (MOD3-STAMPL)
+          DB      (MOD2-STAMPL)  ;D4
+          DB      (MOD2-STAMPL)  ;D5
+          DB      (MOD3-STAMPL)  ;D6
+          DB      (MOD3-STAMPL)  ;D7
+          DB      (FDIE-STAMPL)
+DD        DB      (DD0-STAMPL)   ;DADDY DIRS
+          DB      (DD1-STAMPL)
+          DB      (DD2-STAMPL)
+          DB      (DD3-STAMPL)
+          DB      (DD2-STAMPL)  ;D4
+          DB      (DD2-STAMPL)  ;D5
+          DB      (DD3-STAMPL)  ;D6
+          DB      (DD3-STAMPL)  ;D7
+MID       DB      (MID0-STAMPL)  ;MIKEY DIRS
+          DB      (MID1-STAMPL)
+          DB      (MID2-STAMPL)
+          DB      (MID3-STAMPL)
+          DB      (MID2-STAMPL)  ;D4
+          DB      (MID2-STAMPL)  ;D5
+          DB      (MID3-STAMPL)  ;D6
+          DB      (MID3-STAMPL)  ;D7
+HD        DB      (HD0-STAMPL)   ;HULK DIRS
+          DB      (HD1-STAMPL)
+          DB      (HD2-STAMPL)
+          DB      (HD3-STAMPL)
+SD        DB      (SD0-STAMPL)   ;S
+QD        DB      (QD0-STAMPL)   ;Q
+ED        DB      (ED0-STAMPL)   ;E
+TD        DB      (TD0-STAMPL)   ;T
+BD        DB      (BD0-STAMPL)   ;B
+          DB      (BD1-STAMPL)
+          DB      (BD2-STAMPL)
+          DB      (BD3-STAMPL)
+          DB      (BD2-STAMPL)   ;D4
+          DB      (BD2-STAMPL)   ;D5
+          DB      (BD3-STAMPL)   ;D6
+          DB      (BD3-STAMPL)   ;D7
+MCSD      DB      (MCSD0-STAMPL)   ;MCS
+          DB      (MCSD0-STAMPL)   ;1
+          DB      (MCSD0-STAMPL)   ;2
+          DB      (MCSD0-STAMPL)   ;3
+          DB      (MCSD0-STAMPL)   ;4
+          DB      (MCSD5-STAMPL)   ;5
+          DB      (MCSD6-STAMPL)   ;6
+          DB      (MCSD7-STAMPL)   ;7
+          DB      (MCSD0-STAMPL)   ;8
+          DB      (MCSD6-STAMPL)   ;9
+          DB      (MCSD5-STAMPL)   ;A
+          DB      (MCSD7-STAMPL)   ;B
+          DB      (MCSD0-STAMPL)   ;C
+          DB      (MCSDD-STAMPL)   ;D
+          DB      (MCSDD-STAMPL)   ;E
+          DB      (MCSD0-STAMPL)   ;F
+
+***********
+*         DATA DESCRIBING THE STAMPS
+*
+
+STAMPL    DB      L(MCD0S0)
+          DB      L(MCD0S1)
+          DB      L(MCD0S0)
+          DB      L(MCD0S2)
+MCD1      DB      L(MCD1S0)
+          DB      L(MCD1S1)
+          DB      L(MCD1S0)
+          DB      L(MCD1S2)
+MCD2      DB      L(MCD2S0)
+          DB      L(MCD2S1)
+          DB      L(MCD2S0)
+          DB      L(MCD2S2)
+MCD3      DB      L(MCD3S0)
+          DB      L(MCD3S1)
+          DB      L(MCD3S0)
+          DB      L(MCD3S2)
+GD0       DB      L(GD0S0)
+          DB      L(GD0S1)
+          DB      L(GD0S0)
+          DB      L(GD0S2)
+          DB      L(GD0S3)               ;THESE ARE EXPLOSIONS
+          DB      L(GD0S4)
+          DB      L(GD0S5)
+          DB      L(GD0S6)
+          DB      L(GD0S7)
+          DB      L(GD0S8)
+MOD0      DB      L(MOD0S0)
+          DB      L(MOD0S1)
+          DB      L(MOD0S0)
+          DB      L(MOD0S2)
+MOD1      DB      L(MOD1S0)
+          DB      L(MOD1S1)
+          DB      L(MOD1S0)
+          DB      L(MOD1S2)
+FDIE      DB      L(SKULL)
+          DB      L(SCORE1K)
+          DB      L(SCORE2K)
+          DB      L(SCORE3K)
+          DB      L(SCORE4K)
+          DB      L(SCORE5K)
+MOD2      DB      L(MOD2S0)
+          DB      L(MOD2S1)
+          DB      L(MOD2S0)
+          DB      L(MOD2S2)
+MOD3      DB      L(MOD3S0)
+          DB      L(MOD3S1)
+          DB      L(MOD3S0)
+          DB      L(MOD3S2)
+DD0       DB      L(DD0S0)
+          DB      L(DD0S1)
+          DB      L(DD0S0)
+          DB      L(DD0S2)
+DD1       DB      L(DD1S0)
+          DB      L(DD1S1)
+          DB      L(DD1S0)
+          DB      L(DD1S2)
+DD2       DB      L(DD2S0)
+          DB      L(DD2S1)
+          DB      L(DD2S0)
+          DB      L(DD2S2)
+DD3       DB      L(DD3S0)
+          DB      L(DD3S1)
+          DB      L(DD3S0)
+          DB      L(DD3S2)
+MID0      DB      L(MID0S0)
+          DB      L(MID0S1)
+          DB      L(MID0S0)
+          DB      L(MID0S2)
+MID1      DB      L(MID1S0)
+          DB      L(MID1S1)
+          DB      L(MID1S0)
+          DB      L(MID1S2)
+MID2      DB      L(MID2S0)
+          DB      L(MID2S1)
+          DB      L(MID2S0)
+          DB      L(MID2S2)
+MID3      DB      L(MID3S0)
+          DB      L(MID3S1)
+          DB      L(MID3S0)
+          DB      L(MID3S2)
+HD0       DB      L(HD0S0)
+          DB      L(HD0S1)
+          DB      L(HD0S0)
+          DB      L(HD0S2)
+HD1       DB      L(HD1S0)
+          DB      L(HD1S1)
+          DB      L(HD1S0)
+          DB      L(HD1S2)
+HD2       DB      L(HD2S0)
+          DB      L(HD2S1)
+          DB      L(HD2S0)
+          DB      L(HD2S2)
+HD3       DB      L(HD3S0)
+          DB      L(HD3S1)
+          DB      L(HD3S0)
+          DB      L(HD3S2)
+SD0       DB      L(SD0S0)
+          DB      L(SD0S1)
+          DB      L(SD0S2)
+          DB      L(SD0S3)
+          DB      L(SD0S4)
+          DB      L(SD0S5)
+          DB      L(SD0S6)
+          DB      L(SD0S7)
+          DB      L(QD0S0)
+QD0       DB      L(QD0S1)
+          DB      L(QD0S2)
+          DB      L(QD0S3)
+          DB      L(QD0S4)
+          DB      L(QD0S5)
+          DB      L(QD0S6)
+          DB      L(QD0S7)
+ED0       DB      L(ED0S0)
+          DB      L(ED0S1)
+TD0       DB      L(TD0S0)
+          DB      L(TD0S1)
+          DB      L(TD0S2)
+          DB      L(TD0S3)
+BD0       DB      L(BD0S0)
+          DB      L(BD0S1)
+          DB      L(BD0S0)
+          DB      L(BD0S2)
+BD1       DB      L(BD1S0)
+          DB      L(BD1S1)
+          DB      L(BD1S0)
+          DB      L(BD1S2)
+BD2       DB      L(BD2S0)
+          DB      L(BD2S1)
+          DB      L(BD2S0)
+          DB      L(BD2S2)
+BD3       DB      L(BD3S0)
+          DB      L(BD3S1)
+          DB      L(BD3S0)
+          DB      L(BD3S2)
+MCSD0     DB      L(MCSD0S0)
+MCSD5     DB      L(MCSD5S0)
+MCSD6     DB      L(MCSD6S0)
+MCSD7     DB      L(MCSD7S0)
+MCSDD     DB      L(MCSDDS0)
+
+
+STAMPHGH  DB     $B  ;MC D0 S0
+          DB     $B  ;MC D1
+          DB     $B  ;MC D2
+          DB     $B  ;MC D3
+          DB     $B  ;MC D4
+          DB     $B  ;MC D5
+          DB     $B  ;MC D6
+          DB     $B  ;MC D7
+          DB     $B  ;MC D8
+          DB     $B  ;MC D9
+          DB     $B  ;MC DA
+          DB     $B  ;MC DB
+          DB     $B  ;MC DC
+          DB     $B  ;MC DD
+          DB     $B  ;MC DE
+          DB     $B  ;MC DF
+          DB     $B  ;G D0
+          DB     $B  ;MO D0
+          DB     $B  ;MO D1
+          DB     $B  ;MO D2
+          DB     $B  ;MO D3
+          DB     $B  ;MO D2
+          DB     $B  ;MO D2
+          DB     $B  ;MO D3
+          DB     $B  ;MO D3
+          DB     $B  ;FDIE (A DYING FAMILY MEMBER EITHER POINTS OR SKULL)
+          DB     $B  ;D D0
+          DB     $B  ;D D1
+          DB     $B  ;D D2
+          DB     $B  ;D D3
+          DB     $B  ;D D2
+          DB     $B  ;D D2
+          DB     $B  ;D D3
+          DB     $B  ;D D3
+          DB     $A  ;MI D0
+          DB     $A  ;MI D1
+          DB     $A  ;MI D2
+          DB     $A  ;MI D3
+          DB     $A  ;MI D2
+          DB     $A  ;MI D2
+          DB     $A  ;MI D3
+          DB     $A  ;MI D3
+          DB     $D  ;H D0
+          DB     $D  ;H D1
+          DB     $D  ;H D2
+          DB     $D  ;H D3
+          DB     0  ;S D0 S0
+          DB     0  ;Q D0 S0
+          DB     0  ;E D0 S0
+          DB     0  ;T D0 S0
+          DB     $D  ;B D0
+          DB     $D  ;B D1
+          DB     $D  ;B D2
+          DB     $D  ;B D3
+          DB     $D  ;B D2
+          DB     $D  ;B D2
+          DB     $D  ;B D3
+          DB     $D  ;B D3
+          DB     0    ;MCSD0
+          DB     0    ;MCSD1
+          DB     0    ;MCSD2
+          DB     0    ;MCSD3
+          DB     0    ;MCSD4
+          DB     $07    ;MCSD5
+          DB     $07    ;MCSD6
+          DB     $01    ;MCSD7
+          DB     0    ;MCSD8
+          DB     $07    ;MCSD6
+          DB     $07    ;MCSD5
+          DB     $01    ;MCSD7
+          DB     0    ;MCSDC
+          DB     $07    ;MCSDD
+          DB     $07    ;MCSDD
+          DB     0    ;MCSDF
+
+
+PALNWID   DB     $1E  ;MC D0 S0
+          DB     $1E  ;MC D1
+          DB     $1E  ;MC D2
+          DB     $1E  ;MC D3
+          DB     $1E  ;MC D4
+          DB     $1E  ;MC D5
+          DB     $1E  ;MC D6
+          DB     $1E  ;MC D7
+          DB     $1E  ;MC D8
+          DB     $1E  ;MC D9
+          DB     $1E  ;MC DA
+          DB     $1E  ;MC DB
+          DB     $1E  ;MC DC
+          DB     $1E  ;MC DD
+          DB     $1E  ;MC DE
+          DB     $1E  ;MC DF
+          DB     $3E  ;G D0
+          DB     $5E  ;MO D0
+          DB     $5E  ;MO D1
+          DB     $5F  ;MO D2
+          DB     $5F  ;MO D3
+          DB     $5E  ;MO D2
+          DB     $5E  ;MO D2
+          DB     $5F  ;MO D3
+          DB     $5F  ;MO D3
+          DB     $BD  ;FDIE
+          DB     $7E  ;D D0
+          DB     $7E  ;D D1
+          DB     $7F  ;D D2
+          DB     $7F  ;D D3
+          DB     $7E  ;D D2
+          DB     $7E  ;D D2
+          DB     $7F  ;D D3
+          DB     $7F  ;D D3
+          DB     $3E  ;MI D0
+          DB     $3E  ;MI D1
+          DB     $3F  ;MI D2
+          DB     $3F  ;MI D3
+          DB     $3E  ;MI D2
+          DB     $3E  ;MI D2
+          DB     $3F  ;MI D3
+          DB     $3F  ;MI D3
+          DB     $9E  ;H D0
+          DB     $9E  ;H D1
+          DB     $9E  ;H D2
+          DB     $9E  ;H D3
+          DB     $FF  ;S D0 S0
+          DB     $FF  ;Q D0 S0
+          DB     $FF  ;E D0 S0
+          DB     $FF  ;T D0 S0
+          DB     $DE  ;B D0
+          DB     $DE  ;B D1
+          DB     $DE  ;B D2
+          DB     $DE  ;B D3
+          DB     $DE  ;B D2
+          DB     $DE  ;B D2
+          DB     $DE  ;B D3
+          DB     $DE  ;B D3
+          DB     $1F    ;MCSD0
+          DB     $1F    ;MCSD1
+          DB     $1F    ;MCSD2
+          DB     $1F    ;MCSD3
+          DB     $1F    ;MCSD4
+          DB     $1F    ;MCSD5
+          DB     $1F    ;MCSD6
+          DB     $1F    ;MCSD7
+          DB     $1F    ;MCSD8
+          DB     $1F    ;MCSD6
+          DB     $1F    ;MCSD5
+          DB     $1F    ;MCSD7
+          DB     $1F    ;MCSDC
+          DB     $1F    ;MCSDD
+          DB     $1F    ;MCSDD
+          DB     $1F    ;MCSDF
+
+STAMPPWD  DB      4  ;MC D0 S0
+          DB      4  ;MC D1
+          DB      4  ;MC D2
+          DB      4  ;MC D3
+          DB      4  ;MC D4
+          DB      4  ;MC D5
+          DB      4  ;MC D6
+          DB      4  ;MC D7
+          DB      4  ;MC D8
+          DB      4  ;MC D9
+          DB      4  ;MC DA
+          DB      4  ;MC DB
+          DB      4  ;MC DC
+          DB      4  ;MC DD
+          DB      4  ;MC DE
+          DB      4  ;MC DF
+          DB     $06  ;G D0
+          DB      4  ;MO D0
+          DB      4  ;MO D1
+          DB      4  ;MO D2
+          DB      4  ;MO D3
+          DB      4  ;MO D2
+          DB      4  ;MO D2
+          DB      4  ;MO D3
+          DB      4  ;MO D3
+          DB     $01  ;FDIE
+          DB      4  ;D D0
+          DB      4  ;D D1
+          DB      4  ;D D2
+          DB      4  ;D D3
+          DB      4  ;D D2
+          DB      4  ;D D2
+          DB      4  ;D D3
+          DB      4  ;D D3
+          DB      4  ;MI D0
+          DB      4  ;MI D1
+          DB      4  ;MI D2
+          DB      4  ;MI D3
+          DB      4  ;MI D2
+          DB      4  ;MI D2
+          DB      4  ;MI D3
+          DB      4  ;MI D3
+          DB     $06  ;H D0
+          DB     $06  ;H D1
+          DB     $06  ;H D2
+          DB     $06  ;H D3
+          DB     0  ;S D0 S0
+          DB     0  ;Q D0 S0
+          DB     0  ;E D0 S0
+          DB     0  ;T D0 S0
+          DB     6  ;B D0
+          DB     6  ;B D1
+          DB     6  ;B D2
+          DB     6  ;B D3
+          DB     6  ;B D2
+          DB     6  ;B D2
+          DB     6  ;B D3
+          DB     6  ;B D3
+          DB     $0    ;MCSD0
+          DB     $0    ;MCSD0
+          DB     $0    ;MCSD0
+          DB     $0    ;MCSD0
+          DB     $0    ;MCSD0
+          DB     $03   ;MCSD5
+          DB     $03   ;MCSD6
+          DB     $03   ;MCSD7
+          DB     $0    ;MCSD0
+          DB     $03   ;MCSD6
+          DB     $03   ;MCSD5
+          DB     $03   ;MCSD7
+          DB     $0    ;MCSD0
+          DB     $01   ;MCSDD
+          DB     $01   ;MCSDD
+          DB     $0    ;MCSD0
+
+***********
+*
+*         STAMP DATA
+*
+************
+*
+
+* THE STAMPS START AT STAMPBAS BUT ARE FILLED WITH ZEROES UP TO STAMPBAS+$F00
+*         THE DIFERENT LINES OF EACH STAMP ARE 100H APART
+
+STAMPBAS  EQU    $4300      ;BASE ADDRESS OF STAMPS
+*** WE MUST MAKE SURE THIS IS NOT OVERWRITTEN BY THE END OF
+*********   THE PRECEDING TABLES.  IF SO, INCREASE STAMPBAS
+
+          ORG     STAMPBAS
+
+*         WE NEED 15 PAGES OF ZEROES HERE, AND 15 AFTER THE END OF
+*                 EACH STAMP.  TO DO THIS, FIRST USE A DO LOOP
+*                 TO FILL MEMORY FROM STAMPBAS FOR 46 PAGES
+*                 46 = 15 (ZEROES) + 16 (MAX STAMP) + 15 (ZEROES)
+*         AFTER WE CREATE ALL THOSE ZEROES, DEFINE STAMPS ON TOP
+*                 AS NEEDED
+
+          PRINT   OFF
+
+          DO      16         ;16 PAGES
+          DO     $10        ;ALLOCATE 256 BYTES PER PAGE
+          DB      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          ENDDO
+          ENDDO
+
+          ORG     STAMPBAS+$1E00
+          DO      16         ;16 PAGES
+          DO     $10        ;ALLOCATE 256 BYTES PER PAGE
+          DB      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+          ENDDO
+          ENDDO
+
+          PRINT ON
+
+
+********** END OF RDIRS.S *****************************
